@@ -1,0 +1,44 @@
+name: Draft Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  draft:
+    name: Draft Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Checkout Wiki
+        # The wiki is optional; without it the release notes are generated from commits only.
+        continue-on-error: true
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: wiki
+
+      - name: Create Draft Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="v$(node -p "require('./app/package.json').version")"
+
+          # Roadmap section for this version, checkboxes stripped
+          touch notes.md
+          if [ -f wiki/Product-Roadmap.md ]; then
+            awk -v h="## $tag" '/^## / { p = ($0 == h || index($0, h " ") == 1) } p' wiki/Product-Roadmap.md \
+              | sed 's/\[[xX ]\] //' > notes.md
+          fi
+          if [ ! -s notes.md ]; then
+            echo "::notice::No '## $tag' section found in the Product Roadmap wiki page; using generated notes only."
+          fi
+
+          # Chart releases share this repo and are marked latest, so pin the baseline to the last app tag.
+          prev=$(git ls-remote --tags --refs origin 'refs/tags/v*' | sed 's|.*refs/tags/||' | sort -V | tail -1)
+          gh release create "$tag" --draft --title "$tag" --target "$GITHUB_SHA" --notes-file notes.md --generate-notes \
+            ${prev:+--notes-start-tag "$prev"}

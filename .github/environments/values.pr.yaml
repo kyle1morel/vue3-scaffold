@@ -1,0 +1,4 @@
+---
+database:
+  # Shared role backing every PR database; created once per namespace outside Helm.
+  secretName: crunchy-pr-user

@@ -1,0 +1,162 @@
+{{- $dbHostName := required "database.host is required" .Values.database.host -}}
+{{- $dbSecretName := required "database.secretName is required" .Values.database.secretName -}}
+{{- $dbDbKey := default "dbname" .Values.database.secretKeys.database -}}
+{{- $dbUserKey := default "user" .Values.database.secretKeys.username -}}
+{{- $dbPassKey := default "password" .Values.database.secretKeys.password -}}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "vue3-scaffold.fullname" . }}
+  labels:
+    {{- include "vue3-scaffold.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 10
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+
+  selector:
+    matchLabels:
+      {{- include "vue3-scaffold.selectorLabels" . | nindent 6 }}
+
+  template:
+    metadata:
+      labels:
+        {{- include "vue3-scaffold.selectorLabels" . | nindent 8 }}
+
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "vue3-scaffold.serviceAccountName" . }}
+      {{- end }}
+
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      #
+      # OpenShift DeploymentConfig pre-hook replacement
+      # Runs DB migrations before app containers start
+      #
+      initContainers:
+        - name: migrate
+          image: "{{ .Values.image.repository }}/{{ .Chart.Name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          command:
+            - /usr/local/bin/node
+            - ./migrate.ts
+            - latest
+
+          env:
+            - name: NODE_ENV
+              value: production
+
+            - name: SERVER_DB_DATABASE
+            {{- if .Values.database.name }}
+              value: {{ .Values.database.name | quote }}
+            {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  key: {{ $dbDbKey }}
+                  name: {{ $dbSecretName }}
+            {{- end }}
+
+            - name: SERVER_DB_HOST
+              value: {{ $dbHostName | quote }}
+
+            - name: SERVER_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: {{ $dbUserKey }}
+                  name: {{ $dbSecretName }}
+
+            - name: SERVER_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: {{ $dbPassKey }}
+                  name: {{ $dbSecretName }}
+
+      containers:
+        - name: app
+
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          image: "{{ .Values.image.repository }}/{{ .Chart.Name }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.route.path | default "/" }}
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.route.path | default "/" }}
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            failureThreshold: 3
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+          env:
+            - name: NODE_ENV
+              value: production
+
+            - name: SERVER_DB_DATABASE
+            {{- if .Values.database.name }}
+              value: {{ .Values.database.name | quote }}
+            {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  key: {{ $dbDbKey }}
+                  name: {{ $dbSecretName }}
+            {{- end }}
+
+            - name: SERVER_DB_HOST
+              value: {{ $dbHostName | quote }}
+
+            - name: SERVER_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: {{ $dbUserKey }}
+                  name: {{ $dbSecretName }}
+
+            - name: SERVER_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: {{ $dbPassKey }}
+                  name: {{ $dbSecretName }}
+
+          envFrom:
+            - configMapRef:
+                name: {{ include "vue3-scaffold.configname" . }}-config
+
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30

@@ -1,0 +1,48 @@
+{{- if .Values.networkPolicy.enabled }}
+{{- $cluster := index .Values "crunchy-postgres" "fullnameOverride" | default "crunchy" -}}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-{{ $cluster }}-internal
+  labels:
+    postgres-operator.crunchydata.com/cluster: {{ $cluster | quote }}
+spec:
+  podSelector:
+    matchLabels:
+      postgres-operator.crunchydata.com/cluster: {{ $cluster | quote }}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              postgres-operator.crunchydata.com/cluster: {{ $cluster | quote }}
+      ports:
+        - protocol: TCP
+          port: 5432 # PostgreSQL streaming and replication
+        - protocol: TCP
+          port: 8432 # pgBackRest TLS server for backups and WAL archiving
+        - protocol: TCP
+          port: 8008 # Patroni REST API for HA and leader elections
+        - protocol: TCP
+          port: 2022 # Custom SSH daemon for file sync and legacy pgBackRest
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-app-to-{{ $cluster }}
+  labels:
+    postgres-operator.crunchydata.com/cluster: {{ $cluster | quote }}
+spec:
+  podSelector:
+    matchLabels:
+      postgres-operator.crunchydata.com/cluster: {{ $cluster | quote }}
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: vue3-scaffold
+      ports:
+        - protocol: TCP
+          port: 5432
+{{- end }}

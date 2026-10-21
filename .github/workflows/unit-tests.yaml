@@ -1,0 +1,222 @@
+---
+name: Tests
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests-preflight:
+    name: Preflight Check
+    runs-on: ubuntu-latest
+    outputs:
+      PR_EXISTS: ${{ steps.pr-check.outputs.PR_EXISTS }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Short circuit if open PR exists for this branch (on push)
+        id: pr-check
+        if: github.event_name == 'push'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sleep 10
+          prs=$(gh pr list --head "${{ github.ref_name }}" --state open --repo "${{ github.repository }}" --json number --jq '.[].number')
+          if [ -n "$prs" ]; then
+            echo "PR_EXISTS=true" >> $GITHUB_OUTPUT
+          else
+            echo "PR_EXISTS=false" >> $GITHUB_OUTPUT
+          fi
+
+  test-app:
+    name: Unit Tests (App)
+    needs: tests-preflight
+    if: needs.tests-preflight.outputs.PR_EXISTS != 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    outputs:
+      HAS_SONAR_SECRETS: ${{ steps.check-secrets.outputs.HAS_SONAR_SECRETS }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: true
+      matrix:
+        node-version:
+          - "24.x"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+      - name: Check Sonar Secrets
+        id: check-secrets
+        run: |
+          echo "HAS_SONAR_SECRETS=${{ secrets.SONAR_TOKEN_APP != '' }}" >> $GITHUB_OUTPUT
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache node modules
+        uses: actions/cache@v6
+        id: cache-app
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ${{ github.workspace }}/app/node_modules
+          key: ${{ runner.os }}-app-${{ env.cache-name }}-${{ hashFiles('**/app/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-app-${{ env.cache-name }}-
+            ${{ runner.os }}-app-
+            ${{ runner.os }}-
+      - name: Install dependencies
+        if: steps.cache-app.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Generate Prisma Schema
+        # npm ci generates via postinstall, but a cache hit skips npm ci.
+        if: steps.cache-app.outputs.cache-hit == 'true'
+        run: npm run prisma:generate
+      - name: Test
+        run: npm run test
+        env:
+          CI: true
+      - name: Save Coverage Results
+        if: matrix.node-version == '24.x'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-app
+          path: ${{ github.workspace }}/app/coverage
+          retention-days: 1
+      - name: Monitor Coverage
+        if: "matrix.node-version == '24.x' &&  github.event_name == 'pull_request' && ! github.event.pull_request.head.repo.fork"
+        uses: slavcodev/coverage-monitor-action@a7fb808726aa317c2df392b585bb7b7700587df5 # 1.11.0
+        with:
+          comment_mode: update
+          comment_footer: false
+          comment_context: Coverage Report (Application)
+          coverage_path: app/coverage/clover.xml
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          threshold_alert: 50
+          threshold_warning: 80
+
+  test-frontend:
+    name: Unit Tests (Frontend)
+    needs: tests-preflight
+    if: needs.tests-preflight.outputs.PR_EXISTS != 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    outputs:
+      HAS_SONAR_SECRETS: ${{ steps.check-secrets.outputs.HAS_SONAR_SECRETS }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: true
+      matrix:
+        node-version:
+          - "24.x"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+      - name: Check Sonar Secrets
+        id: check-secrets
+        run: |
+          echo "HAS_SONAR_SECRETS=${{ secrets.SONAR_TOKEN_FRONTEND != '' }}" >> $GITHUB_OUTPUT
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache node modules
+        uses: actions/cache@v6
+        id: cache-frontend
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ${{ github.workspace }}/frontend/node_modules
+          key: ${{ runner.os }}-frontend-${{ env.cache-name }}-${{ hashFiles('**/frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-frontend-${{ env.cache-name }}-
+            ${{ runner.os }}-frontend-
+            ${{ runner.os }}-
+      - name: Install dependencies
+        if: steps.cache-frontend.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Test
+        run: npm run test
+        env:
+          CI: true
+      - name: Save Coverage Results
+        if: matrix.node-version == '24.x'
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-frontend
+          path: ${{ github.workspace }}/frontend/coverage
+          retention-days: 1
+      - name: Monitor Coverage
+        if: "matrix.node-version == '24.x' &&  github.event_name == 'pull_request' && ! github.event.pull_request.head.repo.fork"
+        uses: slavcodev/coverage-monitor-action@a7fb808726aa317c2df392b585bb7b7700587df5 # 1.11.0
+        with:
+          comment_mode: update
+          comment_footer: false
+          comment_context: Coverage Report (Frontend)
+          coverage_path: frontend/coverage/clover.xml
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          threshold_alert: 50
+          threshold_warning: 80
+
+  test-coverage-app:
+    name: Publish App Coverage to SonarCloud
+    needs:
+      - test-app
+    if: needs.test-app.outputs.HAS_SONAR_SECRETS == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+      - name: Restore Coverage Results
+        uses: actions/download-artifact@v8
+        with:
+          name: coverage-app
+          path: ${{ github.workspace }}/app/coverage
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@22918119ff8e1ca75a623e15c8296b6ea4fbe28f # v8.2.1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_APP }}
+        with:
+          projectBaseDir: app
+
+  test-coverage-frontend:
+    name: Publish Frontend Coverage to SonarCloud
+    needs:
+      - test-frontend
+    if: needs.test-frontend.outputs.HAS_SONAR_SECRETS == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+      - name: Restore Coverage Results
+        uses: actions/download-artifact@v8
+        with:
+          name: coverage-frontend
+          path: ${{ github.workspace }}/frontend/coverage
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@22918119ff8e1ca75a623e15c8296b6ea4fbe28f # v8.2.1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}
+        with:
+          projectBaseDir: frontend
