@@ -1,0 +1,22 @@
+[
+  {
+    "idp": "azureidir",
+    "kind": "azureidir",
+    "username": "idir_username"
+  },
+  {
+    "idp": "bceidbasic",
+    "kind": "bceidbasic",
+    "username": "bceid_username"
+  },
+  {
+    "idp": "bceidbusiness",
+    "kind": "bceidbusiness",
+    "username": "bceid_username"
+  },
+  {
+    "idp": "bcsc",
+    "kind": "bcsc",
+    "username": "sub"
+  }
+]

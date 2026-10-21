@@ -1,0 +1,387 @@
+import { getAuthHeader, getBearerToken, setAuthHeader } from '#src/middleware/providers/oidc';
+import { Problem } from '#src/utils/index';
+
+import type { Request, Response } from 'express';
+import type { JwksClient } from 'jwks-rsa';
+import type { Mock } from 'vitest';
+import type { AuthErrorAttributes } from '#src/middleware/providers/oidc';
+
+const AUDIENCE = 'vue3-scaffold-test';
+
+vi.stubEnv('SERVER_OIDC_AUDIENCE', AUDIENCE);
+
+vi.mock('jwks-rsa', () => ({
+  default: vi.fn().mockReturnValue({
+    getSigningKey: vi.fn()
+  })
+}));
+
+vi.mock('#src/utils/log', () => ({
+  getLogger: () => ({ debug: vi.fn() })
+}));
+
+describe('oidc providers', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('getAuthHeader', () => {
+    let res: Response;
+
+    beforeEach(() => {
+      res = { set: vi.fn() } as unknown as Response;
+    });
+
+    it('returns the authorization header if it is the only method used', () => {
+      const req = {
+        headers: { authorization: 'Bearer token' },
+        query: {},
+        body: {}
+      } as unknown as Request;
+
+      const result = getAuthHeader(req, res);
+
+      expect(result).toBe('Bearer token');
+    });
+
+    it('returns undefined if no authentication method is present', () => {
+      const req = {
+        headers: {},
+        query: {},
+        body: {}
+      } as unknown as Request;
+
+      const result = getAuthHeader(req, res);
+
+      expect(result).toBeUndefined();
+    });
+
+    it('throws a 401 Problem if unsupported query authentication is used', () => {
+      const req = {
+        headers: {},
+        query: { access_token: 'token' },
+        body: {}
+      } as unknown as Request;
+
+      const action = () => getAuthHeader(req, res);
+
+      expect(action).toThrow(Problem);
+      expect(action).toThrow(
+        expect.objectContaining({
+          status: 401,
+          detail: 'Unsupported authentication method'
+        })
+      );
+      expect(res.set).toHaveBeenCalledWith('WWW-Authenticate', expect.stringContaining(`Bearer realm="${AUDIENCE}"`));
+    });
+
+    it('throws a 401 Problem if unsupported body authentication is used', () => {
+      const req = {
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        query: {},
+        body: { access_token: 'token' }
+      } as unknown as Request;
+
+      const action = () => getAuthHeader(req, res);
+
+      expect(action).toThrow(Problem);
+      expect(action).toThrow(
+        expect.objectContaining({
+          status: 401,
+          detail: 'Unsupported authentication method'
+        })
+      );
+      expect(res.set).toHaveBeenCalledWith('WWW-Authenticate', expect.stringContaining(`Bearer realm="${AUDIENCE}"`));
+    });
+
+    it('does not crash if req.body is undefined', () => {
+      const req = {
+        headers: { authorization: 'Bearer token' },
+        query: {}
+      } as unknown as Request;
+
+      const result = getAuthHeader(req, res);
+
+      expect(result).toBe('Bearer token');
+    });
+  });
+
+  describe('getBearerToken', () => {
+    let res: Response;
+
+    beforeEach(() => {
+      res = { set: vi.fn() } as unknown as Response;
+    });
+
+    it('extracts the Bearer token from the authorization header string', () => {
+      const req = { originalUrl: '/test' } as unknown as Request;
+      const result = getBearerToken('Bearer token123', req, res);
+
+      expect(result).toBe('token123');
+    });
+
+    it.each([
+      ['Basic token123', 'invalid scheme'],
+      ['Bearer token123 extra', 'too many parts'],
+      ['Bearer', 'too few parts'],
+      ['Bearer invalid_token!', 'malformed token with invalid characters'],
+      ['   ', 'empty or only whitespace']
+    ])('throws a 401 Problem for invalid bearerToken: %s (%s)', (authHeader: string) => {
+      const req = { originalUrl: '/test' } as unknown as Request;
+      const action = () => getBearerToken(authHeader, req, res);
+
+      expect(action).toThrow(Problem);
+      expect(action).toThrow(
+        expect.objectContaining({
+          status: 401,
+          detail: 'Invalid authentication token'
+        })
+      );
+      expect(res.set).toHaveBeenCalledWith('WWW-Authenticate', expect.stringContaining('error="invalid_token"'));
+    });
+  });
+
+  describe('getJwksClient', () => {
+    let getJwksClient: () => Promise<JwksClient>;
+
+    beforeEach(async () => {
+      vi.resetModules();
+
+      getJwksClient = (await import('#src/middleware/providers/oidc')).getJwksClient;
+    });
+
+    it('creates a JWKS client and caches the promise', async () => {
+      vi.stubEnv('SERVER_OIDC_AUTHORITY', 'https://auth.example.com/');
+
+      globalThis.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: vi.fn().mockResolvedValue({ jwks_uri: 'https://auth.example.com/.well-known/jwks.json' })
+      });
+
+      const client1 = await getJwksClient();
+      const client2 = await getJwksClient();
+
+      expect(client1).toBeDefined();
+      expect(client1).toBe(client2);
+      expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('clears the cache if getJwksUri fails, allowing subsequent retries', async () => {
+      vi.stubEnv('SERVER_OIDC_AUTHORITY', 'https://auth.example.com');
+
+      globalThis.fetch = vi.fn().mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error'
+      });
+
+      await expect(getJwksClient()).rejects.toThrow('Failed to load OIDC Provider configuration');
+
+      (globalThis.fetch as Mock).mockResolvedValueOnce({
+        ok: true,
+        json: vi.fn().mockResolvedValueOnce({ jwks_uri: 'https://auth.example.com/.well-known/jwks.json' })
+      });
+
+      const client = await getJwksClient();
+
+      expect(client).toBeDefined();
+      expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('getJwksUri', () => {
+    let getJwksClient: () => Promise<JwksClient>;
+    let getJwksUri: () => Promise<string>;
+
+    beforeEach(async () => {
+      vi.resetModules();
+
+      getJwksClient = (await import('#src/middleware/providers/oidc')).getJwksClient;
+      getJwksUri = (await import('#src/middleware/providers/oidc')).getJwksUri;
+    });
+
+    it('fetches the jwks_uri from the OIDC Provider configuration', async () => {
+      vi.stubEnv('SERVER_OIDC_AUTHORITY', 'https://auth.example.com');
+
+      globalThis.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: vi.fn().mockResolvedValueOnce({ jwks_uri: 'https://auth.example.com/.well-known/jwks.json' })
+      });
+
+      const result = await getJwksUri();
+
+      expect(result).toBe('https://auth.example.com/.well-known/jwks.json');
+      expect(globalThis.fetch).toHaveBeenCalledWith('https://auth.example.com/.well-known/openid-configuration');
+    });
+
+    it('returns the cached promise on subsequent calls', async () => {
+      vi.stubEnv('SERVER_OIDC_AUTHORITY', 'https://auth.example.com');
+
+      globalThis.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: vi.fn().mockResolvedValue({ jwks_uri: 'https://auth.example.com/jwks.json' })
+      });
+
+      const result1 = await getJwksUri();
+      const result2 = await getJwksUri();
+
+      expect(result1).toBe('https://auth.example.com/jwks.json');
+      expect(result2).toBe(result1);
+      expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles issuer URL with trailing slash', async () => {
+      vi.stubEnv('SERVER_OIDC_AUTHORITY', 'https://auth.example.com/');
+
+      globalThis.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: vi.fn().mockResolvedValueOnce({ jwks_uri: 'https://auth.example.com/.well-known/jwks.json' })
+      });
+
+      const result = await getJwksUri();
+
+      expect(result).toBe('https://auth.example.com/.well-known/jwks.json');
+      expect(globalThis.fetch).toHaveBeenCalledWith('https://auth.example.com/.well-known/openid-configuration');
+    });
+
+    it('throws an error when OIDC authority is not set', async () => {
+      vi.stubEnv('SERVER_OIDC_AUTHORITY', undefined);
+
+      await expect(getJwksUri()).rejects.toThrow('OIDC authority is not set');
+    });
+
+    it('throws an error when fetch fails', async () => {
+      vi.stubEnv('SERVER_OIDC_AUTHORITY', 'https://auth.example.com');
+
+      globalThis.fetch = vi.fn().mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found'
+      });
+
+      await expect(getJwksUri()).rejects.toThrow('Failed to load OIDC Provider configuration: 404 Not Found');
+    });
+
+    it('throws an error when jwks_uri is missing in the configuration', async () => {
+      vi.stubEnv('SERVER_OIDC_AUTHORITY', 'https://auth.example.com');
+
+      globalThis.fetch = vi.fn().mockResolvedValueOnce({
+        ok: true,
+        json: vi.fn().mockResolvedValueOnce({})
+      });
+
+      await expect(getJwksUri()).rejects.toThrow('`jwks_uri` missing or invalid in OIDC Provider configuration');
+    });
+
+    it('throws an error if getJwksUri fails', async () => {
+      vi.stubEnv('SERVER_OIDC_AUTHORITY', 'https://auth.example.com');
+
+      globalThis.fetch = vi.fn().mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error'
+      });
+
+      await expect(getJwksClient()).rejects.toThrow('Failed to load OIDC Provider configuration');
+    });
+
+    it('clears the cache on failure allowing subsequent calls to retry the network', async () => {
+      vi.stubEnv('SERVER_OIDC_AUTHORITY', 'https://auth.example.com');
+
+      globalThis.fetch = vi.fn().mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error'
+      });
+
+      await expect(getJwksUri()).rejects.toThrow(
+        'Failed to load OIDC Provider configuration: 500 Internal Server Error'
+      );
+
+      (globalThis.fetch as Mock).mockResolvedValueOnce({
+        ok: true,
+        json: vi.fn().mockResolvedValueOnce({ jwks_uri: 'https://auth.example.com/.well-known/jwks.json' })
+      });
+
+      const result = await getJwksUri();
+      expect(result).toBe('https://auth.example.com/.well-known/jwks.json');
+
+      expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('setAuthHeader', () => {
+    let res: Response;
+
+    beforeEach(() => {
+      res = { set: vi.fn() } as unknown as Response;
+    });
+
+    it('sets the WWW-Authenticate header with the provided attributes', () => {
+      const attributes: AuthErrorAttributes = {
+        realm: AUDIENCE,
+        error: 'invalid_token',
+        error_description: 'The access token is invalid'
+      };
+
+      setAuthHeader(res, attributes);
+
+      expect(res.set).toHaveBeenCalledWith(
+        'WWW-Authenticate',
+        `Bearer realm="${AUDIENCE}", error="invalid_token", error_description="The access token is invalid"`
+      );
+    });
+
+    it('sets the WWW-Authenticate header without empty attributes', () => {
+      const attributes: AuthErrorAttributes = {
+        realm: AUDIENCE,
+        error: 'invalid_token',
+        error_description: ''
+      };
+
+      setAuthHeader(res, attributes);
+
+      expect(res.set).toHaveBeenCalledWith('WWW-Authenticate', `Bearer realm="${AUDIENCE}", error="invalid_token"`);
+    });
+
+    it('sets the WWW-Authenticate header with only US-ASCII encoded string values', () => {
+      const attributes: AuthErrorAttributes = {
+        realm: AUDIENCE,
+        error: 'invalid_token',
+        error_description: 'Non-US-ASCII characters like éñüøß exist'
+      };
+
+      setAuthHeader(res, attributes);
+
+      expect(res.set).toHaveBeenCalledWith('WWW-Authenticate', `Bearer realm="${AUDIENCE}", error="invalid_token"`);
+    });
+
+    it('sets the WWW-Authenticate header with proper string escaping', () => {
+      const attributes: AuthErrorAttributes = {
+        realm: AUDIENCE,
+        error: 'invalid_token',
+        error_description: String.raw`Quote " and backslash \ are escaped`
+      };
+
+      setAuthHeader(res, attributes);
+
+      expect(res.set).toHaveBeenCalledWith(
+        'WWW-Authenticate',
+        // eslint-disable-next-line max-len
+        String.raw`Bearer realm="${AUDIENCE}", error="invalid_token", error_description="Quote \" and backslash \\ are escaped"`
+      );
+    });
+
+    it('safely ignores explicitly undefined attributes without throwing', () => {
+      const attributes: AuthErrorAttributes = {
+        realm: AUDIENCE,
+        error: undefined,
+        error_description: undefined
+      };
+
+      setAuthHeader(res, attributes);
+
+      expect(res.set).toHaveBeenCalledWith('WWW-Authenticate', `Bearer realm="${AUDIENCE}"`);
+    });
+  });
+});

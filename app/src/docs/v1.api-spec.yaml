@@ -1,0 +1,181 @@
+openapi: 3.0.4
+info:
+  version: 1.0.0
+  title: Vue3 Scaffold
+  description: A Vue 3 and Express application scaffold.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: /api/v1
+    description: This server
+security:
+  - BearerAuth: []
+    OpenID: []
+tags:
+  - name: User
+    description: Operations for managing users
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: Bearer token auth using an OIDC issued JWT token
+      scheme: bearer
+      bearerFormat: JWT
+    OpenID:
+      type: openIdConnect
+      description: OpenID Connect endpoint for acquiring JWT tokens
+      openIdConnectUrl: ''
+  schemas:
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+        idp:
+          type: string
+          nullable: true
+        sub:
+          type: string
+        email:
+          type: string
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        fullName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        bceidBusinessName:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+        createdBy:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          nullable: true
+          format: date-time
+        updatedBy:
+          type: string
+          nullable: true
+        updatedAt:
+          type: string
+          nullable: true
+          format: date-time
+        deletedBy:
+          type: string
+          nullable: true
+        deletedAt:
+          type: string
+          nullable: true
+          format: date-time
+      required:
+        - userId
+        - idp
+        - sub
+        - email
+        - firstName
+        - fullName
+        - lastName
+        - bceidBusinessName
+        - active
+        - createdBy
+        - createdAt
+        - updatedBy
+        - updatedAt
+        - deletedBy
+        - deletedAt
+      additionalProperties: false
+    Problem:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+      required:
+        - type
+        - title
+        - status
+  parameters: {}
+paths:
+  /user/search:
+    post:
+      operationId: searchUsers
+      summary: Search users
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: array
+                  items:
+                    type: string
+                    pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$
+                idp:
+                  type: array
+                  items:
+                    type: string
+                    maxLength: 255
+                sub:
+                  type: string
+                  maxLength: 255
+                email:
+                  type: string
+                  maxLength: 255
+                firstName:
+                  type: string
+                  maxLength: 255
+                fullName:
+                  type: string
+                  maxLength: 255
+                lastName:
+                  type: string
+                  maxLength: 255
+                active:
+                  type: boolean
+              default: {}
+              additionalProperties: false
+      responses:
+        '200':
+          description: A list of users matching the search criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '422':
+          description: Validation error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'

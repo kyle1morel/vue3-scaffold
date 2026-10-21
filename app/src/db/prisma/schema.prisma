@@ -1,0 +1,71 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../generated/client"
+  importFileExtension = "ts"
+  moduleFormat        = "esm"
+}
+
+generator zod {
+  provider = "prisma-zod-generator"
+  output   = "../generated/zod"
+}
+
+generator relations {
+  provider = "node ./src/db/generators/relationsGenerator.ts"
+  output   = "../generated/relations"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["app"]
+}
+
+model identity_provider {
+  idp       String    @id
+  active    Boolean   @default(true)
+  createdBy String?   @default("00000000-0000-4000-8000-000000000000") @map("created_by")
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedBy String?   @map("updated_by")
+  updatedAt DateTime? @map("updated_at") @db.Timestamptz(6)
+  deletedBy String?   @map("deleted_by")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  user      user[]
+
+  @@schema("app")
+}
+
+model user {
+  userId            String             @id @map("user_id") @db.Uuid
+  idp               String?
+  sub               String             @unique(map: "user_sub_unique")
+  email             String?
+  firstName         String?            @map("first_name")
+  fullName          String?            @map("full_name")
+  lastName          String?            @map("last_name")
+  bceidBusinessName String?            @map("bceid_business_name")
+  active            Boolean            @default(true)
+  createdBy         String?            @default("00000000-0000-4000-8000-000000000000") @map("created_by")
+  createdAt         DateTime?          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedBy         String?            @map("updated_by")
+  updatedAt         DateTime?          @map("updated_at") @db.Timestamptz(6)
+  deletedBy         String?            @map("deleted_by")
+  deletedAt         DateTime?          @map("deleted_at") @db.Timestamptz(6)
+  identityProvider  identity_provider? @relation(fields: [idp], references: [idp], onDelete: Restrict, map: "user_idp_foreign")
+
+  @@index([email], map: "user_email_index")
+  @@schema("app")
+}
+
+model kysely_migration {
+  name      String @id @db.VarChar(255)
+  timestamp String @db.VarChar(255)
+
+  @@schema("app")
+}
+
+model kysely_migration_lock {
+  id       String @id @db.VarChar(255)
+  isLocked Int    @default(0) @map("is_locked")
+
+  @@schema("app")
+}

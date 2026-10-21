@@ -1,0 +1,99 @@
+import express from 'express';
+import { existsSync, readFileSync } from 'node:fs';
+import request from 'supertest';
+
+import { TEST_CURRENT_CONTEXT } from '#tests/unit/data/index';
+import { hasIdentity } from '#src/middleware/identity';
+import { AuthType, IdentityProviderKind } from '#src/utils/enums/application';
+
+import type { NextFunction, Request, Response } from 'express';
+import type { Mock } from 'vitest';
+import type Problem from '#src/utils/problem';
+
+vi.mock('node:fs', () => ({
+  existsSync: vi.fn(),
+  readFileSync: vi.fn()
+}));
+
+vi.mock('#src/utils/log', () => ({
+  getLogger: () => ({ warn: vi.fn(), info: vi.fn(), error: vi.fn(), verbose: vi.fn() })
+}));
+
+const IDP_LIST = [
+  {
+    idp: IdentityProviderKind.AZUREIDIR,
+    kind: 'azureidir',
+    username: 'idir_username'
+  }
+];
+
+function buildApp(kind: IdentityProviderKind, currentContext: unknown) {
+  const app = express();
+  app.use(express.json());
+  app.use((_req: Request, res: Response, next: NextFunction) => {
+    res.locals.currentContext = currentContext;
+    next();
+  });
+  app.get('/test', hasIdentity(kind), (_req: Request, res: Response) => {
+    res.status(200).json({ ok: true });
+  });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  app.use((err: Problem, req: Request, res: Response, next: NextFunction) => {
+    res.status(err.status || 500).json({ detail: err.detail || err.message });
+  });
+  return app;
+}
+
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
+describe('hasIdentity middleware', () => {
+  it('calls next and allows the request if the user has the required identity', async () => {
+    (existsSync as Mock).mockReturnValue(true);
+    (readFileSync as Mock).mockReturnValue(JSON.stringify(IDP_LIST));
+
+    const res = await request(
+      buildApp(IdentityProviderKind.AZUREIDIR, {
+        ...TEST_CURRENT_CONTEXT,
+        authType: AuthType.BEARER,
+        tokenPayload: { identity_provider: IdentityProviderKind.AZUREIDIR }
+      })
+    ).get('/test');
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ ok: true });
+  });
+
+  it('throws a 403 Problem if the user does not have the required identity', async () => {
+    (existsSync as Mock).mockReturnValue(true);
+    (readFileSync as Mock).mockReturnValue(JSON.stringify(IDP_LIST));
+
+    const res = await request(
+      buildApp(IdentityProviderKind.AZUREIDIR, {
+        ...TEST_CURRENT_CONTEXT,
+        authType: AuthType.BEARER,
+        tokenPayload: { identity_provider: IdentityProviderKind.BCEID }
+      })
+    ).get('/test');
+
+    expect(res.status).toBe(403);
+    expect(res.body).toEqual({ detail: 'Invalid user identity' });
+  });
+
+  it('throws a 403 Problem if the token payload is missing entirely', async () => {
+    (existsSync as Mock).mockReturnValue(true);
+    (readFileSync as Mock).mockReturnValue(JSON.stringify(IDP_LIST));
+
+    const res = await request(
+      buildApp(IdentityProviderKind.AZUREIDIR, {
+        ...TEST_CURRENT_CONTEXT,
+        authType: AuthType.NONE,
+        tokenPayload: undefined
+      })
+    ).get('/test');
+
+    expect(res.status).toBe(403);
+    expect(res.body).toEqual({ detail: 'Invalid user identity' });
+  });
+});

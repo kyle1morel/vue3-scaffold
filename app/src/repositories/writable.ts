@@ -1,0 +1,146 @@
+import { ReadableRepository } from './readable.ts';
+import { mapPrismaError } from '#src/db/errors';
+
+import type { Prisma } from '#prismaClient';
+import type { ReadableModelDelegate } from './readable.ts';
+
+export interface AuditFields {
+  createdAt?: Date;
+  createdBy?: string;
+  updatedAt?: Date;
+  updatedBy?: string;
+}
+
+export interface SoftDeleteFields {
+  deletedAt?: Date | null;
+  deletedBy?: string | null;
+}
+
+type CreateData<D> = Prisma.Args<D, 'create'>['data'];
+type UpdateData<D> = Prisma.Args<D, 'update'>['data'];
+type UpdateManyData<D> = Prisma.Args<D, 'updateMany'>['data'];
+type UpdateManyWhere<D> = Prisma.Args<D, 'updateMany'>['where'];
+type WhereUnique<D> = Prisma.Args<D, 'findUnique'>['where'];
+type DeleteUnique<D> = Prisma.Args<D, 'delete'>['where'];
+type DeleteManyWhere<D> = Prisma.Args<D, 'deleteMany'>['where'];
+
+/** The default (all-scalars, no-relations) record shape for a delegate. */
+type DefaultModel<D> = Prisma.Result<D, object, 'findUniqueOrThrow'>;
+
+/**
+ * Typed view of a Prisma model delegate.
+ */
+interface WritableModelDelegate<D> extends ReadableModelDelegate<D> {
+  create(args: { data: CreateData<D> }): Promise<DefaultModel<D>>;
+  update(args: { where: WhereUnique<D>; data: UpdateData<D> }): Promise<DefaultModel<D>>;
+  updateMany(args: { where: UpdateManyWhere<D>; data: UpdateManyData<D> }): Promise<Prisma.BatchPayload>;
+  upsert(args: { where: WhereUnique<D>; create: CreateData<D>; update: UpdateData<D> }): Promise<DefaultModel<D>>;
+  delete(args: { where: DeleteUnique<D> }): Promise<DefaultModel<D>>;
+  deleteMany(args: { where: DeleteManyWhere<D> }): Promise<Prisma.BatchPayload>;
+}
+
+export abstract class WritableRepository<TDelegate> extends ReadableRepository<TDelegate> {
+  declare protected model: WritableModelDelegate<TDelegate>;
+  protected principal: string;
+
+  protected constructor(model: TDelegate, principal: string, softDeleteEnabled = false) {
+    super(model, softDeleteEnabled);
+    this.principal = principal;
+  }
+
+  //-------------------------
+  // Audit
+  //-------------------------
+
+  protected withCreateAudit<T extends object>(data: T): T & AuditFields {
+    return { ...data, createdAt: new Date(), createdBy: this.principal };
+  }
+
+  protected withUpdateAudit<T extends object>(data: T): T & AuditFields {
+    return { ...data, updatedAt: new Date(), updatedBy: this.principal };
+  }
+
+  protected withSoftDelete(): SoftDeleteFields {
+    return { deletedAt: new Date(), deletedBy: this.principal };
+  }
+
+  //-------------------------
+  // CRUD Helpers
+  //-------------------------
+
+  private async execute<T>(fn: () => Promise<T>): Promise<T> {
+    try {
+      return await fn();
+    } catch (e) {
+      throw mapPrismaError(e);
+    }
+  }
+
+  //-------------------------
+  // CRUD
+  //-------------------------
+
+  public async create(data: CreateData<TDelegate>): Promise<DefaultModel<TDelegate>> {
+    return this.execute(() => this.model.create({ data: this.withCreateAudit(data) }));
+  }
+
+  public async createIfNotExists(
+    where: WhereUnique<TDelegate>,
+    create: CreateData<TDelegate>
+  ): Promise<DefaultModel<TDelegate>> {
+    return this.execute(() =>
+      this.model.upsert({
+        where,
+        create: this.withCreateAudit(create),
+        update: {}
+      })
+    );
+  }
+
+  public async update(where: WhereUnique<TDelegate>, data: UpdateData<TDelegate>): Promise<DefaultModel<TDelegate>> {
+    return this.execute(() => this.model.update({ where, data: this.withUpdateAudit(data) }));
+  }
+
+  public async upsert(
+    where: WhereUnique<TDelegate>,
+    create: CreateData<TDelegate>,
+    update: UpdateData<TDelegate>
+  ): Promise<DefaultModel<TDelegate>> {
+    return this.execute(() =>
+      this.model.upsert({
+        where,
+        create: this.withCreateAudit(create),
+        update: this.withUpdateAudit(update)
+      })
+    );
+  }
+
+  public async delete(where: DeleteUnique<TDelegate>, options?: { hard?: boolean }): Promise<DefaultModel<TDelegate>> {
+    if (this.softDeleteEnabled && !options?.hard) {
+      return this.execute(() =>
+        this.model.update({
+          where,
+          data: { ...this.withUpdateAudit({}), ...this.withSoftDelete() }
+        })
+      );
+    }
+
+    return this.execute(() => this.model.delete({ where }));
+  }
+
+  public async deleteMany(
+    where: DeleteManyWhere<TDelegate>,
+    options?: { hard?: boolean }
+  ): Promise<Prisma.BatchPayload> {
+    if (this.softDeleteEnabled && !options?.hard) {
+      return this.execute(() =>
+        this.model.updateMany({
+          where,
+          data: { ...this.withUpdateAudit({}), ...this.withSoftDelete() }
+        })
+      );
+    }
+
+    return this.execute(() => this.model.deleteMany({ where }));
+  }
+}

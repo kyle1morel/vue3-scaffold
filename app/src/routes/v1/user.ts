@@ -1,0 +1,34 @@
+import express from 'express';
+import { z } from 'zod';
+
+import { openapiRoute } from './openapiRoute.ts';
+import { searchUsersController } from '#src/controllers/user';
+import { hasIdentity } from '#src/middleware/identity';
+import { requireSomeAuth } from '#src/middleware/requireSomeAuth';
+import { IdentityProviderKind } from '#src/utils/enums/application';
+import { userSchema } from '#src/schemas/response/user';
+import { FORBIDDEN_RESPONSE, UNAUTHORIZED_RESPONSE, VALIDATION_ERROR_RESPONSE } from '#src/schemas/response/problem';
+import { schema } from '#src/schemas/request/user';
+
+const basePath = '/user';
+const router = express.Router();
+router.use(requireSomeAuth);
+router.use(hasIdentity(IdentityProviderKind.AZUREIDIR));
+
+openapiRoute(basePath, router, {
+  method: 'post',
+  path: '/search',
+  operationId: 'searchUsers',
+  summary: 'Search users',
+  tags: ['User'],
+  schema: schema.searchUsers,
+  responses: {
+    200: { description: 'A list of users matching the search criteria', schema: z.array(userSchema) },
+    401: UNAUTHORIZED_RESPONSE,
+    403: FORBIDDEN_RESPONSE,
+    422: VALIDATION_ERROR_RESPONSE
+  },
+  handler: searchUsersController
+});
+
+export default router;

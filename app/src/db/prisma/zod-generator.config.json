@@ -1,0 +1,22 @@
+{
+  "$schema": "../../../node_modules/prisma-zod-generator/lib/config/schema.json",
+  "mode": "custom",
+  "pureModels": true,
+  "emit": {
+    "enums": true,
+    "objects": false,
+    "crud": false,
+    "results": false,
+    "pureModels": false,
+    "variants": true
+  },
+  "variants": {
+    "pure": { "enabled": true },
+    "input": { "enabled": false },
+    "result": { "enabled": false }
+  },
+  "models": {
+    "kysely_migration": { "enabled": false },
+    "kysely_migration_lock": { "enabled": false }
+  }
+}
