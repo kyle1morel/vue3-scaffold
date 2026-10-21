@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "42crunch.vscode-openapi",
+    "bierner.markdown-preview-github-styles",
+    "davidanson.vscode-markdownlint",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "editorconfig.editorconfig",
+    "esbenp.prettier-vscode",
+    "lokalise.i18n-ally",
+    "redhat.vscode-yaml",
+    "ryanluker.vscode-coverage-gutters",
+    "usernamehw.errorlens",
+    "vue.volar"
+  ]
+}

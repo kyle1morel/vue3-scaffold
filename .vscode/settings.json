@@ -1,0 +1,47 @@
+{
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "coverage-gutters.partialHighlightDark": "rgba(0, 255, 255, 0.2)",
+  "coverage-gutters.showGutterCoverage": false,
+  "coverage-gutters.showLineCoverage": true,
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "jest.nodeEnv": {
+    "NODE_OPTIONS": "--experimental-vm-modules"
+  },
+  "scss.lint.unknownAtRules": "ignore",
+  "yaml.schemas": {
+    "openapi:v3": "./app/src/docs/v1.api-spec.yaml"
+  },
+  "todo-tree.tree.scanMode": "workspace only",
+  "i18n-ally.localesPaths": [
+    "frontend/src/locales"
+  ],
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.sourceLanguage": "en-CA",
+  "i18n-ally.enabledFrameworks": [
+    "vue"
+  ]
+}
