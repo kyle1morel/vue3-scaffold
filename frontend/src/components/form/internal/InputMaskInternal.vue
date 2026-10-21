@@ -1,0 +1,64 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useField } from 'vee-validate';
+
+import { InputMask } from '@/lib/primevue';
+
+// Props
+const {
+  label,
+  name,
+  mask,
+  placeholder = '',
+  disabled,
+  bold,
+  required = false
+} = defineProps<{
+  label: string;
+  name: string;
+  mask: string;
+  placeholder?: string;
+  disabled: boolean;
+  bold: boolean;
+  required?: boolean;
+}>();
+
+const { errorMessage, handleBlur, value } = useField<string>(name);
+
+const normalizedValue = computed({
+  get: () => {
+    return value.value === '' ? undefined : value.value;
+  },
+  set: (val) => {
+    value.value = val === '' || val === undefined ? (undefined as unknown as string) : val;
+  }
+});
+</script>
+
+<template>
+  <label
+    :id="`${name}-label`"
+    :class="{ 'font-bold': bold }"
+    :for="name"
+  >
+    {{ label }}
+    <span
+      v-if="required"
+      class="text-[var(--p-support-required-text)]"
+    >
+      *
+    </span>
+  </label>
+  <InputMask
+    v-model="normalizedValue"
+    :aria-describedby="`${name}-help`"
+    :aria-labelledby="`${name}-label`"
+    :name="name"
+    :mask="mask"
+    :placeholder="placeholder"
+    class="w-full"
+    :invalid="!!errorMessage"
+    :disabled="disabled"
+    @blur="handleBlur"
+  />
+</template>

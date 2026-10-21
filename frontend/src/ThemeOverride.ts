@@ -1,0 +1,412 @@
+/*
+
+BCGov design system colour guide
+https://www2.gov.bc.ca/gov/content/digital/design-system/foundations/colour
+
+Good site for generating shades
+https://maketintsandshades.com/#003366
+
+PrimeVue design tokens ref
+https://github.com/primefaces/primevue/blob/master/packages/themes/src/presets/material/base/index.js
+
+*/
+
+import Material from '@primevue/themes/material';
+
+import { definePreset } from '@primevue/themes';
+
+export const ThemeOverride = definePreset(Material, {
+  // Must use lower case for primitive keys unless you want pain
+  primitive: {
+    // bcblue.500 is BC mandated blue
+    bcblue: {
+      50: '#F7F9FC',
+      100: '#F1F8FE',
+      200: '#D8EAFD',
+      300: '#C1DDFC',
+      400: '#A8D0FB',
+      500: '#91C4FA',
+      600: '#7AB8F9',
+      700: '#5595D9',
+      800: '#3470B1',
+      850: '#1A5A96',
+      900: '#1E5189',
+      950: '#013366'
+    },
+    green: {
+      // Override base green hues, for base values see link at top
+      50: '#FAF9F8',
+      75: '#F6FFF8',
+      100: '#d9e6db',
+      200: '#b3cdb7',
+      300: '#8eb392',
+      400: '#689a6e',
+      500: '#42814A',
+      600: '#42814A',
+      700: '#35673b',
+      800: '#284d2c',
+      900: '#1a341e',
+      950: '#0d1a0f'
+    },
+    gold: {
+      50: '#FAF9F8',
+      100: '#FEF8E8',
+      200: '#FEF0D8',
+      300: '#FDE9C4',
+      400: '#FCE2B0',
+      500: '#FBDA9D',
+      600: '#FBD389',
+      700: '#FACC75',
+      800: '#F9C462',
+      900: '#F8BA47',
+      950: '#FCBA19'
+    },
+    greyscale: {
+      50: '#FAF9F8',
+      100: '#F3F2F1',
+      200: '#ECEAE8',
+      300: '#E0DEDC',
+      400: '#D1CFCD',
+      500: '#C6C5C3',
+      600: '#9F9D9C',
+      700: '#605E5C',
+      800: '#3D3C3B',
+      900: '#353433',
+      950: '#252423'
+    },
+    red: {
+      // Override base red hues, for base values see link at top
+      50: '#F4E1E2',
+      100: '#F4E1E2',
+      200: '#F4E1E2',
+      300: '#F4E1E2',
+      400: '#CE3E39',
+      500: '#CE3E39',
+      600: '#CE3E39',
+      700: '#CE3E39',
+      800: '#A2312D',
+      900: '#A2312D',
+      950: '#A2312D'
+    },
+    support: {
+      border: {
+        width: '0.1rem'
+      },
+      info: {
+        border: '#053662',
+        icon: '#053662',
+        surface: '#F7F9FC'
+      },
+      danger: {
+        border: '#CE3E39',
+        icon: '#CE3E39',
+        surface: '#F4E1E2'
+      },
+      required: {
+        text: '{red.400}'
+      },
+      success: {
+        border: '#42814A',
+        icon: '#42814A',
+        surface: '#F6FFF8'
+      },
+      warning: {
+        border: '#F8BB47',
+        icon: '#F8BB47',
+        surface: '#FEF1D8'
+      }
+    },
+    disabledcolor: '#EDEBE9',
+    textsecondary: '#474543',
+    white: '#FFFFFF'
+  },
+  semantic: {
+    primary: {
+      50: '{bcblue.50}',
+      100: '{bcblue.100}',
+      200: '{bcblue.200}',
+      300: '{bcblue.300}',
+      400: '{bcblue.400}',
+      500: '{bcblue.500}',
+      600: '{bcblue.600}',
+      700: '{bcblue.700}',
+      800: '{bcblue.800}',
+      900: '{bcblue.900}',
+      950: '{bcblue.950}'
+    },
+    disabledOpacity: '0.6',
+    content: {
+      fontSize: '2rem'
+    },
+    formField: {
+      focusRing: {
+        color: '{primary.400}',
+        width: '2px'
+      }
+    },
+    colorScheme: {
+      light: {
+        surface: {
+          0: '{white}',
+          50: '{greyscale.50}',
+          100: '{greyscale.100}',
+          200: '{greyscale.200}',
+          300: '{greyscale.300}',
+          400: '{greyscale.400}',
+          500: '{greyscale.500}',
+          600: '{greyscale.600}',
+          700: '{greyscale.700}',
+          800: '{greyscale.800}',
+          900: '{greyscale.900}',
+          950: '{greyscale.950}'
+        },
+        primary: {
+          color: '{primary.950}',
+          contrastColor: '{white}',
+          hoverColor: '{primary.900}',
+          activeColor: '{primary.800}'
+        },
+        content: {
+          hover: {
+            background: '{greyscale.200}'
+          }
+        },
+        formField: {
+          hoverBorderColor: '{primary.700}',
+          focusBorderColor: '{primary.700}',
+          invalidBorderColor: '{support.danger.border}',
+          floatLabelInvalidColor: '{red.500}',
+          disabledBackground: '{disabledcolor}',
+          disabledColor: '{surface.800}',
+          paddingX: '0.5rem',
+          paddingY: '0.5rem',
+          placeholderColor: '{surface.700}'
+        },
+        highlight: {
+          background: '{surface.0}'
+        },
+        navigation: {
+          item: {
+            color: '{greyscale.50}'
+          }
+        }
+      }
+    }
+  },
+  components: {
+    accordion: {
+      header: {
+        padding: '1rem'
+      }
+    },
+    button: {
+      colorScheme: {
+        light: {
+          root: {
+            secondary: {
+              background: '{surface.0}',
+              color: '{primary.color}'
+            }
+          }
+        }
+      }
+    },
+    card: {
+      body: {
+        padding: '0'
+      },
+      border: {
+        radius: '0.5rem'
+      },
+      title: {
+        font: {
+          size: '1rem'
+        }
+      }
+    },
+    datatable: {
+      paginator: {
+        bottom: {
+          border: {
+            width: '0'
+          }
+        }
+      }
+    },
+    dialog: {
+      title: {
+        font: {
+          size: '1.8rem'
+        }
+      }
+    },
+    menu: {
+      item: {
+        color: '{primary.color}',
+        icon: {
+          color: '{primary.color}'
+        }
+      }
+    },
+    menubar: {
+      root: {
+        gap: '0'
+      },
+      baseItem: {
+        borderRadius: 'none'
+      },
+      item: {
+        focusBackground: '{primary.activeColor}',
+        focusColor: '{surface.0}',
+        activeBackground: '{primary.activeColor}',
+        activeColor: '{surface.0}',
+        borderRadius: 'none',
+        padding: '0.45rem 0.45rem'
+      },
+      submenu: {
+        padding: 'none'
+      },
+      colorScheme: {
+        light: {
+          root: {
+            background: '{primary.900}',
+            borderColor: '{primary.900}',
+            borderRadius: 'none',
+            padding: 'none'
+          },
+          submenu: {
+            background: '{primary.900}'
+          }
+        }
+      }
+    },
+    message: {
+      colorScheme: {
+        light: {
+          error: {
+            background: '{support.danger.surface}',
+            color: '{textsecondary}',
+            iconColor: '{red.500}'
+          },
+          info: {
+            background: '{support.info.surface}',
+            color: '{textsecondary}',
+            iconColor: '{bcblue.950}'
+          },
+          success: {
+            background: '{support.success.surface}',
+            color: '{textsecondary}',
+            iconColor: '{green.500}'
+          },
+          warn: {
+            background: '{support.warning.surface}',
+            color: '{textsecondary}',
+            iconColor: '{gold.950}'
+          }
+        }
+      },
+      // Setting the message.root.borderWidth token causes the border to overflow the parent, causing alignment issues.
+      // This workaround uses outline with an offset to render a border within bounds of parent.
+      css: () => `
+        .p-message {
+          outline-width: var(--p-support-border-width);
+          outline-offset: calc(-1 * var(--p-support-border-width));
+        }
+        .p-message-error { outline-color: var(--p-support-danger-border); }
+        .p-message-info { outline-color: var(--p-support-info-border); }
+        .p-message-success { outline-color: var(--p-support-success-border); }
+        .p-message-warn { outline-color: var(--p-support-warning-border); }
+      `
+    },
+    panel: {
+      header: { padding: '1.5rem 2.25rem 1.5rem 2.25rem' },
+      toggleable: {
+        header: { padding: '1.5rem 2.25rem 1.5rem 2.25rem' }
+      },
+      content: { padding: '0 2.25rem 1.5rem 2.25rem' },
+      css: () => `
+        .p-panel {
+          box-shadow: 0px 1.5px 6px 0px rgba(0, 0, 0, 0.25);
+          border: none;
+        }`
+    },
+    radiobutton: {
+      icon: {
+        size: '10px',
+        checkedColor: '{disabledcolor}',
+        checkedHoverColor: '{disabledcolor}',
+        disabledColor: '{form.field.disabled.color}'
+      },
+      css: () => '.p-radiobutton-checked .p-radiobutton-box { border-width: thick }'
+    },
+    progressspinner: {
+      colorScheme: {
+        light: {
+          root: {
+            'color.1': '{primary.color}',
+            'color.2': '{primary.color}',
+            'color.3': '{primary.color}',
+            'color.4': '{primary.color}'
+          }
+        }
+      }
+    },
+    tabs: {
+      tab: {
+        color: '{primary.color}'
+      },
+      tabPanel: {
+        padding: '1.2rem 1.2rem 1.2rem 1.2rem'
+      }
+    },
+    toast: {
+      root: {
+        borderWidth: '{support.border.width}'
+      },
+      colorScheme: {
+        light: {
+          error: {
+            background: '{support.danger.surface}',
+            borderColor: '{support.danger.border}',
+            color: '{textsecondary}',
+            detailColor: '{textsecondary}',
+            closeButton: {
+              hoverBackground: '{red.200}',
+              focusRing: { color: '{red.600}', shadow: 'none' }
+            }
+          },
+          info: {
+            background: '{support.info.surface}',
+            borderColor: '{support.info.border}',
+            color: '{textsecondary}',
+            detailColor: '{textsecondary}',
+            closeButton: {
+              hoverBackground: '{bcblue.200}',
+              focusRing: { color: '{bcblue.600}', shadow: 'none' }
+            }
+          },
+          success: {
+            background: '{support.success.surface}',
+            borderColor: '{support.success.border}',
+            color: '{textsecondary}',
+            detailColor: '{textsecondary}',
+            closeButton: {
+              hoverBackground: '{green.200}',
+              focusRing: { color: '{green.600}', shadow: 'none' }
+            }
+          },
+          warn: {
+            background: '{support.warning.surface}',
+            borderColor: '{support.warning.border}',
+            color: '{textsecondary}',
+            detailColor: '{textsecondary}',
+            closeButton: {
+              hoverBackground: '{gold.300}',
+              focusRing: { color: '{gold.600}', shadow: 'none' }
+            }
+          }
+        }
+      }
+    }
+  }
+});

@@ -1,0 +1,67 @@
+{
+  "common": {
+    "footer": {
+      "about": "About gov.bc.ca",
+      "accessibility": "Accessibility",
+      "acknowledgement": "The B.C. Public Service acknowledges the territories of First Nations around B.C. and is grateful to carry out our work on these lands. We acknowledge the rights, interests, priorities, and concerns of all Indigenous Peoples — First Nations, Métis, and Inuit — respecting and acknowledging their distinct cultures, histories, rights, laws, and governments.",
+      "contact1": "We can help in over 220 languages and through other accessible options.",
+      "contact2": "Call, email or text us",
+      "contact3": ", or",
+      "contact4": "find a service centre",
+      "contactUs": "Contact us",
+      "copyright": "Copyright",
+      "disclaimer": "Disclaimer",
+      "gov": "Government of British Columbia",
+      "home": "Home",
+      "moreInfo": "MORE INFO",
+      "privacy": "Privacy"
+    },
+    "header": {
+      "name": "Vue3 Scaffold"
+    },
+    "headerMenu": {
+      "logout": "Log out"
+    }
+  },
+  "views": {
+    "homeView": {
+      "developer": "Developer",
+      "login": "Log in",
+      "title": "Vue3 Scaffold",
+      "welcome": "Welcome to the"
+    }
+  },
+  "loginButton": {
+    "login": "Log in",
+    "logout": "Log out"
+  },
+  "ui": {
+    "actions": {
+      "cancel": "Cancel",
+      "leave": "Leave"
+    }
+  },
+  "formNavigationGuard": {
+    "header": "Leave this page?",
+    "message": "Are you sure you want to leave this page? Any unsaved changes will be lost."
+  },
+  "stepperNavigation": {
+    "next": "Go to next page",
+    "previous": "Go to previous page"
+  },
+  "oidcLoginView": {
+    "BCServicesCardRequirement": "If you do not have a BC Services Card, you must live in Canada and provide 2 pieces of government-issued ID.",
+    "BCeIDRequirement": "Use when accessing a service in a personal capacity. You just need an email.",
+    "BusinessBCeIDRequirement": "Use when representing a legal entity. You must have documentation to prove the business or organization's identity.",
+    "getBasicBCeID": "Get a Basic BCeID.",
+    "getBusinessBCeID": "Get a Business BCeID.",
+    "internalGovUsers": "Internal Government Users",
+    "login": "Login",
+    "loginBCServicesCard": "Login with BC Services Card",
+    "loginBasicBCeID": "Login with Basic BCeID",
+    "loginBusinessBCeID": "Login with Business BCeID",
+    "loginIDIRMFA": "Login with IDIR - MFA",
+    "register": "Need an account?",
+    "setupBCServicesCard": "Set up a BC Services Card account."
+  }
+}

@@ -1,0 +1,76 @@
+<script setup lang="ts">
+import { useField, ErrorMessage } from 'vee-validate';
+
+import { DatePicker } from '@/lib/primevue';
+
+import type { InputNumberBlurEvent } from 'primevue/inputnumber';
+
+// Props
+const {
+  helpText = '',
+  label = '',
+  name,
+  disabled = false,
+  showTime = false,
+  bold = true,
+  placeholder = '',
+  maxDate = undefined,
+  required = false
+} = defineProps<{
+  helpText?: string;
+  label?: string;
+  name: string;
+  disabled?: boolean;
+  showTime?: boolean;
+  bold?: boolean;
+  placeholder?: string;
+  maxDate?: Date;
+  required?: boolean;
+}>();
+
+const { errorMessage, handleBlur, value } = useField<Date>(name);
+</script>
+
+<template>
+  <div>
+    <label
+      v-if="label"
+      :id="`${name}-label`"
+      :class="{ 'font-bold': bold }"
+      :for="name"
+    >
+      {{ label }}
+      <span
+        v-if="required"
+        class="text-[var(--p-support-required-text)]"
+      >
+        *
+      </span>
+    </label>
+    <DatePicker
+      v-model="value"
+      :aria-describedby="`${name}-help`"
+      :aria-labelledby="`${name}-label`"
+      :name="name"
+      class="w-full"
+      :invalid="!!errorMessage"
+      :disabled="disabled"
+      :show-time="showTime"
+      hour-format="24"
+      fluid
+      show-icon
+      icon-display="input"
+      date-format="yy/mm/dd"
+      :placeholder="placeholder"
+      :max-date="maxDate"
+      @blur="(e: InputNumberBlurEvent) => handleBlur(e.originalEvent)"
+    />
+    <small :id="`${name}-help`">{{ helpText }}</small>
+    <div>
+      <ErrorMessage
+        :name="name"
+        class="app-error-message"
+      />
+    </div>
+  </div>
+</template>

@@ -1,0 +1,99 @@
+<script setup lang="ts">
+import { useField } from 'vee-validate';
+
+import { Select } from '@/lib/primevue';
+
+import type { SelectChangeEvent } from 'primevue/select';
+
+// Props
+const {
+  label = '',
+  name,
+  placeholder = '',
+  disabled = false,
+  options,
+  optionLabel = undefined,
+  optionValue = undefined,
+  bold = true,
+  loading = undefined,
+  floatLabel = false,
+  required = false
+} = defineProps<{
+  label?: string;
+  name: string;
+  placeholder?: string;
+  disabled?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options: readonly any[]; // Matches Prisma type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  optionLabel?: string | ((data: any) => string) | undefined; // Matches Prisma type
+  optionValue?: string;
+  bold?: boolean;
+  loading?: boolean;
+  floatLabel?: boolean;
+  required?: boolean;
+}>();
+
+// Emits
+const emit = defineEmits<(e: 'onChange', event: SelectChangeEvent) => void>();
+
+const { errorMessage, handleBlur, value } = useField<string>(name);
+</script>
+
+<template>
+  <!-- Label needs to be set differently depending if it's floating or not -->
+  <label
+    v-if="!floatLabel"
+    :id="`${name}-label`"
+    :class="{ 'font-bold': bold }"
+    :for="name"
+  >
+    <div>
+      {{ label }}
+      <span
+        v-if="required"
+        class="text-[var(--p-support-required-text)]"
+      >
+        *
+      </span>
+    </div>
+  </label>
+  <Select
+    v-model="value"
+    :aria-describedby="`${name}-help`"
+    :aria-labelledby="`${name}-label`"
+    :name="name"
+    :placeholder="placeholder"
+    class="w-full"
+    :invalid="!!errorMessage"
+    :disabled="disabled"
+    :options="[...options]"
+    :option-label="optionLabel"
+    :option-value="optionValue"
+    :loading="loading"
+    @change="(e) => emit('onChange', e)"
+    @blur="handleBlur"
+  />
+  <label
+    v-if="floatLabel"
+    :id="`${name}-label`"
+    :class="{ 'font-bold': bold }"
+    :for="name"
+  >
+    <div>
+      {{ label }}
+      <span
+        v-if="required"
+        class="text-[var(--p-support-required-text)]"
+      >
+        *
+      </span>
+    </div>
+  </label>
+</template>
+
+<style scoped lang="scss">
+input::placeholder {
+  font-size: 1rem;
+}
+</style>

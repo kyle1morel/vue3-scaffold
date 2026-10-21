@@ -1,0 +1,37 @@
+{
+  "extends": [
+    "@tsconfig/node24/tsconfig.json",
+    "@vue/tsconfig/tsconfig.dom.json"
+  ],
+  "compilerOptions": {
+    "outDir": "./dist",
+    /**
+     * Redeclared due to lack of property merge support
+     * @see {https://github.com/microsoft/TypeScript/issues/57486}
+     */
+    "lib": [
+      // sourced from @vue/tsconfig/tsconfig.dom.json
+      "DOM",
+      "DOM.Iterable",
+      // sourced from @tsconfig/node24/tsconfig.json
+      "es2024",
+      "ESNext.Array",
+      "ESNext.Collection",
+      "ESNext.Iterator",
+      "ESNext.Promise"
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "types": [
+      "vitest/globals",
+    ]
+  },
+  "exclude": [
+    "coverage",
+    "dist",
+    "node_modules"
+  ],
+}

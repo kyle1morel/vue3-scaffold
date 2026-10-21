@@ -1,0 +1,154 @@
+import { reactive } from 'vue';
+import i18n from '@/i18n';
+
+import type { AxiosRequestHeaders, AxiosResponse } from 'axios';
+import type { GenericObject } from 'vee-validate';
+
+// Globals
+export const { t } = i18n.global;
+
+/*
+ * Function to easily create an axios error response
+ */
+export function mockAxiosError(message: string, code?: string) {
+  const err = new Error(message);
+  Object.assign(err, {
+    isAxiosError: true,
+    response: { data: { type: code, message } }
+  });
+  return err;
+}
+
+/*
+ * Function to easily create an axios error with no response
+ */
+export function mockAxiosErrorNoResponse(message: string) {
+  const err = new Error(message);
+  Object.assign(err, { isAxiosError: true });
+  return err;
+}
+
+/*
+ * Function to easily create any required axios response necessary for the given type
+ */
+export function mockAxiosResponse<T>(data: T, status = 200, statusText = 'OK'): AxiosResponse<T> {
+  return {
+    data: data,
+    status,
+    statusText,
+    headers: {},
+    config: {
+      headers: {} as AxiosRequestHeaders
+    }
+  };
+}
+
+/*
+ * Force PrimeVue stubs to render children
+ */
+export const PRIMEVUE_STUBS = {
+  Button: {
+    name: 'Button',
+    inheritAttrs: false,
+    template: `
+          <button
+            v-bind="$attrs"
+          >
+            <slot />
+          </button>
+        `
+  },
+  Card: {
+    template: '<div><slot name="title" /><slot name="content" /></div>'
+  },
+  Message: { template: '<div><slot /></div>' },
+  Tabs: { template: '<div><slot /></div>' },
+  TabList: { template: '<div><slot /></div>' },
+  Tab: { template: '<div><slot /></div>' },
+  TabPanels: { template: '<div><slot /></div>' },
+  TabPanel: { template: '<div><slot /></div>' }
+};
+
+export const VEE_FORM_STUB = {
+  name: 'VeeFormStub',
+  props: ['initialValues'],
+  emits: ['submit'],
+  setup(
+    props: { initialValues?: GenericObject },
+    { emit }: { emit: (event: 'submit', values: GenericObject) => void }
+  ) {
+    // Make values reactive so watchers trigger updates
+    const values = reactive(props.initialValues || {});
+
+    // Provide a basic setFieldValue function to satisfy the component's internal logic
+    const setFieldValue = (field: string, val: unknown) => {
+      const keys = field.split('.');
+      let current: GenericObject = values;
+
+      for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+
+        if (typeof current[key] !== 'object' || current[key] === null) {
+          current[key] = {};
+        }
+        current = current[key];
+      }
+      const lastKey = keys.at(-1)!;
+      current[lastKey] = val;
+    };
+
+    // Add resetField to mimic vee-validate
+    const resetField = (field: string, state?: { value?: unknown }) => {
+      if (state && 'value' in state) {
+        setFieldValue(field, state.value);
+      }
+    };
+
+    // Provide a basic resetForm function
+    const resetForm = (state?: GenericObject) => {
+      if (state?.values) {
+        Object.assign(values, state.values);
+      } else if (props.initialValues) {
+        Object.assign(values, props.initialValues);
+      }
+    };
+
+    // Provide a handleSubmit function to emit the submit event with the current values
+    const handleSubmit = () => {
+      const plainValues = structuredClone(values) as GenericObject;
+      emit('submit', plainValues);
+    };
+
+    return { values, setFieldValue, resetField, resetForm, handleSubmit };
+  },
+  template: [
+    '<form class="vee-form-stub" @submit.prevent="handleSubmit">',
+    '<slot :values="values" :setFieldValue="setFieldValue" />',
+    '</form>'
+  ].join('')
+};
+
+// Minimal Standard Schema shape (https://standardschema.dev), as implemented by zod
+interface StandardSchema {
+  '~standard': {
+    validate: (value: unknown) => StandardResult | Promise<StandardResult>;
+  };
+}
+
+type StandardResult =
+  | { value: unknown; issues?: undefined }
+  | { issues: readonly { message: string; path?: readonly (PropertyKey | { key: PropertyKey })[] }[] };
+
+/*
+ * Runs any Standard Schema and flattens the result to { value, errors } keyed by dotted path
+ */
+export async function runSchema(schema: StandardSchema, input: unknown) {
+  const result = await schema['~standard'].validate(input);
+  if (!result.issues) return { value: result.value, errors: {} };
+  const errors: Record<string, string> = {};
+  for (const issue of result.issues) {
+    const path = (issue.path ?? []).map((p) => String(typeof p === 'object' ? p.key : p)).join('.');
+    errors[path] ??= issue.message;
+  }
+  return { value: undefined, errors };
+}
