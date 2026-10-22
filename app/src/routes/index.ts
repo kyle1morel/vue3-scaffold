@@ -7,7 +7,7 @@ import type { Request, Response } from 'express';
 
 const router = Router();
 
-/** Root Endpoint */
+/** Root Endpoint. */
 router.get('/', (_req: Request, res: Response): void => {
   res.status(200).json({
     endpoints: ['/live', '/ready', '/v1'],
@@ -16,12 +16,12 @@ router.get('/', (_req: Request, res: Response): void => {
   });
 });
 
-/** Liveness Endpoint */
+/** Liveness Endpoint. */
 router.get('/live', (_req: Request, res: Response): void => {
   res.status(200).json({ status: 'ok' });
 });
 
-/** Readiness Endpoint */
+/** Readiness Endpoint. */
 router.get('/ready', (_req: Request, res: Response): void => {
   if (state.ready) {
     res.status(200).json({ status: 'ready' });
@@ -30,7 +30,7 @@ router.get('/ready', (_req: Request, res: Response): void => {
   }
 });
 
-/** v1 Endpoint */
+/** v1 Endpoint. */
 router.use(process.env.SERVER_APIPATH ?? '/v1', v1);
 
 export default router;

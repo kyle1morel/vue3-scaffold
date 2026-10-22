@@ -20,8 +20,8 @@ export const email = z.string().regex(new RegExp(Regex.EMAIL));
 /**
  * Date/timestamp not in the future, checked against the real current time on every parse
  * (not a fixed value baked in at schema-definition time).
- * @param message - validation error message
- * @returns a zod schema
+ * @param message - Validation error message.
+ * @returns A zod schema.
  */
 export const notInFutureDate = (message: string) =>
   z

@@ -19,7 +19,7 @@ export const MAX_SEARCH_TAKE = 100;
 export const MIN_SEARCH_INPUT_LENGTH = 2;
 
 /**
- * Minimally valid UUIDv4 for the system ID
+ * Minimally valid UUIDv4 for the system ID.
  * @see https://www.rfc-editor.org/rfc/rfc9562#variant_field
  */
 export const SYSTEM_ID = '00000000-0000-4000-8000-000000000000';

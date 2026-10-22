@@ -10,10 +10,10 @@ const formatIssue = (prop: string, issue: ZodIssue) => {
 };
 
 /**
- * Performs express request validation against a specified `schema`
- * @param schema An object containing zod validation schema definitions
- * @returns Express middleware function
- * @throws {Problem} The error encountered upon failure
+ * Performs express request validation against a specified `schema`.
+ * @param schema - An object containing zod validation schema definitions.
+ * @returns Express middleware function.
+ * @throws {@link Problem} The error encountered upon failure.
  */
 export const validate = (schema: Record<string, ZodType>) => {
   return (req: Request, res: Response, next: NextFunction) => {

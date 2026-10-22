@@ -6,10 +6,8 @@ import { configService } from './configService';
 import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 
 /**
- * @function appAxios
- * Returns an Axios instance for the application API
- * @param {AxiosRequestConfig} options Axios request config options
- * @returns {AxiosInstance} An axios instance
+ * @param options - Axios request config options.
+ * @returns An axios instance.
  */
 export function appAxios(options: AxiosRequestConfig = {}): AxiosInstance {
   const cfg = configService.getCachedConfig();

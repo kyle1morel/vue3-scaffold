@@ -39,8 +39,8 @@ export default class Problem extends Error {
    * @param opts.detail - A detailed explanation of the problem.
    * @param opts.instance - A URI reference identifying the specific occurrence of the problem.
    * @param extra - Additional properties to be assigned to the problem object.
-   * @throws {Error} If the `status` is not provided or is invalid.
-   * @throws {Error} If the `title` cannot be determined.
+   * @throws {@link Error} If the `status` is not provided or is invalid.
+   * @throws {@link Error} If the `title` cannot be determined.
    */
   constructor(
     status: number,

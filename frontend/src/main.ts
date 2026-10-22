@@ -21,7 +21,7 @@ import '@/assets/main.css';
 import type { CallbackFn } from './types';
 
 /**
- * Initializes and mounts the Vue instance
+ * Initializes and mounts the Vue instance.
  */
 function initializeApp(): void {
   library.add(fas);
@@ -58,7 +58,7 @@ function initializeApp(): void {
 /**
  * Initializes and mounts the service singletons
  * Services must load in the following order: config, auth, then app.
- * @param next Optional callback function
+ * @param next - Optional callback function.
  */
 async function initializeServices(next?: CallbackFn): Promise<void> {
   await configService.refreshConfig();

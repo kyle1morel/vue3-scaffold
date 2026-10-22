@@ -35,9 +35,9 @@ export type AuthErrorCodes = 'invalid_request' | 'invalid_token' | 'insufficient
 /**
  * Gets the Authenticate header from the Express request object and checks for single authorization method use.
  * @see https://datatracker.ietf.org/doc/html/rfc6750#section-3.1
- * @param req The Express request object.
- * @param res The Express response object.
- * @throws {Problem} 400 `invalid_request` if the wrong auth method is used.
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @throws {@link Problem} 400 `invalid_request` if the wrong auth method is used.
  * @returns The request authorization header string or undefined if no authorization header.
  */
 export function getAuthHeader(req: Request, res: Response): string | undefined {
@@ -59,10 +59,10 @@ export function getAuthHeader(req: Request, res: Response): string | undefined {
 /**
  * Extracts a valid bearer token from the authorization header string.
  * @see https://datatracker.ietf.org/doc/html/rfc6750#section-2.1
- * @param authHeader The authorization header string.
- * @param req The Express request object.
- * @param res The Express response object.
- * @throws {Problem} 401 if token is malformed or invalid.
+ * @param authHeader - The authorization header string.
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @throws {@link Problem} 401 if token is malformed or invalid.
  * @returns The valid bearer token as a string.
  */
 export function getBearerToken(authHeader: string, req: Request, res: Response): string {
@@ -80,9 +80,9 @@ export function getBearerToken(authHeader: string, req: Request, res: Response):
 }
 
 /**
- * Yields an instance of the JWKS client using the provided configuration
- * @returns An instance of the JWKS client
- * @throws {Error | TypeError} If the underlying OIDC configuration fetch fails or is invalid.
+ * Yields an instance of the JWKS client using the provided configuration.
+ * @returns An instance of the JWKS client.
+ * @throws {@link Error} or {@link TypeError} If the underlying OIDC configuration fetch fails or is invalid.
  */
 export async function getJwksClient(): Promise<JwksClient> {
   if (jwksClientPromise !== null) {
@@ -115,9 +115,9 @@ export async function getJwksClient(): Promise<JwksClient> {
 /**
  * Yields the JWKS URI from an OpenID Provider's configuration information.
  * @see https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig
- * @returns The jwks_uri string from the configuration
- * @throws {Error} If the OIDC authority is not set or the network fetch fails.
- * @throws {TypeError} If `jwks_uri` is missing or invalid in the configuration payload.
+ * @returns The jwks_uri string from the configuration.
+ * @throws {@link Error} If the OIDC authority is not set or the network fetch fails.
+ * @throws {@link TypeError} If `jwks_uri` is missing or invalid in the configuration payload.
  */
 export async function getJwksUri(): Promise<string> {
   if (jwksUriPromise !== null) {
@@ -158,7 +158,7 @@ export async function getJwksUri(): Promise<string> {
  * Sets the WWW-Authenticate header in the response to provide authentication error details.
  * @see https://datatracker.ietf.org/doc/html/rfc6750#section-3
  * @see https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.4
- * @param res The Express response object.
+ * @param res - The Express response object.
  * @param attributes - An object containing key-value pairs for the authentication error details.
  * @returns The modified response object with the set WWW-Authenticate header.
  */

@@ -4,9 +4,9 @@ import type { NextFunction, Request, Response } from 'express';
 import type { IdentityProviderKind } from '#src/utils/enums/application';
 
 /**
- * Verify requesting user has necessary identity
- * @param identityKind The kind of identity provider
- * @returns Express middleware function
+ * Verify requesting user has necessary identity.
+ * @param identityKind - The kind of identity provider.
+ * @returns Express middleware function.
  */
 export const hasIdentity = (identityKind: IdentityProviderKind) => {
   return async (req: Request, res: Response, next: NextFunction) => {

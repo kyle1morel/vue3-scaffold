@@ -5,10 +5,10 @@ import { Problem } from '#src/utils/index';
 import type { NextFunction, Request, Response } from 'express';
 
 /**
- * Rejects the request if there is no authorization in the appropriate mode
- * @param req Express request object
- * @param res Express response object
- * @param next The next callback function
+ * Rejects the request if there is no authorization in the appropriate mode.
+ * @param req - Express request object.
+ * @param res - Express response object.
+ * @param next - The next callback function.
  * @returns Express middleware next function.
  */
 export const requireSomeAuth = (req: Request, res: Response, next: NextFunction) => {

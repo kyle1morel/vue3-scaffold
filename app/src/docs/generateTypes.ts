@@ -51,8 +51,8 @@ async function buildSpec(): Promise<OpenAPIObject> {
 
 /**
  * Converts an OpenAPI spec into a prettier-formatted TypeScript declarations file for the frontend.
- * @param spec The OpenAPI spec.
- * @param prettierConfigPath File path prettier resolves its config from.
+ * @param spec - The OpenAPI spec.
+ * @param prettierConfigPath - File path prettier resolves its config from.
  * @returns The complete generated file contents, including the auto-generated header.
  */
 export async function buildTypesOutput(spec: OpenAPIObject, prettierConfigPath: string): Promise<string> {

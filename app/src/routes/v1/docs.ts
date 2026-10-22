@@ -8,7 +8,7 @@ import type { Request, Response } from 'express';
 
 const router = Router();
 
-/** OpenAPI Docs */
+/** OpenAPI Docs. */
 router.get(
   '/',
   helmet.contentSecurityPolicy({
@@ -30,12 +30,12 @@ router.get(
   }
 );
 
-/** OpenAPI YAML Spec */
+/** OpenAPI YAML Spec. */
 router.get('/api-spec.yaml', (_req: Request, res: Response): void => {
   res.status(200).type('application/yaml').send(dump(getSpec()));
 });
 
-/** OpenAPI JSON Spec */
+/** OpenAPI JSON Spec. */
 router.get('/api-spec.json', (_req: Request, res: Response): void => {
   res.status(200).json(getSpec());
 });

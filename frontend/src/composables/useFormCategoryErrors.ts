@@ -5,7 +5,7 @@ function normalize(name: string): string {
 }
 
 /**
- * Returns a unique array of form categories which contain validation errors
+ * Returns a unique array of form categories which contain validation errors.
  */
 export function useFormCategoryErrors() {
   const errors = useFormErrors();

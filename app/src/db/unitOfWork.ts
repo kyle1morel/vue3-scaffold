@@ -56,7 +56,7 @@ class RepositoryProvider implements Repositories {
    * Returns a cached repository instance or creates one if it does not exist.
    * @param key - Unique repository cache key.
    * @param factory - Repository factory function.
-   * @returns A repository object
+   * @returns A repository object.
    */
   private getOrCreate<T extends object>(key: string, factory: () => T): T {
     let repo = this.repositories.get(key);
@@ -100,7 +100,7 @@ class UnitOfWork {
    * A RepositoryProvider is created for the transaction and supplied to the
    * callback. All repositories resolved from the provider share the same
    * transaction context.
-   * @template T - Result type returned by the callback.
+   * @typeParam T - Result type returned by the callback.
    * @param fn - Transactional work to execute.
    * @param opts - Transaction configuration options.
    * @param principal - Optional override of the principal of the unit of work.
@@ -140,7 +140,7 @@ class UnitOfWork {
    * - repository abstractions are insufficient or overly restrictive
    * - performing bulk operations or raw queries (`$queryRaw`, `$executeRaw`)
    * - leveraging Prisma transaction capabilities not exposed via repositories
-   * @template T - Result type returned by the callback.
+   * @typeParam T - Result type returned by the callback.
    * @param fn - Transactional work receiving the raw Prisma transaction client.
    * @param principal - Acting user or system identifier.
    * @param opts - Transaction configuration options.

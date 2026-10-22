@@ -84,7 +84,7 @@ export async function refreshConfig(): Promise<Config> {
  * Backward compatibility layer for legacy default-export service usage.
  *
  * This object preserves the previous pattern:
- *   export default { ...serviceMethods }
+ *   export default { ...serviceMethods }.
  *
  * It may be removed once all consumers are migrated to named imports.
  */

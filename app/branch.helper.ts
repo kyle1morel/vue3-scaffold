@@ -4,7 +4,7 @@ import { existsSync, lstatSync, readFileSync } from 'node:fs';
 import { dirname, join, isAbsolute, parse, resolve } from 'node:path';
 
 /**
- * Conventional Branch Naming Convention
+ * Conventional Branch Naming Convention.
  * @see https://conventional-branch.github.io
  */
 const conventionalBranchRegex = /^(main|((bugfix|chore|feature|hotfix|release)\/[a-z0-9]+([.-][a-z0-9]+)*))$/;

@@ -10,10 +10,10 @@ import type { CurrentContext, IdpAttributes } from '#types';
 const log = getLogger(import.meta.filename);
 
 /**
- * Create a key/value differential from source against comparer
- * @param source Source object
- * @param comparer The object to be compared against
- * @returns Object containing the non-matching key/value pairs in the source object
+ * Create a key/value differential from source against comparer.
+ * @param source - Source object.
+ * @param comparer - The object to be compared against.
+ * @returns Object containing the non-matching key/value pairs in the source object.
  */
 export function differential<T extends object>(source: T, comparer: Partial<T>): Partial<T> {
   return Object.fromEntries(
@@ -22,9 +22,9 @@ export function differential<T extends object>(source: T, comparer: Partial<T>):
 }
 
 /**
- * Get the identity provider configuration for the given kind
- * @param kind The kind of identity provider
- * @returns IDP config for the given kind or undefined if not found
+ * Get the identity provider configuration for the given kind.
+ * @param kind - The kind of identity provider.
+ * @returns IDP config for the given kind or undefined if not found.
  */
 export function getIdpAttributesByKind(kind: IdentityProviderKind): IdpAttributes | undefined {
   const idpList: IdpAttributes[] = readIdpList();
@@ -35,7 +35,7 @@ export function getIdpAttributesByKind(kind: IdentityProviderKind): IdpAttribute
 /**
  * Gets the current Git commit hash, or undefined if not found.
  * @see https://stackoverflow.com/a/34518749
- * @returns The git revision hash, or undefined
+ * @returns The git revision hash, or undefined.
  */
 export function getGitRevision(): string | undefined {
   const findGitDir = (base: string): string | undefined => {
@@ -96,19 +96,19 @@ export function getGitRevision(): string | undefined {
 }
 
 /**
- * Attempts to acquire a specific current token sub. Yields `defaultValue` otherwise
- * @param currentContext The express request currentContext object
- * @param defaultValue An optional default return value
- * @returns The requested current token sub if applicable, or `defaultValue`
+ * Attempts to acquire a specific current token sub. Yields `defaultValue` otherwise.
+ * @param currentContext - The express request currentContext object.
+ * @param defaultValue - An optional default return value.
+ * @returns The requested current token sub if applicable, or `defaultValue`.
  */
 export function getCurrentSubject(currentContext: CurrentContext | undefined, defaultValue = ''): string {
   return currentContext?.tokenPayload?.sub ?? defaultValue;
 }
 
 /**
- * Parses currentContext object's identity provider to return their username
- * @param currentContext The express request CurrentContext object
- * @returns The username in currentUser or undefined
+ * Parses currentContext object's identity provider to return their username.
+ * @param currentContext - The express request CurrentContext object.
+ * @returns The username in currentUser or undefined.
  */
 export function getCurrentUsername(currentContext: CurrentContext | undefined): string | undefined {
   if (currentContext?.tokenPayload) {
@@ -124,10 +124,10 @@ export function getCurrentUsername(currentContext: CurrentContext | undefined): 
 }
 
 /**
- * Determines if given identity kind is equal to current user identity
- * @param identityKind The kind of identity provider
- * @param currentContext The context of the current authorized user
- * @returns True if identities match
+ * Determines if given identity kind is equal to current user identity.
+ * @param identityKind - The kind of identity provider.
+ * @param currentContext - The context of the current authorized user.
+ * @returns True if identities match.
  */
 export const hasIdentity = (identityKind: IdentityProviderKind, currentContext: CurrentContext): boolean => {
   const idp = getIdpAttributesByKind(identityKind);
@@ -136,7 +136,7 @@ export const hasIdentity = (identityKind: IdentityProviderKind, currentContext: 
 };
 
 /**
- * Checks whether the given object is empty, no properties
+ * Checks whether the given object is empty, no properties.
  * @param obj - The object to check.
  * @returns True if the object is empty, false otherwise.
  */
@@ -145,9 +145,9 @@ export function isEmptyObject(obj: object): boolean {
 }
 
 /**
- * Returns true if the element name in the object contains a truthy value
- * @param value The object to evaluate
- * @returns True if truthy, false if not, and undefined if undefined
+ * Returns true if the element name in the object contains a truthy value.
+ * @param value - The object to evaluate.
+ * @returns True if truthy, false if not, and undefined if undefined.
  */
 export function isTruthy(value: unknown): boolean | undefined {
   if (value === undefined) return value;
@@ -158,9 +158,9 @@ export function isTruthy(value: unknown): boolean | undefined {
 }
 
 /**
- * Standardizes query params to yield an array of unique string values
- * @param param The query param to process
- * @returns A unique, non-empty array of string values, or undefined if empty
+ * Standardizes query params to yield an array of unique string values.
+ * @param param - The query param to process.
+ * @returns A unique, non-empty array of string values, or undefined if empty.
  */
 export function mixedQueryToArray(param: string | string[] | undefined): string[] | undefined {
   // Short circuit undefined if param is falsy
@@ -173,10 +173,10 @@ export function mixedQueryToArray(param: string | string[] | undefined): string[
 }
 
 /**
- * Omits the given set of keys from the given object
- * @param data The object to copy and manipulate
- * @param keys Array of keys to remove
- * @returns A new object with the given keys removed
+ * Omits the given set of keys from the given object.
+ * @param data - The object to copy and manipulate.
+ * @param keys - Array of keys to remove.
+ * @returns A new object with the given keys removed.
  */
 export function omit<Data extends object, Keys extends keyof Data>(data: Data, keys: Keys[]): Omit<Data, Keys> {
   const result = { ...data };
@@ -189,17 +189,17 @@ export function omit<Data extends object, Keys extends keyof Data>(data: Data, k
 }
 
 /**
- * Converts a comma separated value string into an array of string values
- * @param value The CSV string to parse
- * @returns An array of string values, or `value` if it is not a string
+ * Converts a comma separated value string into an array of string values.
+ * @param value - The CSV string to parse.
+ * @returns An array of string values, or `value` if it is not a string.
  */
 export function parseCSV(value: string): string[] {
   return value.split(',').map((s) => s.trim());
 }
 
 /**
- * Acquires the list of feature flags to be used
- * @returns A promise resolving to an object of key values
+ * Acquires the list of feature flags to be used.
+ * @returns A promise resolving to an object of key values.
  */
 export function readFeatureList(): Record<string, boolean> {
   const configDir = '../../config';
@@ -225,8 +225,8 @@ export function readFeatureList(): Record<string, boolean> {
 }
 
 /**
- * Acquires the list of identity providers to be used
- * @returns A promise resolving to an array of idp provider objects
+ * Acquires the list of identity providers to be used.
+ * @returns A promise resolving to an array of idp provider objects.
  */
 export function readIdpList(): IdpAttributes[] {
   const configDir = '../../config';
@@ -245,10 +245,10 @@ export function readIdpList(): IdpAttributes[] {
 }
 
 /**
- * Sanitizes objects by replacing sensitive data with a REDACTED string value
- * @param data An arbitrary object
- * @param fields An array of field strings to sanitize on
- * @returns An arbitrary object with specified secret fields marked as redacted
+ * Sanitizes objects by replacing sensitive data with a REDACTED string value.
+ * @param data - An arbitrary object.
+ * @param fields - An array of field strings to sanitize on.
+ * @returns An arbitrary object with specified secret fields marked as redacted.
  */
 export function redactSecrets(data: Record<string, unknown>, fields: string[]): unknown {
   if (fields && Array.isArray(fields) && fields.length) {

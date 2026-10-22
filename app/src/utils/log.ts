@@ -6,7 +6,7 @@ import type { Request, RequestHandler, Response } from 'express';
 import type { Logger, TransportSingleOptions } from 'pino';
 import type { LocalContext } from '#types';
 
-/** Define Pino logging meta-structure */
+/** Define Pino logging meta-structure. */
 declare module 'pino' {
   interface LogFnFields {
     module?: never; // Disallow overwriting the module field
@@ -33,9 +33,9 @@ export const baseLogger: Logger = pino({
 });
 
 /**
- * Main Pino Logger
- * @param moduleName - The module name to register log statements under
- * @returns A child Pino Logger
+ * Main Pino Logger.
+ * @param moduleName - The module name to register log statements under.
+ * @returns A child Pino Logger.
  */
 export function getLogger(moduleName: string) {
   return baseLogger.child({ module: parse(moduleName).name });
@@ -44,7 +44,7 @@ export function getLogger(moduleName: string) {
 const log = getLogger(import.meta.filename);
 
 /**
- * HTTP Middleware
+ * HTTP Middleware.
  */
 export const httpLogger: RequestHandler = pinoHttp({
   logger: getLogger('http'),

@@ -19,7 +19,7 @@ interface DmmfModel {
 /**
  * Builds a map of model name -> relation field name -> relation target info,
  * from a Prisma DMMF model list. Models with no relation fields are omitted entirely.
- * @param models Prisma DMMF models to inspect for relation fields.
+ * @param models - Prisma DMMF models to inspect for relation fields.
  * @returns Map of model name to its relation fields' target model and cardinality.
  */
 export function buildRelationsMap(models: readonly DmmfModel[]): Record<string, Record<string, RelationInfo>> {

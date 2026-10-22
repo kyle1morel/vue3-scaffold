@@ -8,7 +8,7 @@ import { RouteName, StorageKey } from '@/utils/enums/application';
 import type { LocationQuery, RouteParamsGeneric, RouteRecordRaw } from 'vue-router';
 
 /**
- * Obtains any information that should be loaded only once on hard navigation
+ * Obtains any information that should be loaded only once on hard navigation.
  */
 async function bootstrap() {
   const appStore = useAppStore();
@@ -24,9 +24,9 @@ async function bootstrap() {
 }
 
 /**
- * Parses the route query and params to generate Vue props
- * @param route The route object
- * @returns A Vue props object
+ * Parses the route query and params to generate Vue props.
+ * @param route - The route object.
+ * @returns A Vue props object.
  */
 export function createProps(route: { query: LocationQuery; params: RouteParamsGeneric }): object {
   return { ...route.query, ...route.params };

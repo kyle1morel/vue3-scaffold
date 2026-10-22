@@ -14,7 +14,7 @@ import type { Component, Plugin } from 'vue';
 import type { Stubs } from '@vue/test-utils';
 
 export interface PiniaOptions {
-  /** Pinia initial state, keyed by store id, e.g. { auth: { user: {} } } */
+  /** Pinia initial state, keyed by store id, e.g. { auth: { user: {} } }. */
   piniaState?: Record<string, unknown>;
   /**
    * Called with the testing-Pinia instance *before* mount -- e.g. to spy on
@@ -39,20 +39,20 @@ export interface FormContextConfig {
    * own, that creates two registrations for the same name.
    */
   fields?: string[];
-  /** Passed straight through to useForm(), e.g. { initialValues: {...} } */
+  /** Passed straight through to useForm(), e.g. { initialValues: {...} }. */
   formProps?: Record<string, unknown>;
 }
 
 export interface MountComponentOptions extends PiniaOptions {
-  /** Props for the component under test */
+  /** Props for the component under test. */
   props?: Record<string, unknown>;
-  /** Component stubs, merged with any caller-specific defaults */
+  /** Component stubs, merged with any caller-specific defaults. */
   stubs?: Stubs;
-  /** Injection keys/values, e.g. { [someKey]: ref('x') } */
+  /** Injection keys/values, e.g. { [someKey]: ref('x') }. */
   provide?: Record<string | symbol, unknown>;
   /** Extra global plugins beyond the always-installed PrimeVue/i18n/etc. */
   plugins?: Plugin[];
-  /** Extra global directives beyond the always-installed Tooltip */
+  /** Extra global directives beyond the always-installed Tooltip. */
   directives?: Record<string, unknown>;
   /**
    * When set, mounts the component inside a synthetic harness that calls

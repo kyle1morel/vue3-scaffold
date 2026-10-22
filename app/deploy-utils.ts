@@ -48,7 +48,7 @@ try {
 //
 
 /**
- * Rebuild `vue3-scaffold-frontend` library
+ * Rebuild `vue3-scaffold-frontend` library.
  */
 function buildComponents() {
   if (!existsSync(`${FRONTEND_DIR}/node_modules`)) {
@@ -61,7 +61,7 @@ function buildComponents() {
 }
 
 /**
- * Clean `vue3-scaffold-frontend` library directory
+ * Clean `vue3-scaffold-frontend` library directory.
  */
 function cleanComponents() {
   console.log(`Cleaning ${TITLE}...`);
@@ -70,7 +70,7 @@ function cleanComponents() {
 }
 
 /**
- * Redeploy `vue3-scaffold-frontend` library
+ * Redeploy `vue3-scaffold-frontend` library.
  */
 function deployComponents() {
   console.log(`Redeploying ${TITLE}...`);
@@ -84,9 +84,9 @@ function deployComponents() {
 //
 
 /**
- * Execute a single shell command where `cmd` is a string
- * @param cmd Shell command to run
- * @param cwd Working directory of the command to run
+ * Execute a single shell command where `cmd` is a string.
+ * @param cmd - Shell command to run.
+ * @param cwd - Working directory of the command to run.
  */
 export function runSync(cmd: string, cwd: string | undefined) {
   const p = spawnSync(cmd, { cwd: cwd || undefined, stdio: 'inherit', shell: true });
@@ -99,9 +99,9 @@ export function runSync(cmd: string, cwd: string | undefined) {
 }
 
 /**
- * Copies `source` file to `target` file
- * @param source Source file location
- * @param  target Target file location
+ * Copies `source` file to `target` file.
+ * @param source - Source file location.
+ * @param target - Target file location.
  */
 export function copyFileSync(source: string, target: string) {
   let targetFile = target;
@@ -117,9 +117,9 @@ export function copyFileSync(source: string, target: string) {
 }
 
 /**
- * Recursively copies `source` directory contents to `target` directory
- * @param source Source directory location
- * @param  target Target directory location
+ * Recursively copies `source` directory contents to `target` directory.
+ * @param source - Source directory location.
+ * @param target - Target directory location.
  */
 export function copyDirRecursiveSync(source: string, target: string) {
   let files;

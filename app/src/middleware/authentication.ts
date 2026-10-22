@@ -30,7 +30,7 @@ export const userCache = new LRUCache<string, Promise<User>>({
  * Authenticates incoming request and injects the current context into response locals.
  * Subsequent logic should check `res.locals.currentContext.authType` for authentication method if needed.
  * @returns A middleware function.
- * @throws {Problem} The error encountered upon failure.
+ * @throws {@link Problem} The error encountered upon failure.
  */
 export const hasAuthentication = () => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -76,11 +76,11 @@ export const hasAuthentication = () => {
 
 /**
  * Verifies a JWT bearer token and retrieves the verified payload, utilizing an LRU cache for performance.
- * @param token The raw JWT bearer token string to verify.
- * @param req The Express request object used for error context.
- * @param res The Express response object used to set authentication error headers.
+ * @param token - The raw JWT bearer token string to verify.
+ * @param req - The Express request object used for error context.
+ * @param res - The Express response object used to set authentication error headers.
  * @returns A promise that resolves to the verified and frozen JWT payload.
- * @throws {Problem} 401 if the token is malformed, invalid, expired, or has an invalid payload.
+ * @throws {@link Problem} 401 if the token is malformed, invalid, expired, or has an invalid payload.
  */
 export async function getVerifiedPayload(token: string, req: Request, res: Response): Promise<JwtPayload> {
   if (jwtPayloadCache.has(token)) return jwtPayloadCache.get(token)!;

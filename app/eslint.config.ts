@@ -26,12 +26,18 @@ export default defineConfig([
         tsconfigRootDir: import.meta.dirname
       }
     },
+    // Doc blocks use TSDoc notation; the jsdoc plugin's defaults expect JSDoc.
+    settings: {
+      jsdoc: { tagNamePreference: { template: 'typeParam' } }
+    },
     rules: {
       '@typescript-eslint/no-require-imports': 'error',
       'eol-last': ['error', 'always'],
       'jsdoc/require-jsdoc': 'off', // TODO: Turn this back on later
       'jsdoc/check-param-names': ['warn', { checkDestructured: false }],
+      'jsdoc/no-types': 'error',
       'jsdoc/require-param': ['warn', { checkDestructured: false }],
+      'jsdoc/require-throws-type': 'off', // TSDoc writes `@throws {@link Error}`, not a JSDoc type
       'linebreak-style': ['error', 'unix'],
       'max-len': ['warn', { code: 120, comments: 120, ignoreUrls: true }],
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',

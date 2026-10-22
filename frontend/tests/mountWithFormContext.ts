@@ -21,19 +21,19 @@ export interface FormContextOptions {
    * component under test already registers itself.
    */
   fields?: string[];
-  /** Passed straight through to useForm(), e.g. { initialValues: {...} } */
+  /** Passed straight through to useForm(), e.g. { initialValues: {...} }. */
   formProps?: Record<string, unknown>;
-  /** Props for the component under test */
+  /** Props for the component under test. */
   componentProps?: Record<string, unknown>;
-  /** Component stubs, merged with mountComponent's dependency-level defaults */
+  /** Component stubs, merged with mountComponent's dependency-level defaults. */
   stubs?: MountComponentOptions['stubs'];
-  /** Extra global plugins beyond PrimeVue + i18n */
+  /** Extra global plugins beyond PrimeVue + i18n. */
   plugins?: MountComponentOptions['plugins'];
-  /** Pinia initial state, keyed by store id, e.g. { auth: { user: {} } } */
+  /** Pinia initial state, keyed by store id, e.g. { auth: { user: {} } }. */
   piniaState?: MountComponentOptions['piniaState'];
-  /** See PiniaOptions.configurePinia in mountComponent.ts for caveats */
+  /** See PiniaOptions.configurePinia in mountComponent.ts for caveats. */
   configurePinia?: MountComponentOptions['configurePinia'];
-  /** Injection keys/values, e.g. { [someKey]: ref('x') } */
+  /** Injection keys/values, e.g. { [someKey]: ref('x') }. */
   provide?: MountComponentOptions['provide'];
 }
 

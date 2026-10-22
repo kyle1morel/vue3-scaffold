@@ -5,12 +5,13 @@
  * - Prefixing all routes with a base resource path (if provided)
  * - Safely encoding all dynamic path segments
  *
- * Example:
+ * @param resource - The base route segment (e.g. "user", "projects").
+ * @returns A function that builds URL paths from additional segments.
+ * @example
+ * ```ts
  * const userRoute = createRouteBuilder('user');
  * userRoute('123', 'profile'); // "user/123/profile"
- *
- * @param resource - The base route segment (e.g. "user", "projects")
- * @returns A function that builds URL paths from additional segments
+ * ```
  */
 export function createRouteBuilder(resource?: string) {
   return (...segments: (string | number | null | undefined)[]) =>
