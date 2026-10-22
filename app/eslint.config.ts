@@ -33,8 +33,17 @@ export default defineConfig([
     rules: {
       '@typescript-eslint/no-require-imports': 'error',
       'eol-last': ['error', 'always'],
-      'jsdoc/require-jsdoc': 'off', // TODO: Turn this back on later
       'jsdoc/check-param-names': ['warn', { checkDestructured: false }],
+      // The fixer inserts empty stubs, which the pre-commit `eslint --fix` would commit
+      'jsdoc/require-jsdoc': [
+        'error',
+        {
+          enableFixer: false,
+          publicOnly: true,
+          require: { ArrowFunctionExpression: true, FunctionDeclaration: true, FunctionExpression: true }
+        }
+      ],
+      'jsdoc/no-blank-blocks': 'warn',
       'jsdoc/no-types': 'error',
       'jsdoc/require-param': ['warn', { checkDestructured: false }],
       'jsdoc/require-throws-type': 'off', // TSDoc writes `@throws {@link Error}`, not a JSDoc type
@@ -44,6 +53,13 @@ export default defineConfig([
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
       quotes: ['error', 'single', { avoidEscape: true }],
       semi: ['error', 'always']
+    }
+  },
+  // Test helpers and migration up/down don't need doc comments
+  {
+    files: ['tests/**/*.ts', 'src/db/migrations/**/*.ts'],
+    rules: {
+      'jsdoc/require-jsdoc': 'off'
     }
   },
   // Entity repositories must go through inherited query/mutation methods,

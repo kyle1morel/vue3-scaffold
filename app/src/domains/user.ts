@@ -7,6 +7,12 @@ import type { Repositories } from '#src/db/unitOfWork';
 import type { JwtUser } from '#src/services/login';
 import type { User } from '#types';
 
+/**
+ * Creates a user from token claims, registering their identity provider if it is new.
+ * @param repositories - The identity provider and user repositories.
+ * @param data - The user's token claims.
+ * @returns The created user, or the existing one if a user with the same sub already exists.
+ */
 export const createUser = async (
   repositories: Pick<Repositories, 'identityProvider' | 'user'>,
   data: JwtUser
@@ -32,6 +38,14 @@ export const createUser = async (
   return await repositories.user.createIfNotExists({ sub: data.sub }, newUser);
 };
 
+/**
+ * Updates a user with any token claims that have changed, registering their identity provider if it is new.
+ * @param repositories - The identity provider and user repositories.
+ * @param userId - The id of the user to update.
+ * @param data - The user's token claims.
+ * @returns The updated user, or the unchanged user when no claims differ.
+ * @throws {@link NotFoundProblem} If the user does not exist.
+ */
 export const updateUser = async (
   repositories: Pick<Repositories, 'identityProvider' | 'user'>,
   userId: string,

@@ -59,6 +59,11 @@ export class NotFoundProblem extends Problem {
   }
 }
 
+/**
+ * Translates a Prisma error into a Problem the API can return.
+ * @param error - The error thrown by Prisma Client.
+ * @returns A Problem for duplicate key, foreign key or not found errors, otherwise a generic database Problem.
+ */
 export function mapPrismaError(error: unknown): Problem {
   if (!(error instanceof Prisma.PrismaClientKnownRequestError)) {
     return new DatabaseProblem('Unknown database error');

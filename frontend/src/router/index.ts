@@ -73,6 +73,10 @@ const routes: RouteRecordRaw[] = [
   }
 ];
 
+/**
+ * Creates the app router with the authentication guard, loading indicator hooks and scroll behaviour.
+ * @returns The configured router.
+ */
 export default function getRouter() {
   const appStore = useAppStore();
   const authService = new AuthService();

@@ -4,6 +4,10 @@ import { ToastTimeout } from '@/utils/enums/application';
 
 import type { ToastMessageOptions } from 'primevue/toast';
 
+/**
+ * Wraps PrimeVue's toast service with one helper per severity, each with a prefixed summary and its default lifetime.
+ * @returns The `error`, `info`, `success` and `warn` toast helpers.
+ */
 export const useToast = () => {
   const toast = useToastPrimevue();
 

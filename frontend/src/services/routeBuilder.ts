@@ -4,7 +4,6 @@
  * This utility helps standardize route generation by:
  * - Prefixing all routes with a base resource path (if provided)
  * - Safely encoding all dynamic path segments
- *
  * @param resource - The base route segment (e.g. "user", "projects").
  * @returns A function that builds URL paths from additional segments.
  * @example

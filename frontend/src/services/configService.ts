@@ -45,7 +45,6 @@ export function getCachedConfig(): Config | null {
  *
  * This function first attempts to read the configuration from sessionStorage.
  * If not available, it fetches the configuration from the API and caches it.
- *
  * @returns A promise resolving to the application Config.
  */
 export async function getConfig(): Promise<Config> {

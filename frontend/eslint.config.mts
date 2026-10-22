@@ -5,6 +5,7 @@ import pluginVue from 'eslint-plugin-vue';
 import { defineConfig } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import jsdoc from 'eslint-plugin-jsdoc';
 import vitest from '@vitest/eslint-plugin';
 
 export default defineConfig([
@@ -22,6 +23,37 @@ export default defineConfig([
   tseslint.configs.recommended,
   tseslint.configs.stylistic,
   pluginVue.configs['flat/recommended'],
+  {
+    files: ['**/*.{ts,mts,vue}'],
+    extends: [jsdoc.configs['flat/recommended-typescript']],
+    // Doc blocks use TSDoc notation; the jsdoc plugin's defaults expect JSDoc.
+    settings: {
+      jsdoc: { tagNamePreference: { template: 'typeParam' } }
+    },
+    rules: {
+      'jsdoc/check-param-names': ['warn', { checkDestructured: false }],
+      // The fixer inserts empty stubs, which the pre-commit `eslint --fix` would commit
+      'jsdoc/require-jsdoc': [
+        'error',
+        {
+          enableFixer: false,
+          publicOnly: true,
+          require: { ArrowFunctionExpression: true, FunctionDeclaration: true, FunctionExpression: true }
+        }
+      ],
+      'jsdoc/no-blank-blocks': 'warn',
+      'jsdoc/no-types': 'error',
+      'jsdoc/require-param': ['warn', { checkDestructured: false }],
+      'jsdoc/require-throws-type': 'off' // TSDoc writes `@throws {@link Error}`, not a JSDoc type
+    }
+  },
+  {
+    files: ['tests/**/*.ts'],
+    rules: {
+      'jsdoc/require-jsdoc': 'off',
+      'jsdoc/require-param': 'off'
+    }
+  },
   {
     files: ['**/*.vue'],
     languageOptions: {
@@ -66,7 +98,6 @@ export default defineConfig([
     rules: {
       'eol-last': ['error', 'always'],
       'linebreak-style': ['error', 'unix'],
-      'jsdoc/require-jsdoc': 'off', // TODO: Turn this back on later
       'max-len': ['warn', { code: 120, comments: 120, ignorePattern: '^(import\\s.+|\\} from)', ignoreUrls: true }],
       'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',

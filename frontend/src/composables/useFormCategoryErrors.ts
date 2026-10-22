@@ -6,6 +6,7 @@ function normalize(name: string): string {
 
 /**
  * Returns a unique array of form categories which contain validation errors.
+ * @returns A `getFormCategoryErrors` function listing the top-level form fields that have errors.
  */
 export function useFormCategoryErrors() {
   const errors = useFormErrors();

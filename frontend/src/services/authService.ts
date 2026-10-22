@@ -7,12 +7,14 @@ import type { User, UserManagerSettings } from 'oidc-client-ts';
 const isDebugMode: boolean = import.meta.env.MODE.toUpperCase() === 'DEBUG';
 
 /**
+ * Wraps the oidc-client-ts UserManager so every caller shares one OIDC session.
  */
 export default class AuthService {
   private static _instance: AuthService;
   private static _userManager: UserManager;
 
   /**
+   * Returns the shared instance, creating the UserManager on first use.
    */
   constructor() {
     if (!AuthService._instance) {
@@ -63,14 +65,16 @@ export default class AuthService {
   }
 
   /**
-   * @returns Returns a user object if logged in, null otherwise.
+   * @returns The underlying oidc-client-ts UserManager.
    */
   public getUserManager(): UserManager {
     return AuthService._userManager;
   }
 
   /**
+   * Redirects to the OIDC login, hinting which identity provider to use.
    * @param idp - The identity provider.
+   * @returns Resolves once the redirect starts.
    */
   public async login(idp: string): Promise<void> {
     return AuthService._userManager.signinRedirect({
@@ -90,6 +94,8 @@ export default class AuthService {
   }
 
   /**
+   * Redirects to the OIDC logout.
+   * @returns Resolves once the redirect starts.
    */
   public async logout(): Promise<void> {
     return AuthService._userManager.signoutRedirect({ redirectMethod: 'replace' });

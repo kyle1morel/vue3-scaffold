@@ -36,6 +36,16 @@ const buildResponses = (responses: OpenApiResponses) =>
     ])
   );
 
+/**
+ * Registers a route on the router and documents it in the OpenAPI registry from the same config.
+ * When a schema is given, request validation runs after the middleware and before the handler.
+ * @typeParam S - The request schema; types the handler's params, query and body.
+ * @typeParam ResBody - The handler's response body type.
+ * @typeParam Locals - The handler's `res.locals` type.
+ * @param basePath - The router's mount path, prefixed to the documented path.
+ * @param router - The Express router to register the route on.
+ * @param config - The route's method, path, OpenAPI metadata, schema, middleware and handler.
+ */
 export function openapiRoute<
   S extends RouteSchema | undefined,
   ResBody,
