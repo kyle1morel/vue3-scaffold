@@ -62,9 +62,11 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(httpLogger);
 }
 
-// Block requests until service is ready
+// Block requests until service is ready; probes answer for themselves so a database outage can't fail liveness
 app.use((req: Request, res: Response, next: NextFunction): void => {
-  if (state.shutdown) {
+  if (req.path === '/api/live' || req.path === '/api/ready') {
+    next();
+  } else if (state.shutdown) {
     new Problem(503, { detail: 'Server is shutting down' }).send(req, res);
   } else if (!state.ready) {
     new Problem(503, { detail: 'Server is not ready' }).send(req, res);

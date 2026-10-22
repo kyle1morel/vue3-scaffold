@@ -106,7 +106,7 @@ spec:
 
           livenessProbe:
             httpGet:
-              path: {{ .Values.route.path | default "/" }}
+              path: /api/live
               port: http
               scheme: HTTP
             initialDelaySeconds: 10
@@ -115,7 +115,7 @@ spec:
 
           readinessProbe:
             httpGet:
-              path: {{ .Values.route.path | default "/" }}
+              path: /api/ready
               port: http
               scheme: HTTP
             initialDelaySeconds: 10

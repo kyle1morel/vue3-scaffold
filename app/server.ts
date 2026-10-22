@@ -113,14 +113,9 @@ function shutdown(signal: NodeJS.Signals): void {
 }
 
 /**
- * Initializes the server by performing database health and schema checks.
+ * Initializes the server by performing database health checks.
+ * An unavailable database leaves the server not ready rather than exiting; the connection probes flip it on recovery.
  */
 async function startup(): Promise<void> {
-  try {
-    if (!(await checkDatabaseHealth())) throw new Error('Health check failed');
-    state.ready = true;
-  } catch (error) {
-    log.error(error, 'Error during startup checks');
-    shutdown('SIGTERM');
-  }
+  state.ready = await checkDatabaseHealth();
 }
