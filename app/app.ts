@@ -15,8 +15,12 @@ import { readIdpList } from '#src/utils/utils';
 import { state } from './state.ts';
 
 import type { NextFunction, Request, Response } from 'express';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 
 const log = getLogger(import.meta.filename);
+
+// Helmet types res as a plain ServerResponse, but Express hands it the full Response
+const cspNonce = (_req: IncomingMessage, res: ServerResponse): string => `'nonce-${(res as Response).locals.cspNonce}'`;
 
 const appRouter = express.Router();
 const app = express();
@@ -50,8 +54,8 @@ app.use(
       directives: {
         'default-src': ["'self'", new URL(process.env.FRONTEND_OIDC_AUTHORITY!).origin],
         'img-src': ["'self'", 'data:'],
-        'media-src': ["'self'", 'data:', (_req, res: any) => `'nonce-${res.locals.cspNonce}'`], // eslint-disable-line
-        'script-src': ["'self'", (_req, res: any) => `'nonce-${res.locals.cspNonce}'`] // eslint-disable-line
+        'media-src': ["'self'", 'data:', cspNonce],
+        'script-src': ["'self'", cspNonce]
       }
     }
   })
