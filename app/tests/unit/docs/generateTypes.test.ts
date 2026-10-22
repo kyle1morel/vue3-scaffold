@@ -15,14 +15,14 @@ vi.mock('jwks-rsa', () => ({
 
 const SPEC_PATH = join(process.cwd(), 'src/docs/v1.api-spec.yaml');
 const TYPES_PATH = join(process.cwd(), '../frontend/src/types/api/generated.ts');
+const REGENERATE = 'Out of date: run `npm run docs:types` in app/';
 
-// Fails when a route or schema changes without regenerating - run `npm run docs:types` to fix
 describe('generated OpenAPI artifacts', () => {
   it('committed spec matches the route registry', () => {
-    expect(readFileSync(SPEC_PATH, 'utf8')).toBe(dump(getSpec()));
+    expect(readFileSync(SPEC_PATH, 'utf8'), REGENERATE).toBe(dump(getSpec()));
   });
 
   it('committed frontend types match the route registry', async () => {
-    expect(readFileSync(TYPES_PATH, 'utf8')).toBe(await buildTypesOutput(getSpec(), TYPES_PATH));
+    expect(readFileSync(TYPES_PATH, 'utf8'), REGENERATE).toBe(await buildTypesOutput(getSpec(), TYPES_PATH));
   });
 });
