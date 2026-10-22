@@ -91,8 +91,11 @@ function cleanup(signal?: NodeJS.Signals): void {
     log.debug('Closing all server connections...');
     server.closeAllConnections();
     log.info('Server shut down');
-    if (signal) process.kill(process.pid, signal);
-    else process.exit();
+    if (signal) {
+      // Drop our handler first, or the re-sent signal re-enters shutdown instead of terminating.
+      process.removeAllListeners(signal);
+      process.kill(process.pid, signal);
+    } else process.exit();
   });
 }
 
