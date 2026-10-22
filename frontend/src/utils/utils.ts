@@ -1,7 +1,6 @@
 import { isAxiosError } from 'axios';
 import { useToast } from '@/lib/primevue';
 import { useConfigStore } from '@/store';
-import { DELIMITER } from '@/utils/constants/application';
 import { IdentityProviderKind } from '@/utils/enums/application';
 
 import type { DateTimeStrings, IdentityProvider } from '@/types';
@@ -217,7 +216,7 @@ export function isTruthy(value: unknown) {
 }
 
 /**
- * Joins path segments with the path delimiter, dropping empty segments.
+ * Joins path segments with /, dropping empty segments.
  * @param items - The segments to join.
  * @returns The joined path.
  */
@@ -226,11 +225,11 @@ export function joinPath(...items: string[]): string {
     const parts: string[] = [];
     items.forEach((p) => {
       if (p)
-        p.split(DELIMITER).forEach((x) => {
+        p.split('/').forEach((x) => {
           if (x && x.trim().length) parts.push(x);
         });
     });
-    return parts.join(DELIMITER);
+    return parts.join('/');
   } else return '';
 }
 

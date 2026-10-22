@@ -243,18 +243,3 @@ export function readIdpList(): IdpAttributes[] {
 
   return idpList;
 }
-
-/**
- * Sanitizes objects by replacing sensitive data with a REDACTED string value.
- * @param data - An arbitrary object.
- * @param fields - An array of field strings to sanitize on.
- * @returns An arbitrary object with specified secret fields marked as redacted.
- */
-export function redactSecrets(data: Record<string, unknown>, fields: string[]): unknown {
-  if (fields && Array.isArray(fields) && fields.length) {
-    fields.forEach((field) => {
-      if (data[field]) data[field] = 'REDACTED';
-    });
-  }
-  return data;
-}

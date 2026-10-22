@@ -1,11 +1,3 @@
-export const BasicResponse = {
-  YES: 'Yes',
-  NO: 'No',
-  UNSURE: 'Unsure'
-} as const;
-
-export type BasicResponse = (typeof BasicResponse)[keyof typeof BasicResponse];
-
 export const ButtonMode = {
   BUTTON: 0,
   ICON: 1
@@ -60,11 +52,3 @@ export const ToastTimeout = {
 } as const;
 
 export type ToastTimeout = (typeof ToastTimeout)[keyof typeof ToastTimeout];
-
-export const UserSearchParams = {
-  FIRST_NAME: 'First name',
-  LAST_NAME: 'Last name',
-  EMAIL: 'Email'
-} as const;
-
-export type UserSearchParams = (typeof UserSearchParams)[keyof typeof UserSearchParams];
