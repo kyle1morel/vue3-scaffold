@@ -7,6 +7,33 @@ commit-msg:
     lint-commit:
       run: node_modules/.bin/commitlint --config commitlint.config.ts --edit {1}
 
+# Jobs run in order, so each file is formatted before it is linted.
+pre-commit:
+  jobs:
+    - name: app-format
+      root: app/
+      run: node_modules/.bin/prettier --write --ignore-unknown {staged_files}
+      stage_fixed: true
+    - name: app-lint
+      root: app/
+      glob: "*.{js,mjs,ts,mts}"
+      run: node_modules/.bin/eslint --fix --no-warn-ignored {staged_files}
+      stage_fixed: true
+    - name: frontend-format
+      root: frontend/
+      run: node_modules/.bin/prettier --write --ignore-unknown {staged_files}
+      stage_fixed: true
+    - name: frontend-test-blank-lines
+      root: frontend/
+      glob: "*.spec.ts"
+      run: node format-test-blank-lines.mjs
+      stage_fixed: true
+    - name: frontend-lint
+      root: frontend/
+      glob: "*.{js,mjs,cjs,ts,mts,cts,vue}"
+      run: node_modules/.bin/eslint --fix --no-warn-ignored {staged_files}
+      stage_fixed: true
+
 pre-push:
   commands:
     lint-branch:
