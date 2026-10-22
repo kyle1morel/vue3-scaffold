@@ -26,7 +26,9 @@ const appRouter = express.Router();
 const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
+// Static files are cheap to serve, and counting them would throttle a few hard refreshes
 app.use(
+  ['/api', '/config'],
   rateLimit({
     handler: (req: Request, res: Response): void => {
       new Problem(429, { detail: 'Too many requests, please try again later.' }).send(req, res);
@@ -106,12 +108,16 @@ appRouter.get('/config', (_req: Request, res: Response, next: NextFunction): voi
 // Base API Directory
 appRouter.use('/api', router);
 
-// Host the static frontend assets
-appRouter.use('/', express.static(join(import.meta.dirname, './dist')));
+// Host the static frontend assets; hashed filenames change whenever content does, so browsers can keep them forever
+appRouter.use('/assets', express.static(join(import.meta.dirname, './dist/assets'), { immutable: true, maxAge: '1y' }));
+// index.html is left to the fallback below so it always gets no-cache
+appRouter.use('/', express.static(join(import.meta.dirname, './dist'), { index: false }));
 
-// SPA history fallback: client routes get index.html, while unknown API paths and missing files stay 404
+// SPA history fallback: client routes get index.html, while unknown API paths and missing files stay 404.
+// index.html must always revalidate, as it points at the current build's hashed assets.
 appRouter.get('/{*splat}', (req: Request, res: Response, next: NextFunction): void => {
   if (req.path.startsWith('/api') || extname(req.path)) return next();
+  res.set('Cache-Control', 'no-cache');
   res.sendFile(join(import.meta.dirname, './dist/index.html'));
 });
 
