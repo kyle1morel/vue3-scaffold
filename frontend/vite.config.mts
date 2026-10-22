@@ -7,6 +7,8 @@ import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import vueDevTools from 'vite-plugin-vue-devtools';
 
+import pkg from './package.json' with { type: 'json' };
+
 const proxyObject = {
   target: 'http://localhost:8080',
   ws: true,
@@ -16,6 +18,9 @@ const proxyObject = {
 // https://vitejs.dev/config/
 export default defineConfig({
   // base: './',
+  define: {
+    'import.meta.env.APP_VERSION': JSON.stringify(pkg.version)
+  },
   plugins: [tailwindcss(), vue(), vueDevTools(), vueJsx()],
   resolve: {
     alias: {
