@@ -8,9 +8,11 @@
     "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
     "lokalise.i18n-ally",
+    "prisma.prisma",
     "redhat.vscode-yaml",
     "ryanluker.vscode-coverage-gutters",
     "usernamehw.errorlens",
+    "vitest.explorer",
     "vue.volar"
   ]
 }
