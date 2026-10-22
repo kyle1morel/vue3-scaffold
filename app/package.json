@@ -50,7 +50,7 @@
     "dev": "node --watch --watch-preserve-output --env-file-if-exists=.env ./server.ts",
     "start": "node ./server.ts",
     "test": "vitest run --coverage",
-    "test:watch": "vitest",
+    "test:dev": "vitest",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
