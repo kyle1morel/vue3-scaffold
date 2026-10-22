@@ -69,7 +69,7 @@ export const emailListSchema = (min: number, message: string) =>
         z
           .string()
           .trim()
-          .regex(new RegExp(Regex.EMAIL), { error: (issue) => `${issue.input} is not a valid email` })
+          .pipe(z.email({ pattern: Regex.EMAIL, error: (issue) => `${issue.input} is not a valid email` }))
       )
       .min(min, message)
   );

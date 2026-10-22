@@ -14,15 +14,13 @@ export const IdentityProviderKind = {
 } as const;
 export type IdentityProviderKind = (typeof IdentityProviderKind)[keyof typeof IdentityProviderKind];
 
+// Custom patterns only; prefer zod's built-in formats (z.uuidv4(), z.iso.date(), ...) where one exists
 export const Regex = {
-  DATE_ONLY: String.raw`^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$`,
   /**
-   * Generic email regex requiring a domain of at least 2 chars, plain string as `String.raw` can't hold its backtick.
+   * Generic email regex requiring a domain of at least 2 chars.
    * @see {@link https://emailregex.com/}
    */
-  EMAIL: '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]{2,})+$',
-  PHONE_NUMBER: String.raw`^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$`,
-  TIMETZ: String.raw`^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(\.\d{1,7})?Z$`,
-  UUIDV4: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$'
+  EMAIL: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]{2,})+$/,
+  PHONE_NUMBER: /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/,
+  TIMETZ: /^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(\.\d{1,7})?Z$/
 } as const;
-export type Regex = (typeof Regex)[keyof typeof Regex];
