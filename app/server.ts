@@ -15,10 +15,8 @@ const port = normalizePort(process.env.SERVER_PORT ?? '3000');
 // Time for the load balancer to see readiness fail and stop routing here; skipped locally so restarts stay quick
 const DRAIN_MS = process.env.NODE_ENV === 'production' ? 5000 : 0;
 
-// Prevent unhandled rejections from crashing application
-process.on('unhandledRejection', (err: Error): void => {
-  if (err?.stack) log.error(err);
-});
+// Log crashes through pino before Node exits; unhandled rejections are thrown as uncaught exceptions by default
+process.on('uncaughtExceptionMonitor', (err, origin) => log.fatal({ err, origin }, 'Process crashed'));
 
 // Graceful shutdown support
 ['SIGHUP', 'SIGINT', 'SIGTERM', 'SIGUSR1', 'SIGUSR2'].forEach((signal) => {

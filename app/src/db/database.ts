@@ -9,7 +9,7 @@ const log = getLogger(import.meta.filename);
 
 const adapter = new PrismaPg({ connectionString: getDatabaseUrl(), max: Number(process.env.SERVER_DB_POOL_MAX) });
 
-// Note: These two types are a workaround for using Prisma's TransactionClient type while also extending the client.
+// These two types are a workaround for using Prisma's TransactionClient type while also extending the client.
 // The interface is necessary for function args to not show an expanded type
 // see - https://github.com/prisma/prisma/issues/20738
 export type ExtendedClient = typeof prisma;
@@ -17,12 +17,20 @@ type _PrismaTransactionClient = Parameters<Parameters<ExtendedClient['$transacti
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface PrismaTransactionClient extends _PrismaTransactionClient {}
 
-const prisma = new PrismaClient({
-  // TODO: https://www.prisma.io/docs/orm/prisma-client/observability-and-logging/logging#event-based-logging
-  log: ['error', 'warn'],
+const client = new PrismaClient({
+  log: [
+    { emit: 'event', level: 'error' },
+    { emit: 'event', level: 'warn' }
+  ],
   errorFormat: 'pretty',
   adapter
-}).$extends(filterDeletedTransform);
+});
+
+// Route Prisma's own logs through pino so they are structured like everything else; must happen before $extends
+client.$on('error', (e) => log.error({ target: e.target }, e.message));
+client.$on('warn', (e) => log.warn({ target: e.target }, e.message));
+
+const prisma = client.$extends(filterDeletedTransform);
 
 export default prisma;
 export type PrismaClientType = typeof prisma;

@@ -135,9 +135,8 @@ export function errorHandler(
   _next: NextFunction // eslint-disable-line @typescript-eslint/no-unused-vars
 ): void {
   if (err instanceof Problem) {
-    // TODO: every Problem (incl. 4xx) is logged here as an error and again by httpLogger as warn;
-    // consider only logging 5xx here.
-    log.error(err);
+    // httpLogger already logs every failed response; only 5xx needs the detail and stack logged here
+    if (err.status >= 500) log.error(err);
     err.send(req, res);
   } else {
     if (err.stack) log.error(err);
