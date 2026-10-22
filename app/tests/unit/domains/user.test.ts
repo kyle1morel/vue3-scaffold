@@ -45,7 +45,7 @@ describe('user domain', () => {
     it('should create new user when user does not exist', async () => {
       const newUser = {
         ...TEST_IDIR_USER_1,
-        userId: 'new-user-id'
+        id: 'new-user-id'
       };
 
       mockRepos.user.createIfNotExists.mockResolvedValue(newUser as never);
@@ -68,7 +68,7 @@ describe('user domain', () => {
         { sub: 'new-sub-123' },
         expect.objectContaining({
           bceidBusinessName: null,
-          userId: expect.any(String),
+          id: expect.any(String),
           sub: 'new-sub-123',
           fullName: newUser.fullName,
           email: newUser.email,
@@ -81,7 +81,7 @@ describe('user domain', () => {
     });
 
     it('should create identity provider if idp is provided and does not exist', async () => {
-      const newUser = { ...TEST_IDIR_USER_1, userId: 'new-user-id' };
+      const newUser = { ...TEST_IDIR_USER_1, id: 'new-user-id' };
       mockRepos.user.createIfNotExists.mockResolvedValue(newUser as never);
 
       const jwtData: JwtUser = {
@@ -104,7 +104,7 @@ describe('user domain', () => {
     });
 
     it('should not create identity provider if idp is not provided', async () => {
-      const newUser = { ...TEST_IDIR_USER_1, userId: 'new-user-id', idp: null };
+      const newUser = { ...TEST_IDIR_USER_1, id: 'new-user-id', idp: null };
       mockRepos.user.createIfNotExists.mockResolvedValue(newUser as never);
 
       const jwtData: JwtUser = {
@@ -124,7 +124,7 @@ describe('user domain', () => {
     });
 
     it('should set active status to true for new user', async () => {
-      const newUser = { ...TEST_IDIR_USER_1, userId: 'new-user-id', active: true };
+      const newUser = { ...TEST_IDIR_USER_1, id: 'new-user-id', active: true };
       mockRepos.user.createIfNotExists.mockResolvedValue(newUser as never);
 
       const jwtData: JwtUser = {
@@ -160,7 +160,7 @@ describe('user domain', () => {
         active: true
       };
 
-      const result = await updateUser(mockRepos, TEST_IDIR_USER_1.userId, jwtData);
+      const result = await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
 
       expect(result).toEqual(TEST_IDIR_USER_1);
       expect(mockRepos.user.update).not.toHaveBeenCalled();
@@ -183,11 +183,11 @@ describe('user domain', () => {
         active: true
       };
 
-      const result = await updateUser(mockRepos, TEST_IDIR_USER_1.userId, jwtData);
+      const result = await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
 
       expect(result).toEqual(updatedUser);
       expect(mockRepos.user.update).toHaveBeenCalledWith(
-        { userId: TEST_IDIR_USER_1.userId },
+        { id: TEST_IDIR_USER_1.id },
         expect.objectContaining({ email: 'newemail@example.com' })
       );
     });
@@ -209,7 +209,7 @@ describe('user domain', () => {
         active: true
       };
 
-      await updateUser(mockRepos, TEST_IDIR_USER_1.userId, jwtData);
+      await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
 
       expect(mockRepos.user.update).toHaveBeenCalled();
     });
@@ -232,7 +232,7 @@ describe('user domain', () => {
         active: false
       };
 
-      await updateUser(mockRepos, TEST_IDIR_USER_1.userId, jwtData);
+      await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
 
       expect(mockRepos.user.update).toHaveBeenCalled();
       const updateCall = mockRepos.user.update.mock.calls[0]?.[1];
@@ -257,7 +257,7 @@ describe('user domain', () => {
         active: true
       };
 
-      await updateUser(mockRepos, TEST_IDIR_USER_1.userId, jwtData);
+      await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
 
       expect(mockRepos.identityProvider.createIfNotExists).toHaveBeenCalledWith(
         { idp: IdentityProviderKind.AZUREIDIR },
@@ -311,7 +311,7 @@ describe('user domain', () => {
         active: true
       };
 
-      await updateUser(mockRepos, TEST_IDIR_USER_1.userId, jwtData);
+      await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
 
       expect(mockRepos.user.update).toHaveBeenCalled();
       const updateCall = mockRepos.user.update.mock.calls[0]?.[1];

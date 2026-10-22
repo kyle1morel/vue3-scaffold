@@ -5,7 +5,7 @@ import type { User, UserSearchParameters } from '#types';
 /**
  * Search and filter for specific users
  * @param params - Optional filtering parameters
- * @param params.userId - Optional array of uuids representing the user subject
+ * @param params.id - Optional array of user ids
  * @param params.idp - Optional array of identity providers
  * @param params.sub - Optional sub string to match on
  * @param params.email - Optional email string to match on

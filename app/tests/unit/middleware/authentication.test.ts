@@ -79,7 +79,7 @@ describe('authentication middleware', () => {
     it('sets currentContext to BEARER, performs login, and calls next if token is valid', async () => {
       const token = 'valid.token.here';
       const payload = { sub: 'user123', exp: 9999999999, identity_provider: IdentityProviderKind.AZUREIDIR };
-      const user = { userId: 'db-user-id' };
+      const user = { id: 'db-user-id' };
 
       mockedGetAuthHeader.mockReturnValue(`Bearer ${token}`);
       mockedGetBearerToken.mockReturnValue(token);
@@ -94,13 +94,13 @@ describe('authentication middleware', () => {
         authType: AuthType.BEARER,
         bearerToken: token,
         tokenPayload: payload,
-        userId: user.userId
+        userId: user.id
       });
       expect(mockedLogin).toHaveBeenCalledTimes(1);
       expect(next).toHaveBeenCalledWith();
     });
 
-    it('passes a 500 Problem to next if user login fails to return a userId', async () => {
+    it('passes a 500 Problem to next if user login fails to return an id', async () => {
       const token = 'valid.token.here';
 
       mockedGetAuthHeader.mockReturnValue(`Bearer ${token}`);

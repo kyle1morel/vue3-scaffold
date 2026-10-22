@@ -354,13 +354,13 @@ describe('filterDeleted extension', () => {
       await ext.query.$allModels.$allOperations({
         model: 'identity_provider',
         operation: 'findMany',
-        args: { select: { idp: true, user: { select: { userId: true } } } },
+        args: { select: { idp: true, user: { select: { id: true } } } },
         query
       });
 
       expect(query).toHaveBeenCalledWith({
         where: { deletedAt: null },
-        select: { idp: true, user: { select: { userId: true }, where: { deletedAt: null } } }
+        select: { idp: true, user: { select: { id: true }, where: { deletedAt: null } } }
       });
     });
 

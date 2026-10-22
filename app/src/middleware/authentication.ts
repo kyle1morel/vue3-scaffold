@@ -38,13 +38,13 @@ export const hasAuthentication = () => {
         const payload = await getVerifiedPayload(token, req, res);
         const user = await loginService(payload);
 
-        if (!user?.userId) throw new Problem(500, { detail: 'Failed to log user in', instance: req.originalUrl });
+        if (!user?.id) throw new Problem(500, { detail: 'Failed to log user in', instance: req.originalUrl });
 
         res.locals.currentContext = Object.freeze({
           authType: AuthType.BEARER,
           bearerToken: token,
           tokenPayload: payload,
-          userId: user.userId
+          userId: user.id
         });
       }
 

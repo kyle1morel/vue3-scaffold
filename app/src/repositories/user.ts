@@ -12,7 +12,7 @@ export class UserRepository extends WritableRepository<PrismaTransactionClient['
   public async findById(id: string) {
     return await this.findUnique({
       where: {
-        userId: id
+        id
       }
     });
   }
@@ -30,7 +30,7 @@ export class UserRepository extends WritableRepository<PrismaTransactionClient['
       where: {
         AND: [
           {
-            userId: { in: params.userId }
+            id: { in: params.id }
           },
           {
             idp: { in: params.idp, mode: 'insensitive' }
@@ -56,7 +56,7 @@ export class UserRepository extends WritableRepository<PrismaTransactionClient['
         ],
         NOT: [
           {
-            userId: SYSTEM_ID
+            id: SYSTEM_ID
           }
         ]
       }

@@ -30,7 +30,7 @@ components:
     User:
       type: object
       properties:
-        userId:
+        id:
           type: string
         idp:
           type: string
@@ -76,7 +76,7 @@ components:
           nullable: true
           format: date-time
       required:
-        - userId
+        - id
         - idp
         - sub
         - email
@@ -123,7 +123,7 @@ paths:
             schema:
               type: object
               properties:
-                userId:
+                id:
                   type: array
                   items:
                     type: string

@@ -4,7 +4,7 @@
 // (search vs. match vs. list) often validate different field sets but share one filter shape.
 
 export interface UserSearchParameters {
-  userId?: string[];
+  id?: string[];
   idp?: string[];
   sub?: string;
   email?: string;

@@ -19,16 +19,16 @@ describe('user service', () => {
   describe('searchUsers', () => {
     it('posts search criteria and returns users', async () => {
       const filters = {
-        userId: ['user-1']
+        id: ['user-1']
       };
 
       const users = [
         {
-          userId: 'user-1',
+          id: 'user-1',
           firstName: 'John'
         },
         {
-          userId: 'user-2',
+          id: 'user-2',
           firstName: 'Jane'
         }
       ];

@@ -8,7 +8,7 @@ export const searchUsersController = async (
   res: Response<User[]>
 ) => {
   const response = await searchUsersService({
-    userId: req.body.userId,
+    id: req.body.id,
     idp: req.body.idp,
     sub: req.body.sub,
     email: req.body.email,

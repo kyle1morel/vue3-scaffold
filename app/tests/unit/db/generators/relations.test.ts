@@ -24,7 +24,7 @@ describe('buildRelationsMap', () => {
       {
         name: 'user',
         fields: [
-          { name: 'userId', kind: 'scalar', type: 'String', isList: false },
+          { name: 'id', kind: 'scalar', type: 'String', isList: false },
           { name: 'sub', kind: 'scalar', type: 'String', isList: false }
         ]
       }

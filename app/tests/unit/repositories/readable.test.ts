@@ -17,10 +17,10 @@ describe('ReadableRepository', () => {
       const repo = new TestReadableRepository();
       prismaTxMock.user.count.mockResolvedValueOnce(3);
 
-      const result = await repo.count({ where: { userId: 'e1' } });
+      const result = await repo.count({ where: { id: 'e1' } });
 
       expect(prismaTxMock.user.count).toHaveBeenCalledTimes(1);
-      expect(prismaTxMock.user.count).toHaveBeenCalledWith({ where: { userId: 'e1' } });
+      expect(prismaTxMock.user.count).toHaveBeenCalledWith({ where: { id: 'e1' } });
       expect(result).toBe(3);
     });
   });
@@ -30,10 +30,10 @@ describe('ReadableRepository', () => {
       const repo = new TestReadableRepository();
       prismaTxMock.user.findMany.mockResolvedValueOnce([TEST_IDIR_USER_1]);
 
-      const result = await repo.findMany({ where: { userId: 'e1' } });
+      const result = await repo.findMany({ where: { id: 'e1' } });
 
       expect(prismaTxMock.user.findMany).toHaveBeenCalledTimes(1);
-      expect(prismaTxMock.user.findMany).toHaveBeenCalledWith({ where: { userId: 'e1' } });
+      expect(prismaTxMock.user.findMany).toHaveBeenCalledWith({ where: { id: 'e1' } });
       expect(result).toStrictEqual([TEST_IDIR_USER_1]);
     });
   });
@@ -43,10 +43,10 @@ describe('ReadableRepository', () => {
       const repo = new TestReadableRepository();
       prismaTxMock.user.findFirst.mockResolvedValueOnce(TEST_IDIR_USER_1);
 
-      const result = await repo.findFirst({ where: { userId: 'e1' } });
+      const result = await repo.findFirst({ where: { id: 'e1' } });
 
       expect(prismaTxMock.user.findFirst).toHaveBeenCalledTimes(1);
-      expect(prismaTxMock.user.findFirst).toHaveBeenCalledWith({ where: { userId: 'e1' } });
+      expect(prismaTxMock.user.findFirst).toHaveBeenCalledWith({ where: { id: 'e1' } });
       expect(result).toStrictEqual(TEST_IDIR_USER_1);
     });
   });
@@ -56,10 +56,10 @@ describe('ReadableRepository', () => {
       const repo = new TestReadableRepository();
       prismaTxMock.user.findFirstOrThrow.mockResolvedValueOnce(TEST_IDIR_USER_1);
 
-      const result = await repo.findFirstOrThrow({ where: { userId: 'e1' } });
+      const result = await repo.findFirstOrThrow({ where: { id: 'e1' } });
 
       expect(prismaTxMock.user.findFirstOrThrow).toHaveBeenCalledTimes(1);
-      expect(prismaTxMock.user.findFirstOrThrow).toHaveBeenCalledWith({ where: { userId: 'e1' } });
+      expect(prismaTxMock.user.findFirstOrThrow).toHaveBeenCalledWith({ where: { id: 'e1' } });
       expect(result).toStrictEqual(TEST_IDIR_USER_1);
     });
   });
@@ -69,10 +69,10 @@ describe('ReadableRepository', () => {
       const repo = new TestReadableRepository();
       prismaTxMock.user.findUnique.mockResolvedValueOnce(TEST_IDIR_USER_1);
 
-      const result = await repo.findUnique({ where: { userId: 'e1' } });
+      const result = await repo.findUnique({ where: { id: 'e1' } });
 
       expect(prismaTxMock.user.findUnique).toHaveBeenCalledTimes(1);
-      expect(prismaTxMock.user.findUnique).toHaveBeenCalledWith({ where: { userId: 'e1' } });
+      expect(prismaTxMock.user.findUnique).toHaveBeenCalledWith({ where: { id: 'e1' } });
       expect(result).toStrictEqual(TEST_IDIR_USER_1);
     });
   });
@@ -82,9 +82,9 @@ describe('ReadableRepository', () => {
       const repo = new TestReadableRepository();
       prismaTxMock.user.findUnique.mockResolvedValueOnce(TEST_IDIR_USER_1);
 
-      const result = await repo.findUniqueOrThrow({ where: { userId: 'e1' } });
+      const result = await repo.findUniqueOrThrow({ where: { id: 'e1' } });
 
-      expect(prismaTxMock.user.findUnique).toHaveBeenCalledWith({ where: { userId: 'e1' } });
+      expect(prismaTxMock.user.findUnique).toHaveBeenCalledWith({ where: { id: 'e1' } });
       expect(result).toStrictEqual(TEST_IDIR_USER_1);
     });
 
@@ -92,7 +92,7 @@ describe('ReadableRepository', () => {
       const repo = new TestReadableRepository();
       prismaTxMock.user.findUnique.mockResolvedValueOnce(null);
 
-      await expect(repo.findUniqueOrThrow({ where: { userId: 'e1' } })).rejects.toThrow(
+      await expect(repo.findUniqueOrThrow({ where: { id: 'e1' } })).rejects.toThrow(
         '[404] Record Not Found (/problems/not-found)'
       );
     });
@@ -103,10 +103,10 @@ describe('ReadableRepository', () => {
       const repo = new TestReadableRepository(true);
       prismaTxMock.user.findMany.mockResolvedValueOnce([]);
 
-      await repo.findMany({ where: { userId: 'e1' } });
+      await repo.findMany({ where: { id: 'e1' } });
 
       expect(prismaTxMock.user.findMany).toHaveBeenCalledWith({
-        where: { userId: 'e1', deletedAt: null }
+        where: { id: 'e1', deletedAt: null }
       });
     });
 
@@ -125,9 +125,9 @@ describe('ReadableRepository', () => {
         const repo = new TestReadableRepository(true);
         const read = repo[method] as (args: unknown, options: { includeDeleted: boolean }) => Promise<unknown>;
 
-        await read.call(repo, { where: { userId: 'e1' } }, { includeDeleted: true });
+        await read.call(repo, { where: { id: 'e1' } }, { includeDeleted: true });
 
-        expect(prismaTxMock.user[method]).toHaveBeenCalledWith({ where: { userId: 'e1' }, includeDeleted: true });
+        expect(prismaTxMock.user[method]).toHaveBeenCalledWith({ where: { id: 'e1' }, includeDeleted: true });
       }
     );
 
@@ -143,18 +143,18 @@ describe('ReadableRepository', () => {
       // The extension filters every model with deletedAt, regardless of this repository setting
       const repo = new TestReadableRepository(false);
 
-      await repo.findMany({ where: { userId: 'e1' } }, { includeDeleted: true });
+      await repo.findMany({ where: { id: 'e1' } }, { includeDeleted: true });
 
-      expect(prismaTxMock.user.findMany).toHaveBeenCalledWith({ where: { userId: 'e1' }, includeDeleted: true });
+      expect(prismaTxMock.user.findMany).toHaveBeenCalledWith({ where: { id: 'e1' }, includeDeleted: true });
     });
 
     it('does not add deletedAt:null when soft delete is disabled', async () => {
       const repo = new TestReadableRepository(false);
       prismaTxMock.user.findMany.mockResolvedValueOnce([]);
 
-      await repo.findMany({ where: { userId: 'e1' } });
+      await repo.findMany({ where: { id: 'e1' } });
 
-      expect(prismaTxMock.user.findMany).toHaveBeenCalledWith({ where: { userId: 'e1' } });
+      expect(prismaTxMock.user.findMany).toHaveBeenCalledWith({ where: { id: 'e1' } });
     });
   });
 });

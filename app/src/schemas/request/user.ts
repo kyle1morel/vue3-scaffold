@@ -6,7 +6,7 @@ export const schema = {
   searchUsers: {
     body: z
       .object({
-        userId: z.array(uuidv4).optional(),
+        id: z.array(uuidv4).optional(),
         idp: z.array(z.string().max(255)).optional(),
         sub: z.string().max(255).optional(),
         email: z.string().max(255).optional(),

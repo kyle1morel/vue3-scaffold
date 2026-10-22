@@ -14,7 +14,7 @@ class TestWritableRepository extends WritableRepository<PrismaTransactionClient[
 }
 
 const CREATE_DATA = {
-  userId: 'e1',
+  id: 'e1',
   sub: 'testuser'
 };
 
@@ -48,11 +48,11 @@ describe('WritableRepository', () => {
       const repo = new TestWritableRepository();
       prismaTxMock.user.upsert.mockResolvedValueOnce(TEST_IDIR_USER_1);
 
-      const result = await repo.createIfNotExists({ userId: 'e1' }, CREATE_DATA);
+      const result = await repo.createIfNotExists({ id: 'e1' }, CREATE_DATA);
 
       expect(prismaTxMock.user.upsert).toHaveBeenCalledTimes(1);
       expect(prismaTxMock.user.upsert).toHaveBeenCalledWith({
-        where: { userId: 'e1' },
+        where: { id: 'e1' },
         create: { ...CREATE_DATA, createdAt: expect.any(Date), createdBy: PRINCIPAL },
         update: {}
       });
@@ -65,11 +65,11 @@ describe('WritableRepository', () => {
       const repo = new TestWritableRepository();
       prismaTxMock.user.update.mockResolvedValueOnce(TEST_IDIR_USER_1);
 
-      const result = await repo.update({ userId: 'e1' }, { active: false });
+      const result = await repo.update({ id: 'e1' }, { active: false });
 
       expect(prismaTxMock.user.update).toHaveBeenCalledTimes(1);
       expect(prismaTxMock.user.update).toHaveBeenCalledWith({
-        where: { userId: 'e1' },
+        where: { id: 'e1' },
         data: { active: false, updatedAt: expect.any(Date), updatedBy: PRINCIPAL }
       });
       expect(result).toStrictEqual(TEST_IDIR_USER_1);
@@ -81,11 +81,11 @@ describe('WritableRepository', () => {
       const repo = new TestWritableRepository();
       prismaTxMock.user.upsert.mockResolvedValueOnce(TEST_IDIR_USER_1);
 
-      const result = await repo.upsert({ userId: 'e1' }, CREATE_DATA, { active: false });
+      const result = await repo.upsert({ id: 'e1' }, CREATE_DATA, { active: false });
 
       expect(prismaTxMock.user.upsert).toHaveBeenCalledTimes(1);
       expect(prismaTxMock.user.upsert).toHaveBeenCalledWith({
-        where: { userId: 'e1' },
+        where: { id: 'e1' },
         create: { ...CREATE_DATA, createdAt: expect.any(Date), createdBy: PRINCIPAL },
         update: { active: false, updatedAt: expect.any(Date), updatedBy: PRINCIPAL }
       });
@@ -98,11 +98,11 @@ describe('WritableRepository', () => {
       const repo = new TestWritableRepository(true);
       prismaTxMock.user.update.mockResolvedValueOnce(TEST_IDIR_USER_1);
 
-      const result = await repo.delete({ userId: 'e1' });
+      const result = await repo.delete({ id: 'e1' });
 
       expect(prismaTxMock.user.update).toHaveBeenCalledTimes(1);
       expect(prismaTxMock.user.update).toHaveBeenCalledWith({
-        where: { userId: 'e1' },
+        where: { id: 'e1' },
         data: {
           updatedAt: expect.any(Date),
           updatedBy: PRINCIPAL,
@@ -118,10 +118,10 @@ describe('WritableRepository', () => {
       const repo = new TestWritableRepository(true);
       prismaTxMock.user.delete.mockResolvedValueOnce(TEST_IDIR_USER_1);
 
-      const result = await repo.delete({ userId: 'e1' }, { hard: true });
+      const result = await repo.delete({ id: 'e1' }, { hard: true });
 
       expect(prismaTxMock.user.delete).toHaveBeenCalledTimes(1);
-      expect(prismaTxMock.user.delete).toHaveBeenCalledWith({ where: { userId: 'e1' } });
+      expect(prismaTxMock.user.delete).toHaveBeenCalledWith({ where: { id: 'e1' } });
       expect(prismaTxMock.user.update).not.toHaveBeenCalled();
       expect(result).toStrictEqual(TEST_IDIR_USER_1);
     });
@@ -130,10 +130,10 @@ describe('WritableRepository', () => {
       const repo = new TestWritableRepository(false);
       prismaTxMock.user.delete.mockResolvedValueOnce(TEST_IDIR_USER_1);
 
-      const result = await repo.delete({ userId: 'e1' });
+      const result = await repo.delete({ id: 'e1' });
 
       expect(prismaTxMock.user.delete).toHaveBeenCalledTimes(1);
-      expect(prismaTxMock.user.delete).toHaveBeenCalledWith({ where: { userId: 'e1' } });
+      expect(prismaTxMock.user.delete).toHaveBeenCalledWith({ where: { id: 'e1' } });
       expect(prismaTxMock.user.update).not.toHaveBeenCalled();
       expect(result).toStrictEqual(TEST_IDIR_USER_1);
     });

@@ -26,7 +26,7 @@ describe('login service', () => {
         identity_provider: IdentityProviderKind.AZUREIDIR
       };
 
-      const mockUser = { userId: 'user-1', sub: 'existing-sub' };
+      const mockUser = { id: 'user-1', sub: 'existing-sub' };
 
       mockRepos.user.findBySub.mockResolvedValueOnce(mockUser as never);
       updateUserSpy.mockResolvedValueOnce(mockUser as never);
@@ -52,7 +52,7 @@ describe('login service', () => {
         identity_provider: IdentityProviderKind.AZUREIDIR
       };
 
-      const mockNewUser = { userId: 'user-2', sub: 'new-sub' };
+      const mockNewUser = { id: 'user-2', sub: 'new-sub' };
 
       mockRepos.user.findBySub.mockResolvedValueOnce(null as never);
       createUserSpy.mockResolvedValueOnce(mockNewUser as never);

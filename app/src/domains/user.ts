@@ -17,7 +17,7 @@ export const createUser = async (
 
   const newUser = {
     bceidBusinessName: data.bceidBusinessName ?? null,
-    userId: randomUUID(),
+    id: randomUUID(),
     sub: data.sub,
     fullName: data.fullName,
     email: data.email,
@@ -50,5 +50,5 @@ export const updateUser = async (
     await repositories.identityProvider.createIfNotExists({ idp: data.idp }, { idp: data.idp });
   }
 
-  return await repositories.user.update({ userId }, patch);
+  return await repositories.user.update({ id: userId }, patch);
 };

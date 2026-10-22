@@ -49,7 +49,7 @@ export const loginService = async (token: jwt.JwtPayload): Promise<User> => {
     const oldUser = await user.findBySub(newUser.sub);
 
     return oldUser
-      ? await updateUser({ identityProvider, user }, oldUser.userId, newUser)
+      ? await updateUser({ identityProvider, user }, oldUser.id, newUser)
       : await createUser({ identityProvider, user }, newUser);
   });
 };

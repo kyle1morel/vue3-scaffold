@@ -37,7 +37,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
   await db.schema
     .withSchema('app')
     .createTable('user')
-    .addColumn('user_id', 'uuid', (col) => col.primaryKey())
+    .addColumn('id', 'uuid', (col) => col.primaryKey())
     .addColumn('idp', 'text')
     .addColumn('sub', 'text', (col) => col.notNull())
     .addColumn('email', 'text')
@@ -124,7 +124,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
   await createAuditLogTrigger(db, 'app', 'user');
 
   // Populate Baseline Data
-  await sql`insert into app.user (user_id, sub, active, created_by)
+  await sql`insert into app.user (id, sub, active, created_by)
     values (${SYSTEM_ID}, 'system', true, ${SYSTEM_ID})`.execute(db);
 }
 

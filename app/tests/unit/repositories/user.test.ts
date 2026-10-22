@@ -9,7 +9,7 @@ const makeRepo = () => new UserRepository(prismaTxMock, 'principal-id');
 
 describe('UserRepository', () => {
   describe('findById', () => {
-    it('queries user by userId', async () => {
+    it('queries user by id', async () => {
       prismaTxMock.user.findUnique.mockResolvedValueOnce(TEST_IDIR_USER_1);
 
       const result = await makeRepo().findById('user-1');
@@ -17,7 +17,7 @@ describe('UserRepository', () => {
       expect(prismaTxMock.user.findUnique).toHaveBeenCalledTimes(1);
       expect(prismaTxMock.user.findUnique).toHaveBeenCalledWith({
         where: {
-          userId: 'user-1'
+          id: 'user-1'
         }
       });
       expect(result).toEqual(TEST_IDIR_USER_1);
@@ -45,7 +45,7 @@ describe('UserRepository', () => {
       prismaTxMock.user.findMany.mockResolvedValueOnce([TEST_IDIR_USER_1]);
 
       const params = {
-        userId: ['user-1', 'user-2'],
+        id: ['user-1', 'user-2'],
         idp: ['AZUREIDIR', 'IDIR'],
         sub: 'cd90c6bf44074872',
         email: 'john',
@@ -61,7 +61,7 @@ describe('UserRepository', () => {
       expect(prismaTxMock.user.findMany).toHaveBeenCalledWith({
         where: {
           AND: [
-            { userId: { in: ['user-1', 'user-2'] } },
+            { id: { in: ['user-1', 'user-2'] } },
             { idp: { in: ['AZUREIDIR', 'IDIR'], mode: 'insensitive' } },
             { sub: { contains: 'cd90c6bf44074872', mode: 'insensitive' } },
             { email: { contains: 'john', mode: 'insensitive' } },
@@ -72,7 +72,7 @@ describe('UserRepository', () => {
           ],
           NOT: [
             {
-              userId: SYSTEM_ID
+              id: SYSTEM_ID
             }
           ]
         }
@@ -83,7 +83,7 @@ describe('UserRepository', () => {
       prismaTxMock.user.findMany.mockResolvedValueOnce([TEST_IDIR_USER_1]);
 
       const params = {
-        userId: ['user-1'],
+        id: ['user-1'],
         idp: [],
         sub: '',
         email: '',
@@ -98,7 +98,7 @@ describe('UserRepository', () => {
       const callArgs = prismaTxMock.user.findMany.mock.calls[0][0];
       expect(callArgs?.where?.NOT).toEqual([
         {
-          userId: SYSTEM_ID
+          id: SYSTEM_ID
         }
       ]);
     });
@@ -107,7 +107,7 @@ describe('UserRepository', () => {
       prismaTxMock.user.findMany.mockResolvedValueOnce([TEST_IDIR_USER_1]);
 
       const params = {
-        userId: [],
+        id: [],
         idp: ['azureidir'],
         sub: '',
         email: '',
@@ -129,7 +129,7 @@ describe('UserRepository', () => {
       prismaTxMock.user.findMany.mockResolvedValueOnce([TEST_IDIR_USER_1]);
 
       const params = {
-        userId: [],
+        id: [],
         idp: [],
         sub: 'CD90C6BF',
         email: '',
@@ -151,7 +151,7 @@ describe('UserRepository', () => {
       prismaTxMock.user.findMany.mockResolvedValueOnce([TEST_IDIR_USER_1]);
 
       const params = {
-        userId: [],
+        id: [],
         idp: [],
         sub: '',
         email: 'JOHN@EXAMPLE.COM',
@@ -173,7 +173,7 @@ describe('UserRepository', () => {
       prismaTxMock.user.findMany.mockResolvedValueOnce([TEST_IDIR_USER_1]);
 
       const params = {
-        userId: [],
+        id: [],
         idp: [],
         sub: '',
         email: '',
@@ -195,7 +195,7 @@ describe('UserRepository', () => {
       prismaTxMock.user.findMany.mockResolvedValueOnce([TEST_IDIR_USER_1]);
 
       const params = {
-        userId: [],
+        id: [],
         idp: [],
         sub: '',
         email: '',
@@ -217,7 +217,7 @@ describe('UserRepository', () => {
       prismaTxMock.user.findMany.mockResolvedValueOnce([TEST_IDIR_USER_1]);
 
       const params = {
-        userId: [],
+        id: [],
         idp: [],
         sub: '',
         email: '',
@@ -239,7 +239,7 @@ describe('UserRepository', () => {
       prismaTxMock.user.findMany.mockResolvedValueOnce([TEST_IDIR_USER_1]);
 
       const params = {
-        userId: [],
+        id: [],
         idp: [],
         sub: '',
         email: '',
@@ -261,7 +261,7 @@ describe('UserRepository', () => {
       prismaTxMock.user.findMany.mockResolvedValueOnce([]);
 
       const params = {
-        userId: [],
+        id: [],
         idp: [],
         sub: '',
         email: '',
@@ -279,12 +279,12 @@ describe('UserRepository', () => {
       });
     });
 
-    it('handles multiple userId values', async () => {
+    it('handles multiple id values', async () => {
       prismaTxMock.user.findMany.mockResolvedValueOnce([TEST_IDIR_USER_1]);
 
-      const userIds = ['user-1', 'user-2', 'user-3'];
+      const ids = ['user-1', 'user-2', 'user-3'];
       const params = {
-        userId: userIds,
+        id: ids,
         idp: [],
         sub: '',
         email: '',
@@ -298,7 +298,7 @@ describe('UserRepository', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const callArgs = prismaTxMock.user.findMany.mock.calls[0][0] as any;
       expect(callArgs.where.AND[0]).toEqual({
-        userId: { in: userIds }
+        id: { in: ids }
       });
     });
 
@@ -307,7 +307,7 @@ describe('UserRepository', () => {
 
       const idps = ['AZUREIDIR', 'IDIR', 'BCEID'];
       const params = {
-        userId: [],
+        id: [],
         idp: idps,
         sub: '',
         email: '',

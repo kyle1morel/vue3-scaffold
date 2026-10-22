@@ -29,7 +29,7 @@ describe('searchUsersController', () => {
     vi.spyOn(userService, 'searchUsersService').mockResolvedValueOnce(mockUsers);
 
     const searchParams: UserSearchParameters = {
-      userId: ['user-1'],
+      id: ['user-1'],
       idp: ['azureidir'],
       sub: 'sub-123',
       email: 'test@example.com',
@@ -64,7 +64,7 @@ describe('searchUsersController', () => {
 
     expect(userService.searchUsersService).toHaveBeenCalledTimes(1);
     expect(userService.searchUsersService).toHaveBeenCalledWith({
-      userId: undefined,
+      id: undefined,
       idp: undefined,
       sub: undefined,
       email: undefined,

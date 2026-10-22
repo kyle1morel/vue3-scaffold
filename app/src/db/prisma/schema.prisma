@@ -35,7 +35,7 @@ model identity_provider {
 }
 
 model user {
-  userId            String             @id @map("user_id") @db.Uuid
+  id                String             @id @db.Uuid
   idp               String?
   sub               String             @unique(map: "user_sub_unique")
   email             String?

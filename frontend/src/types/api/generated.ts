@@ -32,7 +32,7 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     User: {
-      userId: string;
+      id: string;
       idp: string | null;
       sub: string;
       email: string | null;
@@ -77,7 +77,7 @@ export interface operations {
     requestBody?: {
       content: {
         'application/json': {
-          userId?: string[];
+          id?: string[];
           idp?: string[];
           sub?: string;
           email?: string;
