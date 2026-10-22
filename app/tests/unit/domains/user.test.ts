@@ -25,8 +25,7 @@ describe('user domain', () => {
         firstName: 'New',
         lastName: 'Name',
         idp: IdentityProviderKind.AZUREIDIR,
-        bceidBusinessName: null,
-        active: true
+        bceidBusinessName: null
       };
 
       const result = await createUser(mockRepos, jwtData);
@@ -57,8 +56,7 @@ describe('user domain', () => {
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         idp: IdentityProviderKind.AZUREIDIR,
-        bceidBusinessName: null,
-        active: true
+        bceidBusinessName: null
       };
 
       const result = await createUser(mockRepos, jwtData);
@@ -91,8 +89,7 @@ describe('user domain', () => {
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         idp: IdentityProviderKind.AZUREIDIR,
-        bceidBusinessName: null,
-        active: true
+        bceidBusinessName: null
       };
 
       await createUser(mockRepos, jwtData);
@@ -114,8 +111,7 @@ describe('user domain', () => {
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         idp: null,
-        bceidBusinessName: null,
-        active: true
+        bceidBusinessName: null
       };
 
       await createUser(mockRepos, jwtData);
@@ -134,8 +130,7 @@ describe('user domain', () => {
         firstName: newUser.firstName,
         lastName: newUser.lastName,
         idp: null,
-        bceidBusinessName: null,
-        active: true
+        bceidBusinessName: null
       };
 
       await createUser(mockRepos, jwtData);
@@ -156,8 +151,7 @@ describe('user domain', () => {
         firstName: TEST_IDIR_USER_1.firstName,
         lastName: TEST_IDIR_USER_1.lastName,
         idp: TEST_IDIR_USER_1.idp,
-        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName,
-        active: true
+        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName
       };
 
       const result = await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
@@ -179,8 +173,7 @@ describe('user domain', () => {
         firstName: TEST_IDIR_USER_1.firstName,
         lastName: TEST_IDIR_USER_1.lastName,
         idp: TEST_IDIR_USER_1.idp,
-        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName,
-        active: true
+        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName
       };
 
       const result = await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
@@ -205,8 +198,7 @@ describe('user domain', () => {
         firstName: TEST_IDIR_USER_1.firstName,
         lastName: TEST_IDIR_USER_1.lastName,
         idp: TEST_IDIR_USER_1.idp,
-        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName,
-        active: true
+        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName
       };
 
       await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
@@ -214,12 +206,10 @@ describe('user domain', () => {
       expect(mockRepos.user.update).toHaveBeenCalled();
     });
 
-    it('should update user when active status changes', async () => {
-      const oldUser = { ...TEST_IDIR_USER_1, active: true };
-      const updatedUser = { ...TEST_IDIR_USER_1, active: false };
+    it('should not change active status, so a deactivated user stays deactivated', async () => {
+      const oldUser = { ...TEST_IDIR_USER_1, active: false };
 
       mockRepos.user.findById.mockResolvedValue(oldUser as never);
-      mockRepos.user.update.mockResolvedValue(updatedUser as never);
 
       const jwtData: JwtUser = {
         sub: TEST_IDIR_USER_1.sub,
@@ -228,15 +218,13 @@ describe('user domain', () => {
         firstName: TEST_IDIR_USER_1.firstName,
         lastName: TEST_IDIR_USER_1.lastName,
         idp: TEST_IDIR_USER_1.idp,
-        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName,
-        active: false
+        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName
       };
 
-      await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
+      const result = await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
 
-      expect(mockRepos.user.update).toHaveBeenCalled();
-      const updateCall = mockRepos.user.update.mock.calls[0]?.[1];
-      expect(updateCall?.active).toBe(false);
+      expect(result).toEqual(oldUser);
+      expect(mockRepos.user.update).not.toHaveBeenCalled();
     });
 
     it('should create identity provider if idp is provided and does not exist when updating', async () => {
@@ -253,8 +241,7 @@ describe('user domain', () => {
         firstName: TEST_IDIR_USER_1.firstName,
         lastName: TEST_IDIR_USER_1.lastName,
         idp: IdentityProviderKind.AZUREIDIR,
-        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName,
-        active: true
+        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName
       };
 
       await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);
@@ -276,8 +263,7 @@ describe('user domain', () => {
         firstName: 'Test',
         lastName: 'User',
         idp: null,
-        bceidBusinessName: null,
-        active: true
+        bceidBusinessName: null
       };
 
       try {
@@ -307,8 +293,7 @@ describe('user domain', () => {
         firstName: 'John',
         lastName: 'Doe Changed',
         idp: TEST_IDIR_USER_1.idp,
-        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName,
-        active: true
+        bceidBusinessName: TEST_IDIR_USER_1.bceidBusinessName
       };
 
       await updateUser(mockRepos, TEST_IDIR_USER_1.id, jwtData);

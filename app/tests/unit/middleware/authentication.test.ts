@@ -1,6 +1,12 @@
 import jwt from 'jsonwebtoken';
 
-import { getVerifiedPayload, hasAuthentication, jwtPayloadCache } from '#src/middleware/authentication';
+import {
+  getLoggedInUser,
+  getVerifiedPayload,
+  hasAuthentication,
+  jwtPayloadCache,
+  userCache
+} from '#src/middleware/authentication';
 import * as oidcProviders from '#src/middleware/providers/oidc';
 import { loginService } from '#src/services/login';
 import { AuthType, IdentityProviderKind } from '#src/utils/enums/application';
@@ -49,6 +55,7 @@ describe('authentication middleware', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     jwtPayloadCache.clear();
+    userCache.clear();
   });
 
   describe('hasAuthentication', () => {
@@ -79,7 +86,7 @@ describe('authentication middleware', () => {
     it('sets currentContext to BEARER, performs login, and calls next if token is valid', async () => {
       const token = 'valid.token.here';
       const payload = { sub: 'user123', exp: 9999999999, identity_provider: IdentityProviderKind.AZUREIDIR };
-      const user = { id: 'db-user-id' };
+      const user = { id: 'db-user-id', active: true };
 
       mockedGetAuthHeader.mockReturnValue(`Bearer ${token}`);
       mockedGetBearerToken.mockReturnValue(token);
@@ -113,6 +120,21 @@ describe('authentication middleware', () => {
 
       expect(next).toHaveBeenCalledWith(expect.any(Problem));
       expect(next).toHaveBeenCalledWith(expect.objectContaining({ status: 500, detail: 'Failed to log user in' }));
+    });
+
+    it('passes a 403 Problem to next if the user is deactivated', async () => {
+      const token = 'valid.token.here';
+
+      mockedGetAuthHeader.mockReturnValue(`Bearer ${token}`);
+      mockedGetBearerToken.mockReturnValue(token);
+      jwtPayloadCache.set(token, { sub: 'user123', identity_provider: IdentityProviderKind.AZUREIDIR });
+      mockedLogin.mockResolvedValue({ id: 'db-user-id', active: false } as never);
+
+      const middleware = hasAuthentication();
+      await middleware(req as Request, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(expect.objectContaining({ status: 403, detail: 'User is deactivated' }));
+      expect(res.locals?.currentContext).toBeUndefined();
     });
 
     it('passes a Problem directly to next if an underlying function throws a Problem', async () => {
@@ -161,6 +183,58 @@ describe('authentication middleware', () => {
           detail: 'An unexpected internal server error occurred during authentication'
         })
       );
+    });
+  });
+
+  describe('getLoggedInUser', () => {
+    const user = { id: 'db-user-id', active: true };
+    const payload = {
+      sub: 'user123',
+      exp: Math.floor(Date.now() / 1000) + 3600,
+      identity_provider: IdentityProviderKind.AZUREIDIR
+    };
+
+    it('logs in once per token and reuses the result', async () => {
+      mockedLogin.mockResolvedValue(user as never);
+
+      expect(await getLoggedInUser('token-a', payload)).toEqual(user);
+      expect(await getLoggedInUser('token-a', payload)).toEqual(user);
+      expect(mockedLogin).toHaveBeenCalledTimes(1);
+    });
+
+    it('shares one login across concurrent requests with the same token', async () => {
+      mockedLogin.mockResolvedValue(user as never);
+
+      await Promise.all([getLoggedInUser('token-a', payload), getLoggedInUser('token-a', payload)]);
+
+      expect(mockedLogin).toHaveBeenCalledTimes(1);
+    });
+
+    it('logs in again for a different token', async () => {
+      mockedLogin.mockResolvedValue(user as never);
+
+      await getLoggedInUser('token-a', payload);
+      await getLoggedInUser('token-b', payload);
+
+      expect(mockedLogin).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not cache a failed login, so the next request retries', async () => {
+      mockedLogin.mockRejectedValueOnce(new Error('db down')).mockResolvedValueOnce(user as never);
+
+      await expect(getLoggedInUser('token-a', payload)).rejects.toThrow('db down');
+      expect(await getLoggedInUser('token-a', payload)).toEqual(user);
+      expect(mockedLogin).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not cache the login if the token has no expiration', async () => {
+      const noExpPayload = { sub: 'user123', identity_provider: IdentityProviderKind.AZUREIDIR };
+      mockedLogin.mockResolvedValue(user as never);
+
+      await getLoggedInUser('token-a', noExpPayload);
+      await getLoggedInUser('token-a', noExpPayload);
+
+      expect(mockedLogin).toHaveBeenCalledTimes(2);
     });
   });
 

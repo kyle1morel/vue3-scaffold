@@ -8,7 +8,6 @@ import type { User } from '#types';
  * An equivalent User model object without timestamp information
  */
 export interface JwtUser {
-  active?: boolean;
   bceidBusinessName?: string | null;
   email: string | null;
   firstName: string | null;
@@ -32,8 +31,7 @@ const _tokenToUser = (token: jwt.JwtPayload): JwtUser => {
     fullName: token.name ?? token.display_name,
     lastName: token.family_name,
     email: token.email,
-    idp: token.identity_provider,
-    active: true
+    idp: token.identity_provider
   };
 };
 

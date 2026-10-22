@@ -9,10 +9,18 @@ import { getLogger } from '#src/utils/log';
 
 import type { NextFunction, Request, Response } from 'express';
 import type { JwtPayload } from 'jsonwebtoken';
+import type { User } from '#types';
 
 const log = getLogger(import.meta.filename);
 
 export const jwtPayloadCache = new LRUCache<string, jwt.JwtPayload>({
+  allowStale: false,
+  max: 100,
+  ttl: 1000 * 60 * 5
+});
+
+// Holds the pending login, so concurrent first requests with a new token share one login.
+export const userCache = new LRUCache<string, Promise<User>>({
   allowStale: false,
   max: 100,
   ttl: 1000 * 60 * 5
@@ -36,9 +44,10 @@ export const hasAuthentication = () => {
       } else {
         const token = getBearerToken(authHeader, req, res);
         const payload = await getVerifiedPayload(token, req, res);
-        const user = await loginService(payload);
+        const user = await getLoggedInUser(token, payload);
 
         if (!user?.id) throw new Problem(500, { detail: 'Failed to log user in', instance: req.originalUrl });
+        if (!user.active) throw new Problem(403, { detail: 'User is deactivated', instance: req.originalUrl });
 
         res.locals.currentContext = Object.freeze({
           authType: AuthType.BEARER,
@@ -108,8 +117,39 @@ export async function getVerifiedPayload(token: string, req: Request, res: Respo
 
   const frozenPayload = Object.freeze(payload);
 
-  const remainingMs = payload.exp ? (payload.exp - Math.floor(Date.now() / 1000)) * 1000 - 5000 : 0;
-  if (remainingMs > 0) jwtPayloadCache.set(token, frozenPayload, { ttl: remainingMs });
+  const ttl = getCacheTtl(payload);
+  if (ttl > 0) jwtPayloadCache.set(token, frozenPayload, { ttl });
 
   return payload;
+}
+
+/**
+ * Logs in the token's user once per token, rather than once per request.
+ * A token's claims never change, so repeating the login for the same token would write nothing new.
+ * @param token - The raw JWT bearer token string, used as the cache key.
+ * @param payload - The verified token payload.
+ * @returns A promise that resolves to the logged in user.
+ */
+export function getLoggedInUser(token: string, payload: JwtPayload): Promise<User> {
+  const cached = userCache.get(token);
+  if (cached) return cached;
+
+  const login = loginService(payload).catch((error: unknown) => {
+    userCache.delete(token);
+    throw error;
+  });
+
+  const ttl = getCacheTtl(payload);
+  if (ttl > 0) userCache.set(token, login, { ttl });
+
+  return login;
+}
+
+/**
+ * Gets how long a token's derived data can be cached: until 5 seconds before the token expires.
+ * @param payload - The verified token payload.
+ * @returns The cache TTL in milliseconds, or 0 if the token must not be cached.
+ */
+function getCacheTtl(payload: JwtPayload): number {
+  return payload.exp ? (payload.exp - Math.floor(Date.now() / 1000)) * 1000 - 5000 : 0;
 }
