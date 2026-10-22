@@ -23,7 +23,7 @@ router.get('/live', (_req: Request, res: Response): void => {
 
 /** Readiness Endpoint. */
 router.get('/ready', (_req: Request, res: Response): void => {
-  if (state.ready) {
+  if (state.ready && !state.shutdown) {
     res.status(200).json({ status: 'ready' });
   } else {
     res.status(503).json({ status: 'not ready' });

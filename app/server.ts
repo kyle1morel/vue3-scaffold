@@ -5,12 +5,15 @@ import { createServer } from 'node:http';
 
 import '#src/env';
 import app from './app.ts';
-import { checkDatabaseHealth } from '#src/db/database';
+import prisma, { checkDatabaseHealth } from '#src/db/database';
 import { getLogger } from '#src/utils/log';
 import { state } from './state.ts';
 
 const log = getLogger(import.meta.filename);
 const port = normalizePort(process.env.SERVER_PORT ?? '3000');
+
+// Time for the load balancer to see readiness fail and stop routing here; skipped locally so restarts stay quick
+const DRAIN_MS = process.env.NODE_ENV === 'production' ? 5000 : 0;
 
 // Prevent unhandled rejections from crashing application
 process.on('unhandledRejection', (err: Error): void => {
@@ -86,16 +89,19 @@ function onError(error: { syscall?: string; code: string }): void {
  * @param signal - Optional termination signal (e.g., 'SIGINT', 'SIGTERM').
  */
 function cleanup(signal?: NodeJS.Signals): void {
-  state.ready = false;
+  // Stops new connections and waits for in-flight requests before the database goes away
   server.close(() => {
-    log.debug('Closing all server connections...');
-    server.closeAllConnections();
     log.info('Server shut down');
-    if (signal) {
-      // Drop our handler first, or the re-sent signal re-enters shutdown instead of terminating.
-      process.removeAllListeners(signal);
-      process.kill(process.pid, signal);
-    } else process.exit();
+    void prisma
+      .$disconnect()
+      .catch((error: unknown) => log.error(error, 'Error disconnecting from the database'))
+      .finally(() => {
+        if (signal) {
+          // Drop our handler first, or the re-sent signal re-enters shutdown instead of terminating.
+          process.removeAllListeners(signal);
+          process.kill(process.pid, signal);
+        } else process.exit();
+      });
   });
 }
 
@@ -104,12 +110,14 @@ function cleanup(signal?: NodeJS.Signals): void {
  * @param signal - Received termination signal (e.g., 'SIGINT', 'SIGTERM').
  */
 function shutdown(signal: NodeJS.Signals): void {
+  // A second signal while draining would close the server twice
+  if (state.shutdown) return;
   state.shutdown = true;
   log.info(`Received ${signal} signal. Shutting down...`);
 
   // Stop periodic 10 second connection probes
   if (probeId) clearInterval(probeId);
-  cleanup(signal);
+  setTimeout(() => cleanup(signal), DRAIN_MS);
 }
 
 /**
