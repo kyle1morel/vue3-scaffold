@@ -38,6 +38,7 @@ export type IdentityProviderKind = (typeof IdentityProviderKind)[keyof typeof Id
 
 export const StorageKey = {
   AUTH: 'entrypoint',
+  CHUNK_RELOAD: 'chunkReload',
   CONFIG: 'config'
 } as const;
 

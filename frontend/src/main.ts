@@ -14,6 +14,7 @@ import i18n from '@/i18n';
 import getRouter from '@/router';
 import { ThemeOverride } from '@/ThemeOverride';
 import { AuthService, configService } from '@/services';
+import { StorageKey } from '@/utils/enums/application';
 
 import '@bcgov/bc-sans/css/BCSans.css';
 import 'primeicons/primeicons.css';
@@ -65,5 +66,14 @@ async function initializeServices(next?: CallbackFn): Promise<void> {
   await AuthService.init();
   if (next) next();
 }
+
+// After a deploy, an open tab can request chunks the new build no longer has; reload once to pick up the new build
+window.addEventListener('vite:preloadError', (event) => {
+  const last = Number(sessionStorage.getItem(StorageKey.CHUNK_RELOAD));
+  if (Date.now() - last < 10000) return; // Already reloaded; let the error surface rather than loop
+  sessionStorage.setItem(StorageKey.CHUNK_RELOAD, String(Date.now()));
+  event.preventDefault();
+  window.location.reload();
+});
 
 initializeServices(initializeApp);
