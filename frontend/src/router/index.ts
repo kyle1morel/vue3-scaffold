@@ -108,23 +108,12 @@ export default function getRouter() {
   router.beforeEach(async (to) => {
     appStore.beginDeterminateLoading();
 
-    // Backend Redirection Handler
-    if (to.query?.r) {
-      router.replace({
-        path: to.query.r ? to.query.r.toString() : to.path,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        query: (({ r, ...q }) => q)(to.query),
-        hash: to.hash
-      });
-    }
-
     // Authentication guard
     if (to.meta.requiresAuth) {
       const user = await authService.getUser();
       if (!user || user.expired) {
         globalThis.sessionStorage.setItem(StorageKey.AUTH, `${to.fullPath}`);
-        router.push({ name: RouteName.OIDC_LOGIN });
-        return;
+        return { name: RouteName.OIDC_LOGIN };
       }
     }
   });
