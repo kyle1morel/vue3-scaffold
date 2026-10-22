@@ -5,6 +5,9 @@
   "private": true,
   "description": "",
   "author": "Kyle Morel",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "build": "vite build",
     "build:dts": "vue-tsc --declaration --emitDeclarationOnly",
