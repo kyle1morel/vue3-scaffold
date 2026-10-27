@@ -76,4 +76,9 @@ window.addEventListener('vite:preloadError', (event) => {
   window.location.reload();
 });
 
-initializeServices(initializeApp);
+// The app can't mount without config, so show a plain message instead of a blank page; rethrow to keep the error logged
+initializeServices(initializeApp).catch((error: unknown) => {
+  const root = document.getElementById('app');
+  if (root) root.textContent = i18n.global.t('ui.errors.startup');
+  throw error;
+});

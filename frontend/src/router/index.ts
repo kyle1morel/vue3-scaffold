@@ -17,10 +17,12 @@ async function bootstrap() {
 
   appStore.beginDeterminateLoading();
 
-  await configStore.init();
-  await authnStore.init();
-
-  appStore.endDeterminateLoading();
+  try {
+    await configStore.init();
+    await authnStore.init();
+  } finally {
+    appStore.endDeterminateLoading();
+  }
 }
 
 /**

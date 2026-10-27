@@ -39,6 +39,9 @@
     "actions": {
       "cancel": "Cancel",
       "leave": "Leave"
+    },
+    "errors": {
+      "startup": "Unable to load the application. Please refresh the page or try again later."
     }
   },
   "formNavigationGuard": {
