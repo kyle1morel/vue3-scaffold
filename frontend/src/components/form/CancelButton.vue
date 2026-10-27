@@ -11,7 +11,7 @@ const { canDisable = true, editable = true } = defineProps<{
 }>();
 
 // Emits
-const emit = defineEmits(['clicked']);
+const emit = defineEmits<{ clicked: [] }>();
 
 // State
 const isDirty = useIsFormDirty();

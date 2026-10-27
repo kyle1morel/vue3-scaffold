@@ -30,7 +30,11 @@ const {
 }>();
 
 // Emits
-const emit = defineEmits(['onChange', 'onClick', 'onInput']);
+const emit = defineEmits<{
+  change: [event: Event];
+  click: [event: MouseEvent];
+  input: [event: Event];
+}>();
 </script>
 
 <template>
@@ -38,17 +42,17 @@ const emit = defineEmits(['onChange', 'onClick', 'onInput']);
     <FloatLabel v-if="floatLabel">
       <InputTextInternal
         v-bind="{ label, labelUrl, name, placeholder, disabled, bold, tooltip, required }"
-        @on-change="(e: Event) => emit('onChange', e)"
-        @on-click="(e: Event) => emit('onClick', e)"
-        @on-input="(e: Event) => emit('onInput', e)"
+        @change="(e: Event) => emit('change', e)"
+        @click="(e: MouseEvent) => emit('click', e)"
+        @input="(e: Event) => emit('input', e)"
       />
     </FloatLabel>
     <InputTextInternal
       v-else
       v-bind="{ label, labelUrl, name, placeholder, disabled, bold, tooltip, required }"
-      @on-change="(e: Event) => emit('onChange', e)"
-      @on-click="(e: Event) => emit('onClick', e)"
-      @on-input="(e: Event) => emit('onInput', e)"
+      @change="(e: Event) => emit('change', e)"
+      @click="(e: MouseEvent) => emit('click', e)"
+      @input="(e: Event) => emit('input', e)"
     />
 
     <small :id="`${name}-help`">

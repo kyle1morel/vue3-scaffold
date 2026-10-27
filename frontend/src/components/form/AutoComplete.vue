@@ -40,7 +40,11 @@ const {
 }>();
 
 // Emits
-const emit = defineEmits(['onChange', 'onComplete', 'onSelect']);
+const emit = defineEmits<{
+  change: [event: AutoCompleteChangeEvent];
+  complete: [event: AutoCompleteCompleteEvent];
+  select: [value: unknown];
+}>();
 const { errorMessage, handleBlur, value, resetField } = useField<string>(name);
 
 onBeforeMount(() => {
@@ -81,9 +85,9 @@ onBeforeMount(() => {
       :placeholder="placeholder"
       :suggestions="suggestions"
       @blur="handleBlur"
-      @change="(e: AutoCompleteChangeEvent) => emit('onChange', e)"
-      @complete="(e: AutoCompleteCompleteEvent) => emit('onComplete', e)"
-      @option-select="(e) => emit('onSelect', e.value)"
+      @change="(e: AutoCompleteChangeEvent) => emit('change', e)"
+      @complete="(e: AutoCompleteCompleteEvent) => emit('complete', e)"
+      @option-select="(e) => emit('select', e.value)"
     />
     <small :id="`${name}-help`">{{ helpText }}</small>
     <div class="mt-2">

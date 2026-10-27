@@ -26,7 +26,11 @@ const {
 }>();
 
 // Emits
-const emit = defineEmits(['onChange', 'onClick', 'onInput']);
+const emit = defineEmits<{
+  change: [event: Event];
+  click: [event: MouseEvent];
+  input: [event: Event];
+}>();
 
 // State
 const { errorMessage, handleBlur, value } = useField<string>(name);
@@ -73,9 +77,9 @@ const { errorMessage, handleBlur, value } = useField<string>(name);
     class="w-full"
     :class="{ 'p-invalid': errorMessage }"
     :disabled="disabled"
-    @change="(e: Event) => emit('onChange', e)"
-    @click="(e: MouseEvent) => emit('onClick', e)"
+    @change="(e: Event) => emit('change', e)"
+    @click="(e: MouseEvent) => emit('click', e)"
     @blur="handleBlur"
-    @input="(e: Event) => emit('onInput', e)"
+    @input="(e: Event) => emit('input', e)"
   />
 </template>

@@ -35,7 +35,7 @@ const {
 }>();
 
 // Emits
-const emit = defineEmits<(e: 'onChange', event: SelectChangeEvent) => void>();
+const emit = defineEmits<{ change: [event: SelectChangeEvent] }>();
 
 const { errorMessage, handleBlur, value } = useField<string>(name);
 </script>
@@ -71,7 +71,7 @@ const { errorMessage, handleBlur, value } = useField<string>(name);
     :option-label="optionLabel"
     :option-value="optionValue"
     :loading="loading"
-    @change="(e) => emit('onChange', e)"
+    @change="(e) => emit('change', e)"
     @blur="handleBlur"
   />
   <label

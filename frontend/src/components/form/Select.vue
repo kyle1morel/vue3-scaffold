@@ -38,7 +38,7 @@ const {
 }>();
 
 // Emits
-const emit = defineEmits<(e: 'onChange', event: SelectChangeEvent) => void>();
+const emit = defineEmits<{ change: [event: SelectChangeEvent] }>();
 </script>
 
 <template>
@@ -58,7 +58,7 @@ const emit = defineEmits<(e: 'onChange', event: SelectChangeEvent) => void>();
           floatLabel,
           required
         }"
-        @on-change="(e) => emit('onChange', e)"
+        @change="(e) => emit('change', e)"
       />
     </FloatLabel>
     <SelectInternal
@@ -76,7 +76,7 @@ const emit = defineEmits<(e: 'onChange', event: SelectChangeEvent) => void>();
         floatLabel,
         required
       }"
-      @on-change="(e) => emit('onChange', e)"
+      @change="(e) => emit('change', e)"
     />
 
     <small :id="`${name}-help`">{{ helpText }}</small>

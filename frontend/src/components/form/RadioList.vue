@@ -24,7 +24,10 @@ const {
 }>();
 
 // Emits
-const emit = defineEmits(['onChange', 'onClick']);
+const emit = defineEmits<{
+  change: [value: string];
+  click: [value: string];
+}>();
 
 // State
 const { errorMessage, handleBlur, value, resetField } = useField<string>(name);
@@ -43,7 +46,7 @@ function getRadioListOptionValue(option: RadioOptionObject | string): string {
 }
 
 watch(value, () => {
-  emit('onChange', value.value);
+  emit('change', value.value);
 });
 
 onBeforeMount(() => {
@@ -70,7 +73,7 @@ onBeforeMount(() => {
             :invalid="!!errorMessage"
             :disabled="disabled"
             @blur="handleBlur"
-            @click="emit('onClick', value)"
+            @click="emit('click', value)"
           />
           <label
             :id="`${name}-option-${getRadioListOptionValue(option)}`"

@@ -32,8 +32,8 @@ const {
 
 // Emits
 const emit = defineEmits<{
-  (e: 'onInput', event: InputEvent): void;
-  (e: 'onChange', event: SelectChangeEvent): void;
+  input: [event: InputEvent];
+  change: [event: SelectChangeEvent];
 }>();
 
 const { errorMessage, handleBlur, value } = useField<string>(name);
@@ -63,8 +63,8 @@ const { errorMessage, handleBlur, value } = useField<string>(name);
       :option-label="getOptionLabel"
       :data-key="dataKey"
       @blur="handleBlur"
-      @input="(e: InputEvent) => emit('onInput', e)"
-      @change="(e) => emit('onChange', e)"
+      @input="(e: InputEvent) => emit('input', e)"
+      @change="(e) => emit('change', e)"
     />
     <small :id="`${name}-help`">{{ helpText }}</small>
     <div class="mt-2">
