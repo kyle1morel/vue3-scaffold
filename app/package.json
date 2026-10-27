@@ -51,6 +51,7 @@
     "start": "node ./server.ts",
     "test": "vitest run --coverage",
     "test:dev": "vitest",
+    "test:shuffle": "vitest run --sequence.shuffle",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

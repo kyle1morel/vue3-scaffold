@@ -1,102 +1,78 @@
-import PrimeVue from 'primevue/config';
-import ConfirmationService from 'primevue/confirmationservice';
-import ToastService from 'primevue/toastservice';
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createTestingPinia } from '@pinia/testing';
-import { flushPromises, mount } from '@vue/test-utils';
+import { flushPromises } from '@vue/test-utils';
 
-import OidcCallbackView from '@/views/oidc/OidcCallbackView.vue';
 import { StorageKey } from '@/utils/enums/application';
+import OidcCallbackView from '@/views/oidc/OidcCallbackView.vue';
 
-import type { MockInstance } from 'vitest';
+import { mockAuthNStore, resetMockAuthNStore } from '../../../mockAuthNStore';
+import { mockRouter, resetMockRouter } from '../../../mockRouter';
+import { mountComponent } from '../../../mountComponent';
 
-const mockReplace = vi.fn();
+// Mocks
 
-vi.mock('vue-router', () => ({
-  useRouter: () => ({
-    push: vi.fn(),
-    replace: mockReplace
-  })
+vi.mock('@/store/authnStore', () => ({
+  default: () => mockAuthNStore,
+  useAuthNStore: () => mockAuthNStore
 }));
 
-const wrapperSettings = () => ({
-  global: {
-    plugins: [
-      () =>
-        createTestingPinia({
-          initialState: {
-            auth: {
-              user: {}
-            }
-          }
-        }),
-      PrimeVue,
-      ConfirmationService,
-      ToastService
-    ],
-    stubs: ['font-awesome-icon', 'Spinner']
-  }
-});
+vi.mock('vue-router', () => ({
+  useRouter: () => mockRouter
+}));
 
-let mockStorageGet: MockInstance;
-let mockStorageRemove: MockInstance;
+// Fixtures
+
+const testEntrypoint = '/custom-route';
+
+// Mount
+
+async function mountOidcCallbackView() {
+  const { wrapper } = mountComponent(OidcCallbackView, {
+    stubs: { Spinner: true }
+  });
+  await flushPromises();
+
+  return { wrapper };
+}
 
 beforeEach(() => {
-  vi.clearAllMocks();
-
-  mockStorageGet = vi.spyOn(globalThis.sessionStorage, 'getItem');
-  mockStorageRemove = vi.spyOn(globalThis.sessionStorage, 'removeItem');
-
-  globalThis.sessionStorage.setItem(
-    StorageKey.CONFIG,
-    JSON.stringify({
-      oidc: {
-        authority: 'abc',
-        clientId: '123'
-      }
-    })
-  );
+  resetMockAuthNStore();
+  resetMockRouter();
 });
 
 afterEach(() => {
-  globalThis.sessionStorage.clear();
-  mockStorageGet.mockRestore();
-  mockStorageRemove.mockRestore();
+  sessionStorage.clear();
 });
 
+// Tests
+
 describe('OidcCallbackView', () => {
-  it('renders component', () => {
-    const wrapper = mount(OidcCallbackView, wrapperSettings());
-    expect(wrapper).toBeTruthy();
+  describe('rendering', () => {
+    it('renders the authorizing message', async () => {
+      const { wrapper } = await mountOidcCallbackView();
+
+      expect(wrapper.text()).toContain('Authorizing...');
+    });
   });
 
-  describe('onMounted redirect logic', () => {
-    it('removes AUTH key and redirects to entrypoint if it exists', async () => {
-      mockStorageGet.mockImplementation((key) => {
-        if (key === StorageKey.AUTH) return '/custom-route';
-        if (key === StorageKey.CONFIG) return globalThis.sessionStorage.getItem(StorageKey.CONFIG);
-        return null;
-      });
+  describe('login callback', () => {
+    it('completes the login callback', async () => {
+      await mountOidcCallbackView();
 
-      mount(OidcCallbackView, wrapperSettings());
-
-      await flushPromises();
-
-      expect(mockStorageRemove).toHaveBeenCalledWith(StorageKey.AUTH);
-      expect(mockReplace).toHaveBeenCalledWith('/custom-route');
+      expect(mockAuthNStore.loginCallback).toHaveBeenCalledOnce();
     });
 
-    it('redirects to root (/) and does not remove AUTH key if entrypoint does not exist', async () => {
-      mockStorageGet.mockImplementation((key) => {
-        if (key === StorageKey.CONFIG) return globalThis.sessionStorage.getItem(StorageKey.CONFIG);
-        return null;
-      });
+    it('removes the stored entrypoint and redirects to it', async () => {
+      sessionStorage.setItem(StorageKey.AUTH, testEntrypoint);
 
-      mount(OidcCallbackView, wrapperSettings());
-      await flushPromises();
+      await mountOidcCallbackView();
 
-      expect(mockStorageRemove).not.toHaveBeenCalledWith(StorageKey.AUTH);
-      expect(mockReplace).toHaveBeenCalledWith('/');
+      expect(sessionStorage.getItem(StorageKey.AUTH)).toBeNull();
+      expect(mockRouter.replace).toHaveBeenCalledWith(testEntrypoint);
+    });
+
+    it('redirects to the root when there is no stored entrypoint', async () => {
+      await mountOidcCallbackView();
+
+      expect(mockRouter.replace).toHaveBeenCalledWith('/');
     });
   });
 });

@@ -29,6 +29,7 @@
     "dev": "vite",
     "test": "vitest run --coverage",
     "test:dev": "vitest",
+    "test:shuffle": "vitest run --sequence.shuffle",
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
