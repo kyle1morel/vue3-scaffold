@@ -1,58 +1,40 @@
-import { createTestingPinia } from '@pinia/testing';
-import PrimeVue from 'primevue/config';
-import { mount, shallowMount } from '@vue/test-utils';
-
 import Footer from '@/components/layout/Footer.vue';
-import { StorageKey } from '@/utils/enums/application';
 
-// Mock dependencies
-vi.mock('vue-i18n', () => ({
-  useI18n: () => ({
-    t: vi.fn()
-  })
-}));
+import { mountComponent } from '../../../mountComponent';
 
-vi.mock('vue-router', () => ({
-  useRouter: () => ({
-    push: vi.fn()
-  })
-}));
+// Mocks
 
-beforeEach(() => {
-  sessionStorage.setItem(
-    StorageKey.CONFIG,
-    JSON.stringify({
-      oidc: {
-        authority: 'abc',
-        clientId: '123'
-      }
-    })
-  );
+// Fixtures
 
-  vi.clearAllMocks();
-});
+const testContactLinks = [
+  'https://www2.gov.bc.ca/gov/content?id=6A77C17D0CCB48F897F8598CCC019111',
+  'https://www2.gov.bc.ca/gov/content?id=FBC4210F6BC047A5884198F543C97D53'
+];
 
-afterEach(() => {
-  sessionStorage.clear();
-});
+// Mount
 
-describe('Footer.vue', () => {
-  it('renders', () => {
-    const wrapper = shallowMount(Footer, {
-      global: {
-        plugins: [createTestingPinia(), PrimeVue]
-      }
+function mountFooter() {
+  const { wrapper } = mountComponent(Footer);
+
+  return { wrapper };
+}
+
+// Tests
+
+describe('Footer', () => {
+  describe('rendering', () => {
+    it('renders every footer link', () => {
+      const { wrapper } = mountFooter();
+
+      expect(wrapper.findAll('a')).toHaveLength(9);
     });
-    expect(wrapper).toBeTruthy();
-  });
 
-  it('contains 9 links', () => {
-    const wrapper = mount(Footer, {
-      global: {
-        plugins: [createTestingPinia(), PrimeVue]
-      }
+    it('renders the contact links inside the contact sentence', () => {
+      const { wrapper } = mountFooter();
+      const contact = wrapper.findAll('p').find((p) => p.find('a').exists());
+
+      expect(contact?.text()).toContain('Call, email or text us, or find a service centre');
+      expect(contact?.findAll('a').map((link) => link.attributes('href'))).toEqual(testContactLinks);
     });
-    const links = wrapper.findAll('a');
-    expect(links).toHaveLength(9);
   });
 });
