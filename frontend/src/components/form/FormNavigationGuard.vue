@@ -7,7 +7,6 @@ import { onBeforeRouteLeave, useRouter } from 'vue-router';
 import { FormAutosave } from '@/components/form';
 import { useConfirm } from '@/lib/primevue';
 
-import type { Ref } from 'vue';
 import type { CallbackFn } from '@/types';
 
 // Props
@@ -20,9 +19,9 @@ const { autoSaveRef = null, callback = () => {} } = defineProps<{
 const { t } = useI18n();
 
 // State
-const isAccepted: Ref<boolean> = ref(false);
+const isAccepted = ref(false);
 const isDirty = useIsFormDirty();
-const isOpen: Ref<boolean> = ref(false);
+const isOpen = ref(false);
 
 // Actions
 const confirm = useConfirm();

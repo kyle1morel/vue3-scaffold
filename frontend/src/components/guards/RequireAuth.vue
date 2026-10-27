@@ -6,13 +6,11 @@ import { useRouter } from 'vue-router';
 import { useAuthNStore } from '@/store';
 import { RouteName } from '@/utils/enums/application';
 
-import type { Ref } from 'vue';
-
 // Store
 const { getIsAuthenticated } = storeToRefs(useAuthNStore());
 
 // State
-const ready: Ref<boolean> = ref(false);
+const ready = ref(false);
 
 // Actions
 const router = useRouter();

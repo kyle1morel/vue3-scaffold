@@ -6,14 +6,13 @@ import { Breadcrumb } from '@/lib/primevue';
 import { RouteName } from '@/utils/enums/application';
 
 import type { MenuItem } from 'primevue/menuitem';
-import type { ComputedRef } from 'vue';
 import type { RouteLocationMatched, RouteRecordNameGeneric, RouteRecordRaw } from 'vue-router';
 
 // Composables
 const route = useRoute();
 
 // State
-const breadcrumbItems: ComputedRef<MenuItem[]> = computed(() => {
+const breadcrumbItems = computed<MenuItem[]>(() => {
   if (route.meta.hideBreadcrumb) return [];
   const matchedCrumbs = route.matched.filter((m) => m.meta?.breadcrumb !== undefined);
 

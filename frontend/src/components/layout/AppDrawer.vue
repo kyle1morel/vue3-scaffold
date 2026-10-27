@@ -11,8 +11,6 @@ import { useAuthNStore } from '@/store';
 import { SUPPORT_CONTACT } from '@/utils/constants/application';
 import { RouteName } from '@/utils/enums/application';
 
-import type { ComputedRef, Ref } from 'vue';
-
 // Types
 interface DrawerItem {
   icon?: string;
@@ -57,9 +55,9 @@ const vStyleclass = StyleClass;
 const { getIsAuthenticated } = storeToRefs(useAuthNStore());
 
 // State
-const visible: Ref<boolean> = ref(false);
+const visible = ref(false);
 
-const permittedItems: ComputedRef<DrawerItem[]> = computed(() =>
+const permittedItems = computed(() =>
   ITEMS.filter((item) => item.public || getIsAuthenticated.value).map((item) => ({
     ...item,
     items: item.items?.filter((subItem) => subItem.public || getIsAuthenticated.value)

@@ -2,7 +2,6 @@
 import { useFormValues, useIsFormDirty } from 'vee-validate';
 import { onBeforeUnmount, ref, watch } from 'vue';
 
-import type { Ref } from 'vue';
 import type { CallbackFn } from '@/types';
 
 // Constants
@@ -16,7 +15,7 @@ const { callback, delay = DEFAULT_DELAY } = defineProps<{
 
 // State
 const isDirty = useIsFormDirty();
-const timeoutId: Ref<ReturnType<typeof setTimeout> | null> = ref(null);
+const timeoutId = ref<ReturnType<typeof setTimeout> | null>(null);
 const values = useFormValues();
 
 // Actions
