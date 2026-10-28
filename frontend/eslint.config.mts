@@ -6,11 +6,13 @@ import { defineConfig } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import jsdoc from 'eslint-plugin-jsdoc';
+import vueI18n from '@intlify/eslint-plugin-vue-i18n';
 import vitest from '@vitest/eslint-plugin';
 
 export default defineConfig([
   {
-    ignores: ['coverage', 'dist', 'node_modules', '*.config.js']
+    // Locale files are the only JSON the vue-i18n rules need to lint
+    ignores: ['coverage', 'dist', 'node_modules', '*.config.js', '**/*.json', '!src/locales/*.json']
   },
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,vue}'],
@@ -92,6 +94,44 @@ export default defineConfig([
       'vitest/no-focused-tests': ['warn']
     }
   },
+  // Enforces src/locales/I18N-STANDARDS.md; check-i18n-keys.mjs covers unused keys, including dynamic ones
+  vueI18n.configs.recommended,
+  {
+    // The plugin's config sets ecmaVersion 2018, which hides newer globals like globalThis
+    languageOptions: { ecmaVersion: 'latest' },
+    settings: {
+      'vue-i18n': { localeDir: './src/locales/*.json', messageSyntaxVersion: '^11.0.0' }
+    },
+    rules: {
+      '@intlify/vue-i18n/key-format-style': ['error', 'camelCase', { splitByDots: true }],
+      '@intlify/vue-i18n/no-duplicate-keys-in-locale': 'error',
+      '@intlify/vue-i18n/no-html-messages': 'error',
+      '@intlify/vue-i18n/no-missing-keys': 'error',
+      '@intlify/vue-i18n/no-raw-text': [
+        'error',
+        {
+          attributes: {
+            '/.+/': [
+              'alt',
+              'aria-label',
+              'header',
+              'help-text',
+              'label',
+              'message',
+              'placeholder',
+              'status',
+              'title',
+              'tooltip'
+            ]
+          },
+          // Punctuation-only or empty text, such as separators, the copyright sign and a decorative alt=""
+          ignorePattern: '^[\\s#:()&©*/|.,-]*$'
+        }
+      ],
+      '@intlify/vue-i18n/no-v-html': 'error',
+      '@intlify/vue-i18n/valid-message-syntax': 'error'
+    }
+  },
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
   {
@@ -106,5 +146,10 @@ export default defineConfig([
       quotes: ['error', 'single'],
       semi: ['error', 'always']
     }
+  },
+  // Translations are full sentences; wrapping them would change the text
+  {
+    files: ['src/locales/*.json'],
+    rules: { 'max-len': 'off' }
   }
 ]);

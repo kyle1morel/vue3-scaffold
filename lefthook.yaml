@@ -30,9 +30,13 @@ pre-commit:
       stage_fixed: true
     - name: frontend-lint
       root: frontend/
-      glob: "*.{js,mjs,cjs,ts,mts,cts,vue}"
+      glob: "*.{js,mjs,cjs,ts,mts,cts,vue,json}"
       run: node_modules/.bin/eslint --fix --no-warn-ignored {staged_files}
       stage_fixed: true
+    - name: frontend-i18n-keys
+      root: frontend/
+      glob: "*.{ts,vue,json}"
+      run: node check-i18n-keys.mjs
 
 pre-push:
   commands:
