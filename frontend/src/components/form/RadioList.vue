@@ -13,14 +13,20 @@ interface RadioOptionObject {
 // Props
 const {
   helpText = '',
+  label = '',
   name,
   disabled = false,
-  options
+  bold = true,
+  options,
+  required = false
 } = defineProps<{
   helpText?: string;
+  label?: string;
   name: string;
   disabled?: boolean;
+  bold?: boolean;
   options: readonly (RadioOptionObject | string)[] | undefined;
+  required?: boolean;
 }>();
 
 // Emits
@@ -56,7 +62,25 @@ onBeforeMount(() => {
 
 <template>
   <div>
-    <div class="flex flex-col gap-4">
+    <label
+      v-if="label"
+      :id="`${name}-label`"
+      :class="{ 'font-bold': bold }"
+    >
+      {{ label }}
+      <span
+        v-if="required"
+        class="text-[var(--p-support-required-text)]"
+      >
+        *
+      </span>
+    </label>
+    <div
+      class="flex flex-col gap-4"
+      role="radiogroup"
+      :aria-labelledby="label ? `${name}-label` : undefined"
+      :aria-required="required"
+    >
       <div
         v-for="option in options"
         :key="getRadioListOptionValue(option)"

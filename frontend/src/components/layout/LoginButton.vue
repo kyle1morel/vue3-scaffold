@@ -41,7 +41,7 @@ function logout() {
     severity="primary"
     @click="login()"
   >
-    {{ t('loginButton.login') }}
+    {{ t('ui.actions.logIn') }}
   </Button>
   <Button
     v-else-if="getIsAuthenticated"
@@ -49,12 +49,6 @@ function logout() {
     severity="primary"
     @click="logout()"
   >
-    {{ t('loginButton.logout') }}
+    {{ t('ui.actions.logOut') }}
   </Button>
 </template>
-
-<style lang="scss" scoped>
-button {
-  color: var(--p-bcblue-950) !important;
-}
-</style>

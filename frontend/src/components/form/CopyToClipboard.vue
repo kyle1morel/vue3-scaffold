@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { useI18n } from 'vue-i18n';
 
 import { Button, useToast } from '@/lib/primevue';
 import { ButtonMode } from '@/utils/enums/application';
@@ -10,13 +11,16 @@ const { mode = ButtonMode.BUTTON, toCopy = undefined } = defineProps<{
   toCopy?: string;
 }>();
 
+// Composables
+const { t } = useI18n();
+
 // Actions
 const toast = useToast();
 
 const copyToClipboard = () => {
   if (toCopy) {
     navigator.clipboard.writeText(toCopy);
-    toast.info('Copied to clipboard');
+    toast.info(t('components.copyToClipboard.copied'));
   }
 };
 </script>
@@ -39,6 +43,6 @@ const copyToClipboard = () => {
       icon="fa fa-clipboard"
       class="mr-2"
     />
-    Copy to clipboard
+    {{ t('components.copyToClipboard.button') }}
   </Button>
 </template>

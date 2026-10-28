@@ -15,7 +15,8 @@ const {
   placeholder = '',
   disabled = false,
   options,
-  getOptionLabel = (e: string) => e,
+  getOptionLabel = undefined,
+  optionValue = undefined,
   bold = true
 } = defineProps<{
   helpText?: string;
@@ -27,6 +28,7 @@ const {
   options: unknown[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getOptionLabel?: string | ((data: any) => string) | undefined; // Matches Prisma type
+  optionValue?: string;
   bold?: boolean;
 }>();
 
@@ -61,6 +63,7 @@ const { errorMessage, handleBlur, value } = useField<string>(name);
       :disabled="disabled"
       :options="options"
       :option-label="getOptionLabel"
+      :option-value="optionValue"
       :data-key="dataKey"
       @blur="handleBlur"
       @input="(e: InputEvent) => emit('input', e)"
@@ -75,14 +78,3 @@ const { errorMessage, handleBlur, value } = useField<string>(name);
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-:deep(.p-select-label::placeholder) {
-  font-size: 1rem;
-}
-
-:deep(input) {
-  font-size: 1rem;
-  padding: 0.6rem;
-}
-</style>

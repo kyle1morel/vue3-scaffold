@@ -91,9 +91,3 @@ const { errorMessage, handleBlur, value } = useField<string>(name);
     </div>
   </label>
 </template>
-
-<style scoped lang="scss">
-input::placeholder {
-  font-size: 1rem;
-}
-</style>

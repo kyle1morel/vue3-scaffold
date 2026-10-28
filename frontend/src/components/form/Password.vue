@@ -5,19 +5,21 @@ import { Password } from '@/lib/primevue';
 
 // Props
 const {
-  helptext = '',
+  helpText = '',
   type = 'text',
   label = '',
   name,
   placeholder = '',
-  bold = true
+  bold = true,
+  required = false
 } = defineProps<{
-  helptext?: string;
+  helpText?: string;
   label?: string;
   name: string;
   placeholder?: string;
   type?: string;
   bold?: boolean;
+  required?: boolean;
 }>();
 
 const { errorMessage, handleBlur, value } = useField<string>(name);
@@ -31,21 +33,28 @@ const { errorMessage, handleBlur, value } = useField<string>(name);
       :for="name"
     >
       {{ label }}
+      <span
+        v-if="required"
+        class="text-[var(--p-support-required-text)]"
+      >
+        *
+      </span>
     </label>
     <Password
       v-model="value"
       :aria-describedby="`${name}-help`"
       :aria-labelledby="`${name}-label`"
+      :aria-required="required"
       :name="name"
       :type="type"
       :placeholder="placeholder"
-      class="w-full"
+      fluid
       :invalid="!!errorMessage"
       :feedback="false"
       toggle-mask
       @blur="handleBlur"
     />
-    <small :id="`${name}-help`">{{ helptext }}</small>
+    <small :id="`${name}-help`">{{ helpText }}</small>
     <div>
       <ErrorMessage
         :name="name"

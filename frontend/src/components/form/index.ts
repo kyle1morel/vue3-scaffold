@@ -7,7 +7,6 @@ export { default as EditableSelect } from './EditableSelect.vue';
 export { default as Editor } from './Editor.vue';
 export { default as FormAutosave } from './FormAutosave.vue';
 export { default as FormNavigationGuard } from './FormNavigationGuard.vue';
-export { default as GridRow } from './GridRow.vue';
 export { default as InputMask } from './InputMask.vue';
 export { default as InputNumber } from './InputNumber.vue';
 export { default as InputText } from './InputText.vue';

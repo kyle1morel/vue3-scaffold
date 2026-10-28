@@ -50,8 +50,8 @@ function handlePrevClick() {
 <template>
   <div class="flex pt-6 justify-between">
     <Button
-      :aria-label="t('stepperNavigation.previous')"
-      :class="prevDisabled ? 'button-hidden' : 'button-visible'"
+      :aria-label="t('components.stepperNavigation.previous')"
+      :class="prevDisabled ? 'invisible' : 'visible'"
       class="px-6 py-1"
       outlined
       icon="pi pi-arrow-left"
@@ -61,8 +61,8 @@ function handlePrevClick() {
     />
     <slot name="content" />
     <Button
-      :aria-label="t('stepperNavigation.next')"
-      :class="nextDisabled ? 'button-hidden' : 'button-visible'"
+      :aria-label="t('components.stepperNavigation.next')"
+      :class="nextDisabled ? 'invisible' : 'visible'"
       class="px-6 py-1"
       outlined
       icon="pi pi-arrow-right"
@@ -72,12 +72,3 @@ function handlePrevClick() {
     />
   </div>
 </template>
-
-<style scoped lang="scss">
-.button-visible {
-  visibility: visible;
-}
-.button-hidden {
-  visibility: hidden;
-}
-</style>

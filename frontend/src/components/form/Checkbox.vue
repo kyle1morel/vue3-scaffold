@@ -37,28 +37,33 @@ watch(
 </script>
 
 <template>
-  <div class="flex items-center">
-    <Checkbox
-      v-model="value"
-      binary
-      :aria-describedby="`${name}-help`"
-      :aria-labelledby="`${name}-label`"
-      :name="name"
-      :class="{ 'p-invalid': errorMessage || invalid }"
-      :disabled="disabled"
-      @blur="handleBlur"
-    />
-    <label
-      :id="`${name}-label`"
-      class="pl-2 mb-0"
-      :class="{ 'font-bold': bold }"
-      :for="name"
-    >
-      {{ label }}
-    </label>
+  <div>
+    <div class="flex items-center">
+      <Checkbox
+        v-model="value"
+        binary
+        :aria-describedby="`${name}-help`"
+        :aria-labelledby="`${name}-label`"
+        :name="name"
+        :class="{ 'p-invalid': errorMessage || invalid }"
+        :disabled="disabled"
+        @blur="handleBlur"
+      />
+      <label
+        :id="`${name}-label`"
+        class="pl-2 mb-0"
+        :class="{ 'font-bold': bold }"
+        :for="name"
+      >
+        {{ label }}
+      </label>
+    </div>
     <small :id="`${name}-help`">{{ helpText }}</small>
-    <div>
-      <ErrorMessage :name="name" />
+    <div class="mt-2">
+      <ErrorMessage
+        :name="name"
+        class="app-error-message"
+      />
     </div>
   </div>
 </template>

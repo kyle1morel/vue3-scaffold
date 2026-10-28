@@ -60,13 +60,14 @@ function getRouteNameFromFirstChild(record: RouteRecordRaw) {
   <Breadcrumb
     v-if="breadcrumbItems.length > 1"
     :model="breadcrumbItems"
+    class="p-0.5"
   >
     <template #separator>/</template>
     <template #item="{ item }">
       <!-- eslint-disable max-len -->
       <router-link
         v-if="item.to"
-        class="text-[var(--p-bcblue-850)] font-[family-name:'BC_Sans',sans-serif] font-normal no-underline hover:underline"
+        class="text-[var(--p-textlink)] font-[family-name:'BC_Sans',sans-serif] font-normal no-underline hover:underline"
         :to="item.to"
       >
         <!-- eslint-enable max-len -->
@@ -74,17 +75,10 @@ function getRouteNameFromFirstChild(record: RouteRecordRaw) {
       </router-link>
       <span
         v-else
-        class="text-[var(--p-greyscale-900)] font-[family-name:'BC_Sans',sans-serif] font-bold"
+        class="text-[var(--p-text-color)] font-[family-name:'BC_Sans',sans-serif] font-bold"
       >
         {{ item.label }}
       </span>
     </template>
   </Breadcrumb>
 </template>
-
-<style scoped lang="scss">
-.p-breadcrumb {
-  border: none;
-  padding: 0.125rem;
-}
-</style>

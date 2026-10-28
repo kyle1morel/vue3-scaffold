@@ -2,8 +2,10 @@
 import { storeToRefs } from 'pinia';
 import StyleClass from 'primevue/styleclass';
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import developer from '@/assets/images/developer.svg';
+import form from '@/assets/images/form.svg';
 import help from '@/assets/images/help.svg';
 import home from '@/assets/images/home.svg';
 import { Button, Drawer } from '@/lib/primevue';
@@ -21,34 +23,8 @@ interface DrawerItem {
   mailTo?: string;
 }
 
-// Constants
-const ITEMS: DrawerItem[] = [
-  {
-    icon: home,
-    label: 'Home',
-    route: RouteName.HOME,
-    public: true
-  },
-  {
-    icon: developer,
-    label: 'Developer',
-    route: RouteName.DEVELOPER
-  },
-  {
-    icon: help,
-    label: 'Help',
-    public: true,
-    items: [
-      {
-        label: 'Report a problem',
-        mailTo: `mailto:${SUPPORT_CONTACT.email}?subject=${SUPPORT_CONTACT.subject}`,
-        public: true
-      }
-    ]
-  }
-];
-
 // Composables
+const { t } = useI18n();
 const vStyleclass = StyleClass;
 
 // Store
@@ -57,22 +33,54 @@ const { getIsAuthenticated } = storeToRefs(useAuthNStore());
 // State
 const visible = ref(false);
 
+const items = computed<DrawerItem[]>(() => [
+  {
+    icon: home,
+    label: t('components.appDrawer.home'),
+    route: RouteName.HOME,
+    public: true
+  },
+  {
+    icon: form,
+    label: t('components.appDrawer.demoForm'),
+    route: RouteName.DEMO_FORM
+  },
+  {
+    icon: developer,
+    label: t('components.appDrawer.developer'),
+    route: RouteName.DEVELOPER
+  },
+  {
+    icon: help,
+    label: t('components.appDrawer.help'),
+    public: true,
+    items: [
+      {
+        label: t('components.appDrawer.reportProblem'),
+        mailTo: `mailto:${SUPPORT_CONTACT.email}?subject=${SUPPORT_CONTACT.subject}`,
+        public: true
+      }
+    ]
+  }
+]);
+
 const permittedItems = computed(() =>
-  ITEMS.filter((item) => item.public || getIsAuthenticated.value).map((item) => ({
-    ...item,
-    items: item.items?.filter((subItem) => subItem.public || getIsAuthenticated.value)
-  }))
+  items.value
+    .filter((item) => item.public || getIsAuthenticated.value)
+    .map((item) => ({
+      ...item,
+      items: item.items?.filter((subItem) => subItem.public || getIsAuthenticated.value)
+    }))
 );
 </script>
 
 <template>
   <Button
-    label="Menu"
+    :label="t('components.appDrawer.menu')"
     outlined
-    class="hover-color"
     @click="visible = true"
   >
-    <span class="hidden md:inline">Menu</span>
+    <span class="hidden md:inline">{{ t('components.appDrawer.menu') }}</span>
     <font-awesome-icon icon="fa-solid fa-bars" />
   </Button>
   <Drawer
@@ -85,11 +93,10 @@ const permittedItems = computed(() =>
           <span>
             <Button
               type="button"
-              label="Close"
+              :label="t('ui.actions.close')"
               icon="pi pi-times"
               rectangle
               variant="outlined"
-              class="hover-color"
               @click="closeCallback"
             ></Button>
           </span>
@@ -115,7 +122,7 @@ const permittedItems = computed(() =>
                     leaveActiveClass: 'animate-slideup'
                   }"
                   text
-                  class="no-underline inline-flex items-center mt-2 cursor-pointer hover-color wide-button"
+                  class="no-underline inline-flex items-center mt-2 cursor-pointer w-full justify-start"
                   tabindex="0"
                   :aria-expanded="item.items ? 'false' : undefined"
                   @click="
@@ -157,7 +164,7 @@ const permittedItems = computed(() =>
                 >
                   <Button
                     v-if="subItem.mailTo"
-                    class="no-underline hover-color wide-button"
+                    class="no-underline w-full justify-start"
                     :href="subItem.mailTo"
                     text
                     as="a"
@@ -172,7 +179,7 @@ const permittedItems = computed(() =>
                     custom
                   >
                     <Button
-                      class="no-underline hover-color wide-button"
+                      class="no-underline w-full justify-start"
                       :href="href"
                       text
                       @click="
@@ -194,13 +201,3 @@ const permittedItems = computed(() =>
     </template>
   </Drawer>
 </template>
-
-<style lang="scss" scoped>
-.hover-color.p-button:hover {
-  background-color: var(--p-content-hover-background);
-}
-.wide-button.p-button {
-  width: 100%;
-  justify-content: flex-start;
-}
-</style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { ref, useTemplateRef } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -15,7 +15,7 @@ const { getIsAuthenticated, getProfile } = storeToRefs(useAuthNStore());
 const { t } = useI18n();
 const items = ref([
   {
-    label: t('common.headerMenu.logout'),
+    label: t('ui.actions.logOut'),
     icon: 'pi pi-sign-out',
     command: () => {
       router.push({ name: RouteName.OIDC_LOGOUT });
@@ -23,6 +23,7 @@ const items = ref([
   }
 ]);
 const menu = useTemplateRef('menu');
+const displayName = computed(() => getProfile.value?.name ?? String(getProfile.value?.display_name ?? ''));
 
 // Actions
 const router = useRouter();
@@ -42,15 +43,16 @@ const toggle = (event: Event) => {
       type="button"
       text
       class="font-bold text-lg"
+      :aria-label="displayName"
       aria-haspopup="true"
       aria-controls="overlay-menu"
       @click="toggle"
     >
       <font-awesome-icon
         icon="fa-solid fa-user"
-        class="ml-2 app-primary-color pointer-events-none"
+        class="ml-2 text-primary pointer-events-none"
       />
-      {{ getProfile?.name ?? getProfile?.display_name }}
+      <span class="hidden sm:inline">{{ displayName }}</span>
     </Button>
     <Menu
       id="overlay-menu"

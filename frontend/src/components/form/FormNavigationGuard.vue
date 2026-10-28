@@ -36,8 +36,8 @@ onBeforeRouteLeave(async (to) => {
   if (isDirty.value && !isOpen.value) {
     isOpen.value = true;
     confirm.require({
-      message: t('formNavigationGuard.message'),
-      header: t('formNavigationGuard.header'),
+      message: t('components.formNavigationGuard.message'),
+      header: t('components.formNavigationGuard.title'),
       acceptLabel: t('ui.actions.leave'),
       acceptClass: 'p-button-danger',
       rejectLabel: t('ui.actions.cancel'),

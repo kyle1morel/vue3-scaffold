@@ -15,7 +15,7 @@ const {
   placeholder = '',
   disabled = false,
   suggestions,
-  getOptionLabel = (e: string) => e,
+  getOptionLabel = undefined,
   bold = true,
   forceSelection = false,
   loading = false,
@@ -98,11 +98,3 @@ onBeforeMount(() => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-:deep(.p-invalid) {
-  .p-autocomplete-input {
-    border-color: var(--p-red-500);
-  }
-}
-</style>

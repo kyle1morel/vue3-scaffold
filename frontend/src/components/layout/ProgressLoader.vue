@@ -10,25 +10,12 @@ const { getLoadingMode, getLoadingValue } = storeToRefs(appStore);
 </script>
 
 <template>
-  <div class="app-loader">
+  <div class="fixed top-0 w-full z-999">
     <ProgressBar
+      class="h-[0.15rem] pointer-events-none"
       :mode="getLoadingMode"
       :show-value="false"
       :value="getLoadingValue"
     />
   </div>
 </template>
-
-<style lang="scss" scoped>
-.app-loader {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 999;
-
-  .p-progressbar {
-    height: 0.15rem;
-    pointer-events: none;
-  }
-}
-</style>
