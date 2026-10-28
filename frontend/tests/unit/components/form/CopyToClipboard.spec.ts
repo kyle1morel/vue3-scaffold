@@ -1,59 +1,54 @@
-import { createTestingPinia } from '@pinia/testing';
-import { mount } from '@vue/test-utils';
-
 import CopyToClipboard from '@/components/form/CopyToClipboard.vue';
-import { StorageKey } from '@/utils/enums/application';
-import PrimeVue from 'primevue/config';
-import ConfirmationService from 'primevue/confirmationservice';
-import ToastService from 'primevue/toastservice';
+import { ButtonMode } from '@/utils/enums/application';
 
-vi.mock('vue-router', () => ({
-  useRouter: () => ({
-    push: vi.fn(),
-    replace: vi.fn()
-  })
-}));
+import { mountComponent } from '../../../mountComponent';
 
-const wrapperSettings = () => ({
-  global: {
-    plugins: [
-      () =>
-        createTestingPinia({
-          initialState: {
-            auth: {
-              user: {}
-            }
-          }
-        }),
-      PrimeVue,
-      ConfirmationService,
-      ToastService
-    ],
-    stubs: ['font-awesome-icon']
-  }
-});
+// Mocks
+
+// Fixtures
+
+const testText = 'copy me';
+
+// Mount
+
+function mountCopyToClipboard(options: { mode?: ButtonMode } = {}) {
+  const { wrapper } = mountComponent(CopyToClipboard, { props: { toCopy: testText, ...options } });
+
+  return { wrapper };
+}
 
 beforeEach(() => {
-  sessionStorage.setItem(
-    StorageKey.CONFIG,
-    JSON.stringify({
-      oidc: {
-        authority: 'abc',
-        clientId: '123'
-      }
-    })
-  );
-
-  vi.clearAllMocks();
+  vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue();
 });
 
 afterEach(() => {
-  sessionStorage.clear();
+  vi.restoreAllMocks();
 });
 
+// Tests
+
 describe('CopyToClipboard', () => {
-  it('renders component', async () => {
-    const wrapper = mount(CopyToClipboard, wrapperSettings());
-    expect(wrapper).toBeTruthy();
+  describe('rendering', () => {
+    it('renders a labelled button by default', () => {
+      const { wrapper } = mountCopyToClipboard();
+
+      expect(wrapper.text()).toContain('Copy to clipboard');
+    });
+
+    it('renders an icon-only button in icon mode', () => {
+      const { wrapper } = mountCopyToClipboard({ mode: ButtonMode.ICON });
+
+      expect(wrapper.text()).not.toContain('Copy to clipboard');
+    });
+  });
+
+  describe('user interaction', () => {
+    it('copies the text when clicked', async () => {
+      const { wrapper } = mountCopyToClipboard();
+
+      await wrapper.find('button').trigger('click');
+
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(testText);
+    });
   });
 });

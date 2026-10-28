@@ -1,204 +1,54 @@
-import { createTestingPinia } from '@pinia/testing';
-import PrimeVue from 'primevue/config';
-import ConfirmationService from 'primevue/confirmationservice';
-import ToastService from 'primevue/toastservice';
-import { mount } from '@vue/test-utils';
-
-import { useAuthNStore } from '@/store';
+import { IdentityProviderKind } from '@/utils/enums/application';
 import OidcLoginView from '@/views/oidc/OidcLoginView.vue';
-import { IdentityProviderKind, StorageKey } from '@/utils/enums/application';
-import * as utils from '@/utils/utils';
 
-vi.mock('vue-i18n', () => ({
-  useI18n: () => ({
-    t: vi.fn()
-  })
+import { mockAuthNStore, resetMockAuthNStore } from '../../../mockAuthNStore';
+import { mountComponent } from '../../../mountComponent';
+
+// Mocks
+
+vi.mock('@/store/authnStore', () => ({
+  default: () => mockAuthNStore,
+  useAuthNStore: () => mockAuthNStore
 }));
 
-vi.mock('vue-router', () => ({
-  useRoute: vi.fn(),
-  useRouter: vi.fn(() => ({
-    push: () => {}
-  }))
-}));
+// Fixtures
 
-const wrapperSettings = () => ({
-  global: {
-    plugins: [
-      createTestingPinia({
-        initialState: {
-          auth: {
-            user: {}
-          }
-        }
-      }),
-      PrimeVue,
-      ConfirmationService,
-      ToastService
-    ],
-    stubs: ['font-awesome-icon']
-  }
-});
+const testIdpList = [
+  { kind: IdentityProviderKind.BCSC, idp: 'bcsc', username: '' },
+  { kind: IdentityProviderKind.BCEID, idp: 'bceidbasic', username: '' },
+  { kind: IdentityProviderKind.BCEIDBUSINESS, idp: 'bceidbusiness', username: '' },
+  { kind: IdentityProviderKind.AZUREIDIR, idp: 'azureidir', username: '' }
+];
+
+// Mount
+
+function mountOidcLoginView() {
+  const { wrapper } = mountComponent(OidcLoginView, {
+    piniaState: { config: { config: { idpList: testIdpList } } }
+  });
+
+  return { wrapper };
+}
 
 beforeEach(() => {
-  sessionStorage.setItem(
-    StorageKey.CONFIG,
-    JSON.stringify({
-      oidc: {
-        authority: 'abc',
-        clientId: '123'
-      }
-    })
-  );
-
-  vi.clearAllMocks();
+  resetMockAuthNStore();
 });
 
-afterEach(() => {
-  sessionStorage.clear();
-});
+// Tests
 
 describe('OidcLoginView', () => {
-  const findIdpConfigSpy = vi.spyOn(utils, 'findIdpConfig');
+  describe('user interaction', () => {
+    it.each([
+      ['bcsc-login-button', 'bcsc'],
+      ['bceid-login-button', 'bceidbasic'],
+      ['bceid-business-login-button', 'bceidbusiness'],
+      ['idir-mfa-login-button', 'azureidir']
+    ])('logs in with the matching identity provider when %s is clicked', async (button, idp) => {
+      const { wrapper } = mountOidcLoginView();
 
-  it('renders component', () => {
-    const wrapper = mount(OidcLoginView, wrapperSettings());
-    expect(wrapper).toBeTruthy();
-  });
+      await wrapper.find(`[data-test="${button}"]`).trigger('click');
 
-  it('should invoke auth login flow with BCSC when the BCSC button is clicked', async () => {
-    findIdpConfigSpy.mockResolvedValue({ kind: IdentityProviderKind.BCSC, idp: 'bcsc', username: '' });
-
-    const wrapper = mount(OidcLoginView, wrapperSettings());
-    const authNStore = useAuthNStore();
-    const bcscButton = wrapper.find('[data-test="bcsc-login-button"]');
-
-    await bcscButton.trigger('click');
-
-    expect(findIdpConfigSpy).toHaveBeenCalled();
-    expect(findIdpConfigSpy).toHaveBeenCalledWith(IdentityProviderKind.BCSC);
-    expect(authNStore.login).toHaveBeenCalled();
-  });
-
-  it('should invoke auth login flow with BCEID when the BCEID button is clicked', async () => {
-    findIdpConfigSpy.mockResolvedValue({ kind: IdentityProviderKind.BCEID, idp: 'bceidbasic', username: '' });
-
-    const wrapper = mount(OidcLoginView, wrapperSettings());
-    const authNStore = useAuthNStore();
-    const bceidButton = wrapper.find('[data-test="bceid-login-button"]');
-
-    await bceidButton.trigger('click');
-
-    expect(findIdpConfigSpy).toHaveBeenCalled();
-    expect(findIdpConfigSpy).toHaveBeenCalledWith(IdentityProviderKind.BCEID);
-    expect(authNStore.login).toHaveBeenCalled();
-  });
-
-  it('should invoke auth login flow with BCEIDBUSINESS on BCEIDBUSINESS button click', async () => {
-    findIdpConfigSpy.mockResolvedValue({
-      kind: IdentityProviderKind.BCEIDBUSINESS,
-      idp: 'bceidbusiness',
-      username: ''
+      expect(mockAuthNStore.login).toHaveBeenCalledWith(idp);
     });
-
-    const wrapper = mount(OidcLoginView, wrapperSettings());
-    const authNStore = useAuthNStore();
-    const bceidBusinessButton = wrapper.find('[data-test="bceid-business-login-button"]');
-
-    await bceidBusinessButton.trigger('click');
-
-    expect(findIdpConfigSpy).toHaveBeenCalled();
-    expect(findIdpConfigSpy).toHaveBeenCalledWith(IdentityProviderKind.BCEIDBUSINESS);
-    expect(authNStore.login).toHaveBeenCalled();
-  });
-
-  it('should invoke auth login flow with IDIR-MFA when the IDIR-MFA button is clicked', async () => {
-    findIdpConfigSpy.mockResolvedValue({ kind: IdentityProviderKind.AZUREIDIR, idp: 'azureidir', username: '' });
-
-    const wrapper = mount(OidcLoginView, wrapperSettings());
-    const authNStore = useAuthNStore();
-    const idirButton = wrapper.find('[data-test="idir-mfa-login-button"]');
-
-    await idirButton.trigger('click');
-
-    expect(findIdpConfigSpy).toHaveBeenCalled();
-    expect(findIdpConfigSpy).toHaveBeenCalledWith(IdentityProviderKind.AZUREIDIR);
-    expect(authNStore.login).toHaveBeenCalled();
-  });
-
-  it('calls login function BCSC when BCSC button is clicked', async () => {
-    // Mock the login function
-    const loginMock = vi.fn();
-    const wrapper = mount(OidcLoginView, {
-      global: {
-        mocks: {
-          login: loginMock
-        }
-      }
-    });
-
-    // Find the BCSC button and simulate a click
-    const bcscButton = wrapper.find('[data-test="bcsc-login-button"]');
-    await bcscButton.trigger('click');
-
-    // Assert that the login function was called with the correct argument
-    expect(loginMock).toHaveBeenCalledWith(IdentityProviderKind.BCSC);
-  });
-
-  it('calls login function BCEID when BCEID button is clicked', async () => {
-    // Mock the login function
-    const loginMock = vi.fn();
-    const wrapper = mount(OidcLoginView, {
-      global: {
-        mocks: {
-          login: loginMock
-        }
-      }
-    });
-
-    // Find the BCSC button and simulate a click
-    const bceidButton = wrapper.find('[data-test="bceid-login-button"]');
-    await bceidButton.trigger('click');
-
-    // Assert that the login function was called with the correct argument
-    expect(loginMock).toHaveBeenCalledWith(IdentityProviderKind.BCEID);
-  });
-
-  it('calls login function BCEIDBUSINESS when BCEIDBUSINESS button is clicked', async () => {
-    // Mock the login function
-    const loginMock = vi.fn();
-    const wrapper = mount(OidcLoginView, {
-      global: {
-        mocks: {
-          login: loginMock
-        }
-      }
-    });
-
-    // Find the BCSC button and simulate a click
-    const bceidBusinessButton = wrapper.find('[data-test="bceid-business-login-button"]');
-    await bceidBusinessButton.trigger('click');
-
-    // Assert that the login function was called with the correct argument
-    expect(loginMock).toHaveBeenCalledWith(IdentityProviderKind.BCEIDBUSINESS);
-  });
-
-  it('calls login function IDIR-MFA when IDIR-MFA button is clicked', async () => {
-    // Mock the login function
-    const loginMock = vi.fn();
-    const wrapper = mount(OidcLoginView, {
-      global: {
-        mocks: {
-          login: loginMock
-        }
-      }
-    });
-
-    // Find the IDIR-MFA button and simulate a click
-    const idirButton = wrapper.find('[data-test="idir-mfa-login-button"]');
-    await idirButton.trigger('click');
-
-    // Assert that the login function was called with the correct argument
-    expect(loginMock).toHaveBeenCalledWith(IdentityProviderKind.AZUREIDIR);
   });
 });

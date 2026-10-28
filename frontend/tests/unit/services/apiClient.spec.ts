@@ -3,9 +3,13 @@ import { appAxios } from '@/services/interceptors';
 
 import type { Mock } from 'vitest';
 
+// Mocks
+
 vi.mock('@/services/interceptors', () => ({
   appAxios: vi.fn()
 }));
+
+// Fixtures
 
 const mockAxios = {
   get: vi.fn(),
@@ -14,6 +18,10 @@ const mockAxios = {
   patch: vi.fn(),
   delete: vi.fn()
 };
+
+// Mount
+
+// Tests
 
 describe('api wrapper', () => {
   beforeEach(() => {

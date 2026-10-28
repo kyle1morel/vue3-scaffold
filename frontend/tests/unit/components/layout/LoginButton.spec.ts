@@ -23,6 +23,8 @@ vi.mock('vue-router', () => ({
   useRouter: () => ({ ...mockRouter, currentRoute: mockCurrentRoute })
 }));
 
+// Fixtures
+
 // Mount
 
 function mountLoginButton() {

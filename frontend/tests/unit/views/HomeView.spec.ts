@@ -1,48 +1,60 @@
-import PrimeVue from 'primevue/config';
-import ToastService from 'primevue/toastservice';
-import { shallowMount } from '@vue/test-utils';
-
+import { RouteName } from '@/utils/enums/application';
 import HomeView from '@/views/HomeView.vue';
 
-// Mock dependencies
-vi.mock('@/store', () => ({
-  useAuthNStore: () => ({
-    getIsAuthenticated: true,
-    getUser: { profile: { identity_provider: null } }
-  })
-}));
+import { mockAuthNStore, resetMockAuthNStore } from '../../mockAuthNStore';
+import { mockRouter, resetMockRouter } from '../../mockRouter';
+import { mountComponent } from '../../mountComponent';
 
-vi.mock('vue-i18n', () => ({
-  useI18n: () => ({
-    t: vi.fn()
-  })
+// Mocks
+
+vi.mock('@/store/authnStore', () => ({
+  default: () => mockAuthNStore,
+  useAuthNStore: () => mockAuthNStore
 }));
 
 vi.mock('vue-router', () => ({
-  useRouter: () => ({
-    push: vi.fn()
-  })
+  useRouter: () => mockRouter
 }));
 
+// Fixtures
+
+// Mount
+
+function mountHomeView() {
+  const { wrapper } = mountComponent(HomeView);
+
+  return { wrapper };
+}
+
 beforeEach(() => {
-  vi.clearAllMocks();
+  resetMockAuthNStore();
+  resetMockRouter();
 });
 
-afterEach(() => {
-  sessionStorage.clear();
-});
+// Tests
 
-const wrapperSettings = () => ({
-  global: {
-    plugins: [() => PrimeVue, ToastService],
-    stubs: ['font-awesome-icon']
-  }
-});
+describe('HomeView', () => {
+  describe('user interaction', () => {
+    it('goes to the login page when logged out', async () => {
+      const { wrapper } = mountHomeView();
+      const button = wrapper.find('button');
 
-describe('HomeView.vue', () => {
-  it('renders', () => {
-    const wrapper = shallowMount(HomeView, wrapperSettings());
+      expect(button.text()).toBe('Log in');
+      await button.trigger('click');
 
-    expect(wrapper.exists()).toBe(true);
+      expect(mockRouter.push).toHaveBeenCalledWith({ name: RouteName.OIDC_LOGIN });
+    });
+
+    it('goes to the demo form when logged in', async () => {
+      mockAuthNStore.getIsAuthenticated.value = true;
+
+      const { wrapper } = mountHomeView();
+      const button = wrapper.find('button');
+
+      expect(button.text()).toBe('Demo form');
+      await button.trigger('click');
+
+      expect(mockRouter.push).toHaveBeenCalledWith({ name: RouteName.DEMO_FORM });
+    });
   });
 });

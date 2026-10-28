@@ -1,5 +1,13 @@
 import { createRouteBuilder } from '@/services/routeBuilder';
 
+// Mocks
+
+// Fixtures
+
+// Mount
+
+// Tests
+
 describe('createRouteBuilder', () => {
   it('joins segments correctly', () => {
     const route = createRouteBuilder('base');

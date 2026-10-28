@@ -2,6 +2,10 @@ import Password from '@/components/form/Password.vue';
 
 import { mountComponent } from '../../../mountComponent';
 
+// Mocks
+
+// Fixtures
+
 // Mount
 
 // Neither `findComponent(PvPassword)` (the imported component reference)
@@ -73,7 +77,7 @@ describe('Password', () => {
     });
 
     it('renders the help text', () => {
-      const { wrapper } = mountPassword({ props: { helptext: 'Must be at least 8 characters' } });
+      const { wrapper } = mountPassword({ props: { helpText: 'Must be at least 8 characters' } });
 
       expect(wrapper.find('#account\\.password-help').text()).toBe('Must be at least 8 characters');
     });

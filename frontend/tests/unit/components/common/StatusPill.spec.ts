@@ -1,11 +1,15 @@
-import { mount } from '@vue/test-utils';
-
 import StatusPill from '@/components/common/StatusPill.vue';
+
+import { mountComponent } from '../../../mountComponent';
+
+// Mocks
+
+// Fixtures
 
 // Mount
 
 function mountStatusPill(options: { props?: Record<string, unknown> } = {}) {
-  const wrapper = mount(StatusPill, { props: options.props, global: { stubs: { 'font-awesome-icon': true } } });
+  const { wrapper } = mountComponent(StatusPill, { props: options.props });
 
   return { wrapper };
 }

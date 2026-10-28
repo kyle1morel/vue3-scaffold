@@ -4,10 +4,18 @@ import { useAppStore } from '@/store';
 
 import type { StoreGeneric } from 'pinia';
 
+// Mocks
+
+// Fixtures
+
+// Mount
+
 beforeEach(() => {
   setActivePinia(createPinia());
   vi.clearAllMocks();
 });
+
+// Tests
 
 describe('App Store', () => {
   let appStore: StoreGeneric;

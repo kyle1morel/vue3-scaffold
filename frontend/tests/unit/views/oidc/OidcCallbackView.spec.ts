@@ -1,6 +1,6 @@
 import { flushPromises } from '@vue/test-utils';
 
-import { StorageKey } from '@/utils/enums/application';
+import { RouteName, StorageKey } from '@/utils/enums/application';
 import OidcCallbackView from '@/views/oidc/OidcCallbackView.vue';
 
 import { mockAuthNStore, resetMockAuthNStore } from '../../../mockAuthNStore';
@@ -69,10 +69,10 @@ describe('OidcCallbackView', () => {
       expect(mockRouter.replace).toHaveBeenCalledWith(testEntrypoint);
     });
 
-    it('redirects to the root when there is no stored entrypoint', async () => {
+    it('redirects to the demo form when there is no stored entrypoint', async () => {
       await mountOidcCallbackView();
 
-      expect(mockRouter.replace).toHaveBeenCalledWith('/');
+      expect(mockRouter.replace).toHaveBeenCalledWith({ name: RouteName.DEMO_FORM });
     });
   });
 });

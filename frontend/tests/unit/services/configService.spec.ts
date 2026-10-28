@@ -3,11 +3,19 @@ import axios from 'axios';
 import { getConfig, refreshConfig, getCachedConfig, configService } from '@/services/configService';
 import { StorageKey } from '@/utils/enums/application';
 
+// Mocks
+
 vi.mock('axios', () => ({
   default: {
     get: vi.fn()
   }
 }));
+
+// Fixtures
+
+// Mount
+
+// Tests
 
 describe('configService', () => {
   const mockGet = vi.mocked(axios.get);

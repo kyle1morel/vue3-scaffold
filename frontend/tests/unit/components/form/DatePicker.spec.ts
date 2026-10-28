@@ -1,57 +1,42 @@
-import { shallowMount } from '@vue/test-utils';
-import { ref } from 'vue';
-
 import DatePicker from '@/components/form/DatePicker.vue';
 
-vi.mock('vee-validate', () => ({
-  useField: vi.fn(() => ({
-    errorMessage: ref(''),
-    handleBlur: vi.fn(),
-    value: ref(undefined)
-  })),
-  ErrorMessage: {
-    name: 'ErrorMessage',
-    template: '<div />'
-  }
-}));
+import { mountWithFormContext } from '../../../mountWithFormContext';
 
-beforeEach(() => {
-  vi.clearAllMocks();
-});
+// Mocks
 
-afterEach(() => {
-  sessionStorage.clear();
-});
+// Fixtures
 
-const testName = 'foo';
+const testName = 'startDate';
 
-const wrapperSettings = (overrides: Record<string, string> = {}) => ({
-  props: {
-    name: testName,
-    ...overrides
-  },
-  global: {
-    stubs: {
-      DatePicker: true
-    }
-  }
-});
+// Mount
 
-describe('DatePicker.vue', () => {
-  it('renders', () => {
-    const wrapper = shallowMount(DatePicker, wrapperSettings());
-    expect(wrapper).toBeTruthy();
-  });
+function mountDatePicker(options: { helpText?: string; label?: string; required?: boolean } = {}) {
+  const { wrapper } = mountWithFormContext(DatePicker, { componentProps: { name: testName, ...options } });
 
-  it('renders label + help ids based on name', () => {
-    const wrapper = shallowMount(DatePicker, wrapperSettings({ label: 'My Label', helpText: 'Help' }));
+  return { wrapper };
+}
 
-    expect(wrapper.find(`#${testName}-label`).exists()).toBe(true);
-    expect(wrapper.find(`#${testName}-help`).exists()).toBe(true);
-  });
+// Tests
 
-  it('does not render a label element when label is empty', () => {
-    const wrapper = shallowMount(DatePicker, wrapperSettings({ label: '' }));
-    expect(wrapper.find('label').exists()).toBe(false);
+describe('DatePicker', () => {
+  describe('rendering', () => {
+    it('renders the label and help text with ids based on the name', () => {
+      const { wrapper } = mountDatePicker({ label: 'Start date', helpText: 'Pick a day' });
+
+      expect(wrapper.find(`#${testName}-label`).text()).toContain('Start date');
+      expect(wrapper.find(`#${testName}-help`).text()).toBe('Pick a day');
+    });
+
+    it('omits the label when none is given', () => {
+      const { wrapper } = mountDatePicker();
+
+      expect(wrapper.find('label').exists()).toBe(false);
+    });
+
+    it('marks the field as required when asked to', () => {
+      const { wrapper } = mountDatePicker({ label: 'Start date', required: true });
+
+      expect(wrapper.find(`#${testName}-label`).text()).toContain('*');
+    });
   });
 });

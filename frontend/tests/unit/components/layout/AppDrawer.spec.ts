@@ -1,105 +1,79 @@
-import { createTestingPinia } from '@pinia/testing';
-import PrimeVue from 'primevue/config';
-import { flushPromises, mount } from '@vue/test-utils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { flushPromises } from '@vue/test-utils';
 
 import AppDrawer from '@/components/layout/AppDrawer.vue';
-import { useAuthNStore } from '@/store';
-import { StorageKey } from '@/utils/enums/application';
+
+import { mockAuthNStore, resetMockAuthNStore } from '../../../mockAuthNStore';
+import { mountComponent } from '../../../mountComponent';
+
+// Mocks
+
+vi.mock('@/store/authnStore', () => ({
+  default: () => mockAuthNStore,
+  useAuthNStore: () => mockAuthNStore
+}));
+
+// Fixtures
 
 interface DrawerItem {
   label: string;
-  public?: boolean;
   items?: DrawerItem[];
   mailTo?: string;
 }
 
-const mockPush = vi.fn();
-vi.mock('vue-router', () => ({
-  useRouter: () => ({
-    push: mockPush
-  })
-}));
+// Mount
+
+function mountAppDrawer() {
+  const { wrapper } = mountComponent(AppDrawer);
+  // permittedItems and visible are script-setup state with no rendered equivalent until the drawer opens
+  const vm = wrapper.vm as unknown as { permittedItems: DrawerItem[]; visible: boolean };
+
+  return { wrapper, vm };
+}
 
 beforeEach(() => {
-  sessionStorage.setItem(
-    StorageKey.CONFIG,
-    JSON.stringify({
-      oidc: {
-        authority: 'abc',
-        clientId: '123'
-      }
-    })
-  );
-
-  vi.clearAllMocks();
+  resetMockAuthNStore();
 });
 
-afterEach(() => {
-  sessionStorage.clear();
-});
+// Tests
 
-describe('AppDrawer.vue', () => {
-  const createMountOptions = () => ({
-    global: {
-      plugins: [
-        PrimeVue,
-        createTestingPinia({
-          stubActions: false
-        })
-      ],
-      stubs: {
-        'font-awesome-icon': true,
-        RouterLink: true
-      }
-    }
+describe('AppDrawer', () => {
+  describe('rendering', () => {
+    it('renders the menu button', () => {
+      const { wrapper } = mountAppDrawer();
+
+      expect(wrapper.find('button').text()).toContain('Menu');
+    });
+
+    it('shows only public items when logged out', () => {
+      const { vm } = mountAppDrawer();
+
+      expect(vm.permittedItems.map((item) => item.label)).toEqual(['Home', 'Help']);
+    });
+
+    it('shows every item when logged in', () => {
+      mockAuthNStore.getIsAuthenticated.value = true;
+
+      const { vm } = mountAppDrawer();
+
+      expect(vm.permittedItems.map((item) => item.label)).toEqual(['Home', 'Demo form', 'Developer', 'Help']);
+    });
+
+    it('links the help item to a support email', () => {
+      const { vm } = mountAppDrawer();
+      const help = vm.permittedItems.find((item) => item.label === 'Help');
+
+      expect(help?.items?.find((item) => item.mailTo)?.mailTo).toContain('mailto:');
+    });
   });
 
-  const mountOptions = createMountOptions();
+  describe('user interaction', () => {
+    it('opens the drawer when the menu button is clicked', async () => {
+      const { wrapper, vm } = mountAppDrawer();
 
-  it('renders menu button', () => {
-    const wrapper = mount(AppDrawer, mountOptions);
+      await wrapper.find('button').trigger('click');
+      await flushPromises();
 
-    expect(wrapper.find('button').exists()).toBe(true);
-    expect(wrapper.text()).toContain('Menu');
-  });
-
-  it('opens drawer when menu button is clicked', async () => {
-    const wrapper = mount(AppDrawer, mountOptions);
-
-    await wrapper.find('button').trigger('click');
-    await flushPromises();
-
-    expect((wrapper.vm as any).visible).toBe(true); // eslint-disable-line @typescript-eslint/no-explicit-any
-  });
-
-  it('shows only public items when unauthenticated', async () => {
-    const wrapper = mount(AppDrawer, createMountOptions());
-
-    await flushPromises();
-
-    const permittedItems = (wrapper.vm as any).permittedItems; // eslint-disable-line @typescript-eslint/no-explicit-any
-    expect(permittedItems.map((item: DrawerItem) => item.label)).toEqual(['Home', 'Help']);
-  });
-
-  it('shows the developer item when authenticated', async () => {
-    const wrapper = mount(AppDrawer, createMountOptions());
-    useAuthNStore().isAuthenticated = true;
-
-    await flushPromises();
-
-    const permittedItems = (wrapper.vm as any).permittedItems; // eslint-disable-line @typescript-eslint/no-explicit-any
-    expect(permittedItems.map((item: DrawerItem) => item.label)).toEqual(['Home', 'Developer', 'Help']);
-  });
-
-  it('has mailto links in help menu', async () => {
-    const wrapper = mount(AppDrawer, mountOptions);
-
-    await flushPromises();
-
-    const permittedItems = (wrapper.vm as any).permittedItems; // eslint-disable-line @typescript-eslint/no-explicit-any
-    const helpItem = permittedItems.find((item: DrawerItem) => item.label === 'Help');
-    const mailToItem = helpItem?.items?.find((item: DrawerItem) => item.mailTo);
-    expect(mailToItem?.mailTo).toContain('mailto:');
+      expect(vm.visible).toBe(true);
+    });
   });
 });

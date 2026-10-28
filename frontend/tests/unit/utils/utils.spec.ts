@@ -8,6 +8,14 @@ import {
   toKebabCase
 } from '@/utils/utils';
 
+// Mocks
+
+// Fixtures
+
+// Mount
+
+// Tests
+
 describe('utils.ts', () => {
   describe('combineDateTime', () => {
     it('returns null when date is null', () => {

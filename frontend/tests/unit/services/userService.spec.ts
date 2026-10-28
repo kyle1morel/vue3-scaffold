@@ -1,9 +1,17 @@
 import { appAxios } from '@/services/interceptors';
 import { searchUsers, userService } from '@/services/userService';
 
+// Mocks
+
 vi.mock('@/services/interceptors', () => ({
   appAxios: vi.fn()
 }));
+
+// Fixtures
+
+// Mount
+
+// Tests
 
 describe('user service', () => {
   const mockPost = vi.fn();

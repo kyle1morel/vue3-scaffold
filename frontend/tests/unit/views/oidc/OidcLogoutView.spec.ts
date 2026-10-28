@@ -1,59 +1,57 @@
-import { createTestingPinia } from '@pinia/testing';
-import { mount } from '@vue/test-utils';
+import { flushPromises } from '@vue/test-utils';
 
 import OidcLogoutView from '@/views/oidc/OidcLogoutView.vue';
-import { StorageKey } from '@/utils/enums/application';
-import PrimeVue from 'primevue/config';
-import ConfirmationService from 'primevue/confirmationservice';
-import ToastService from 'primevue/toastservice';
 
-vi.mock('vue-router', () => ({
-  useRouter: () => ({
-    push: vi.fn(),
-    replace: vi.fn()
-  })
+import { mockAuthNStore, resetMockAuthNStore } from '../../../mockAuthNStore';
+import { mockRouter, resetMockRouter } from '../../../mockRouter';
+import { mountComponent } from '../../../mountComponent';
+
+// Mocks
+
+vi.mock('@/store/authnStore', () => ({
+  default: () => mockAuthNStore,
+  useAuthNStore: () => mockAuthNStore
 }));
 
-const wrapperSettings = () => ({
-  global: {
-    plugins: [
-      () =>
-        createTestingPinia({
-          initialState: {
-            auth: {
-              user: {}
-            }
-          }
-        }),
-      PrimeVue,
-      ConfirmationService,
-      ToastService
-    ],
-    stubs: ['font-awesome-icon']
-  }
-});
+vi.mock('vue-router', () => ({
+  useRouter: () => mockRouter
+}));
+
+// Fixtures
+
+// Mount
+
+async function mountOidcLogoutView() {
+  const { wrapper } = mountComponent(OidcLogoutView, { stubs: { Spinner: true } });
+  await flushPromises();
+
+  return { wrapper };
+}
 
 beforeEach(() => {
-  sessionStorage.setItem(
-    StorageKey.CONFIG,
-    JSON.stringify({
-      oidc: {
-        authority: 'abc',
-        clientId: '123'
-      }
-    })
-  );
-
-  vi.clearAllMocks();
+  resetMockAuthNStore();
+  resetMockRouter();
 });
 
-afterEach(() => {
-  sessionStorage.clear();
-});
+// Tests
 
 describe('OidcLogoutView', () => {
-  it('renders component', () => {
-    const wrapper = mount(OidcLogoutView, wrapperSettings());
-    expect(wrapper).toBeTruthy();
+  describe('rendering', () => {
+    it('renders the logging out message', async () => {
+      const { wrapper } = await mountOidcLogoutView();
+
+      expect(wrapper.text()).toContain('Logging out...');
+    });
+  });
+
+  describe('logout', () => {
+    it('logs out and returns to the home page', async () => {
+      mockAuthNStore.getIsAuthenticated.value = true;
+
+      await mountOidcLogoutView();
+
+      expect(mockAuthNStore.logout).toHaveBeenCalledOnce();
+      expect(mockRouter.replace).toHaveBeenCalledWith('/');
+    });
   });
 });

@@ -1,5 +1,13 @@
 import { formatDate, formatDateFilename, formatDateLong, formatDateOnly } from '@/utils/formatters';
 
+// Mocks
+
+// Fixtures
+
+// Mount
+
+// Tests
+
 describe('formatters.ts', () => {
   describe('formatDate', () => {
     it('returns the expected date format', () => {
