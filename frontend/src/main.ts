@@ -44,7 +44,8 @@ function initializeApp(): void {
       options: {
         prefix: 'p',
         darkModeSelector: 'dark',
-        cssLayer: false
+        // Layered before Tailwind utilities so utility classes can restyle PrimeVue; order is set in main.css
+        cssLayer: { name: 'primevue', order: 'theme, base, primevue' }
       }
     }
   });

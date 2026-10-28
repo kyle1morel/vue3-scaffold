@@ -11,14 +11,20 @@ https://github.com/primefaces/primevue/blob/master/packages/themes/src/presets/m
 
 */
 
-import Material from '@primevue/themes/material';
+import { definePreset } from '@primeuix/themes';
+import Material from '@primeuix/themes/material';
 
-import { definePreset } from '@primevue/themes';
+// A component css override replaces Material's css for that component, so extend it instead
+const materialCss = (component: string, options: unknown) => {
+  const css = (Material.components as Record<string, { css?: unknown }>)[component]?.css;
+  if (typeof css === 'function') return css(options);
+  return typeof css === 'string' ? css : '';
+};
 
 export const ThemeOverride = definePreset(Material, {
   // Must use lower case for primitive keys unless you want pain
   primitive: {
-    // bcblue.500 is BC mandated blue
+    // bcblue.950 is the BC primary blue; BC has 10 shades, so 50 is filled with the BC info surface
     bcblue: {
       50: '#F7F9FC',
       100: '#F1F8FE',
@@ -29,14 +35,12 @@ export const ThemeOverride = definePreset(Material, {
       600: '#7AB8F9',
       700: '#5595D9',
       800: '#3470B1',
-      850: '#1A5A96',
       900: '#1E5189',
       950: '#013366'
     },
     green: {
       // Override base green hues, for base values see link at top
-      50: '#FAF9F8',
-      75: '#F6FFF8',
+      50: '#F6FFF8',
       100: '#d9e6db',
       200: '#b3cdb7',
       300: '#8eb392',
@@ -116,7 +120,18 @@ export const ThemeOverride = definePreset(Material, {
         surface: '#FEF1D8'
       }
     },
+    // BC border tokens; medium meets the 3:1 contrast WCAG requires for control edges
+    borderactive: '#2E5DD7',
+    borderdark: '#353433',
+    borderlight: '#D8D8D8',
+    bordermedium: '#898785',
     disabledcolor: '#EDEBE9',
+    primarypressed: '#01264C',
+    surfacehover: '#EDEBE9',
+    surfacepressed: '#E0DEDC',
+    textdanger: '#CE3E39',
+    textlink: '#255A90',
+    textprimary: '#2D2D2D',
     textsecondary: '#474543',
     white: '#FFFFFF'
   },
@@ -140,8 +155,10 @@ export const ThemeOverride = definePreset(Material, {
     },
     formField: {
       focusRing: {
-        color: '{primary.400}',
-        width: '2px'
+        color: '{borderactive}',
+        width: '2px',
+        style: 'solid',
+        offset: '2px'
       }
     },
     colorScheme: {
@@ -164,26 +181,42 @@ export const ThemeOverride = definePreset(Material, {
           color: '{primary.950}',
           contrastColor: '{white}',
           hoverColor: '{primary.900}',
-          activeColor: '{primary.800}'
+          activeColor: '{primarypressed}'
         },
         content: {
           hover: {
-            background: '{greyscale.200}'
+            background: '{surfacehover}'
           }
         },
+        list: {
+          option: {
+            focusBackground: '{surfacehover}'
+          }
+        },
+        mask: {
+          background: 'rgba(0, 0, 0, 0.45)'
+        },
+        text: {
+          color: '{textprimary}',
+          hoverColor: '{textprimary}',
+          mutedColor: '{textsecondary}',
+          hoverMutedColor: '{textsecondary}'
+        },
         formField: {
-          hoverBorderColor: '{primary.700}',
-          focusBorderColor: '{primary.700}',
+          borderColor: '{bordermedium}',
+          hoverBorderColor: '{borderdark}',
+          focusBorderColor: '{borderactive}',
           invalidBorderColor: '{support.danger.border}',
           floatLabelInvalidColor: '{red.500}',
           disabledBackground: '{disabledcolor}',
-          disabledColor: '{surface.800}',
+          disabledColor: '{surface.600}',
           paddingX: '0.5rem',
           paddingY: '0.5rem',
           placeholderColor: '{surface.700}'
         },
         highlight: {
-          background: '{surface.0}'
+          color: '{primary.color}',
+          focusColor: '{primary.color}'
         },
         navigation: {
           item: {
@@ -197,54 +230,149 @@ export const ThemeOverride = definePreset(Material, {
     accordion: {
       header: {
         padding: '1rem'
-      }
+      },
+      // Toggle icon before the title
+      css: (options) => `
+        ${materialCss('accordion', options)}
+        .p-accordionheader { justify-content: flex-start; }
+        .p-accordionheader .p-accordionheader-toggle-icon {
+          order: -1;
+          margin-right: 1rem;
+        }
+      `
     },
+    // Matches the BC design system buttons: BC focus outline on every variant, BC disabled colours, not opacity
     button: {
+      root: {
+        paddingY: '0.5rem',
+        focusRing: {
+          width: '2px',
+          style: 'solid',
+          offset: '2px'
+        }
+      },
       colorScheme: {
         light: {
           root: {
+            primary: {
+              focusRing: {
+                color: '{borderactive}'
+              }
+            },
             secondary: {
               background: '{surface.0}',
-              color: '{primary.color}'
+              hoverBackground: '{surfacehover}',
+              activeBackground: '{surfacepressed}',
+              borderColor: '{borderdark}',
+              hoverBorderColor: '{borderdark}',
+              activeBorderColor: '{borderdark}',
+              color: '{textprimary}',
+              hoverColor: '{textprimary}',
+              activeColor: '{textprimary}',
+              focusRing: {
+                color: '{borderactive}'
+              }
+            },
+            danger: {
+              hoverBackground: '{red.800}',
+              hoverBorderColor: '{red.800}',
+              activeBackground: '{support.danger.surface}',
+              activeBorderColor: '{support.danger.surface}',
+              activeColor: '{support.danger.border}',
+              focusRing: {
+                color: '{borderactive}'
+              }
             }
+          },
+          outlined: {
+            primary: {
+              hoverBackground: '{surfacehover}'
+            },
+            // Material's grey reads as disabled and fails contrast, so match the BC secondary button
+            secondary: {
+              hoverBackground: '{surfacehover}',
+              activeBackground: '{surfacepressed}',
+              borderColor: '{borderdark}',
+              color: '{textprimary}'
+            }
+          },
+          text: {
+            primary: {
+              color: '{textprimary}',
+              hoverBackground: '{greyscale.200}',
+              activeBackground: '{surfacepressed}'
+            }
+          },
+          link: {
+            color: '{textlink}',
+            hoverColor: '{textlink}',
+            activeColor: '{textlink}'
           }
         }
-      }
+      },
+      // Replaces Material's focus styles, which swap in the pressed colour instead of showing the outline
+      css: () => `
+        .p-button:disabled {
+          opacity: 1;
+          background: var(--p-disabledcolor);
+          border-color: var(--p-disabledcolor);
+          color: var(--p-surface-600);
+        }
+        .p-button-secondary:disabled { border-color: var(--p-borderlight); }
+        .p-button-text:disabled,
+        .p-button-link:disabled {
+          background: transparent;
+          border-color: transparent;
+        }
+        .p-button:not(:disabled):hover .p-button-label { text-decoration: underline; }
+      `
     },
     card: {
       body: {
-        padding: '0'
+        padding: '1rem'
       },
-      border: {
-        radius: '0.5rem'
+      root: {
+        borderRadius: '0.5rem'
       },
       title: {
-        font: {
-          size: '1rem'
+        fontSize: '1rem'
+      },
+      css: () => `
+        .p-card {
+          border: 1px solid var(--p-borderlight);
+          margin-bottom: 1rem;
         }
-      }
+        .p-card .p-divider { margin-bottom: 0; }
+      `
     },
     datatable: {
-      paginator: {
-        bottom: {
-          border: {
-            width: '0'
-          }
-        }
-      }
+      paginatorBottom: {
+        borderWidth: '0'
+      },
+      css: (options) => `
+        ${materialCss('datatable', options)}
+        .p-datatable .p-datatable-loading-icon { color: var(--p-primary-color); }
+        .p-datatable .p-paginator { justify-content: flex-end; }
+      `
     },
     dialog: {
       title: {
-        font: {
-          size: '1.8rem'
+        fontSize: '1.25rem',
+        fontWeight: 'bold'
+      },
+      // Footer buttons are written primary-first; reverse them so the primary action sits on the right
+      css: () => `
+        .p-dialog-footer {
+          flex-direction: row-reverse;
+          justify-content: flex-start;
         }
-      }
+      `
     },
     menu: {
       item: {
-        color: '{primary.color}',
+        color: '{text.color}',
         icon: {
-          color: '{primary.color}'
+          color: '{text.color}'
         }
       }
     },
@@ -285,28 +413,25 @@ export const ThemeOverride = definePreset(Material, {
         light: {
           error: {
             background: '{support.danger.surface}',
-            color: '{textsecondary}',
-            iconColor: '{red.500}'
+            color: '{textsecondary}'
           },
           info: {
             background: '{support.info.surface}',
-            color: '{textsecondary}',
-            iconColor: '{bcblue.950}'
+            color: '{textsecondary}'
           },
           success: {
             background: '{support.success.surface}',
-            color: '{textsecondary}',
-            iconColor: '{green.500}'
+            color: '{textsecondary}'
           },
           warn: {
             background: '{support.warning.surface}',
-            color: '{textsecondary}',
-            iconColor: '{gold.950}'
+            color: '{textsecondary}'
           }
         }
       },
       // Setting the message.root.borderWidth token causes the border to overflow the parent, causing alignment issues.
       // This workaround uses outline with an offset to render a border within bounds of parent.
+      // Message has no icon colour token, so the BC icon colours are set here too.
       css: () => `
         .p-message {
           outline-width: var(--p-support-border-width);
@@ -316,13 +441,15 @@ export const ThemeOverride = definePreset(Material, {
         .p-message-info { outline-color: var(--p-support-info-border); }
         .p-message-success { outline-color: var(--p-support-success-border); }
         .p-message-warn { outline-color: var(--p-support-warning-border); }
+        .p-message-error .p-message-icon { color: var(--p-support-danger-icon); }
+        .p-message-info .p-message-icon { color: var(--p-support-info-icon); }
+        .p-message-success .p-message-icon { color: var(--p-support-success-icon); }
+        .p-message-warn .p-message-icon { color: var(--p-support-warning-icon); }
       `
     },
     panel: {
       header: { padding: '1.5rem 2.25rem 1.5rem 2.25rem' },
-      toggleable: {
-        header: { padding: '1.5rem 2.25rem 1.5rem 2.25rem' }
-      },
+      toggleableHeader: { padding: '1.5rem 2.25rem 1.5rem 2.25rem' },
       content: { padding: '0 2.25rem 1.5rem 2.25rem' },
       css: () => `
         .p-panel {
@@ -343,10 +470,10 @@ export const ThemeOverride = definePreset(Material, {
       colorScheme: {
         light: {
           root: {
-            'color.1': '{primary.color}',
-            'color.2': '{primary.color}',
-            'color.3': '{primary.color}',
-            'color.4': '{primary.color}'
+            colorOne: '{primary.color}',
+            colorTwo: '{primary.color}',
+            colorThree: '{primary.color}',
+            colorFour: '{primary.color}'
           }
         }
       }
@@ -355,8 +482,15 @@ export const ThemeOverride = definePreset(Material, {
       tab: {
         color: '{primary.color}'
       },
-      tabPanel: {
+      tabpanel: {
         padding: '1.2rem 1.2rem 1.2rem 1.2rem'
+      },
+      css: (options) => `${materialCss('tabs', options)} .p-tab { text-decoration: underline; }`
+    },
+    tooltip: {
+      root: {
+        background: '{surface.800}',
+        color: '{surface.0}'
       }
     },
     toast: {

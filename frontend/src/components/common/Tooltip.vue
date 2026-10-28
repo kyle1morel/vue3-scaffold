@@ -19,7 +19,7 @@ const {
 
 <template>
   <span
-    class="app-primary-color"
+    class="text-primary"
     role="tooltip"
     :aria-label="text"
   >

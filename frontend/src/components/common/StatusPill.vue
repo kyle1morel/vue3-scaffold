@@ -8,7 +8,7 @@ const {
   bgColor = undefined,
   borderColor = undefined,
   icon = undefined,
-  contentColor = 'var(--p-greyscale-900)'
+  contentColor = 'var(--p-text-color)'
 } = defineProps<{
   enlarge?: boolean;
   status?: string;
