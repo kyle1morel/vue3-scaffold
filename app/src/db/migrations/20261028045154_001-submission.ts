@@ -1,3 +1,5 @@
+import { sql } from 'kysely';
+
 import {
   createAuditLogTrigger,
   createIndex,
@@ -10,6 +12,9 @@ import {
 import type { Kysely } from 'kysely';
 
 export async function up(db: Kysely<unknown>): Promise<void> {
+  await db.schema.withSchema('app').createType('contact_method').asEnum(['email', 'phone']).execute();
+  await db.schema.withSchema('app').createType('province').asEnum(['AB', 'BC', 'SK']).execute();
+
   await db.schema
     .withSchema('app')
     .createTable('submission')
@@ -17,8 +22,8 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn('first_name', 'text', (col) => col.notNull())
     .addColumn('email', 'text', (col) => col.notNull())
     .addColumn('phone', 'text')
-    .addColumn('province', 'text', (col) => col.notNull())
-    .addColumn('contact_method', 'text', (col) => col.notNull())
+    .addColumn('province', sql`app.province`, (col) => col.notNull())
+    .addColumn('contact_method', sql`app.contact_method`, (col) => col.notNull())
     .addColumn('start_date', 'date')
     .addColumn('quantity', 'integer')
     .addColumn('city', 'text')
@@ -40,4 +45,7 @@ export async function down(db: Kysely<unknown>): Promise<void> {
   await dropUpdatedAtTrigger(db, 'app', 'submission');
 
   await db.schema.withSchema('app').dropTable('submission').ifExists().execute();
+
+  await db.schema.withSchema('app').dropType('province').ifExists().execute();
+  await db.schema.withSchema('app').dropType('contact_method').ifExists().execute();
 }

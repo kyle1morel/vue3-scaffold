@@ -93,8 +93,10 @@ export interface components {
       firstName: string;
       email: string;
       phone: string | null;
-      province: string;
-      contactMethod: string;
+      /** @enum {string} */
+      province: 'AB' | 'BC' | 'SK';
+      /** @enum {string} */
+      contactMethod: 'email' | 'phone';
       /** Format: date-time */
       startDate: string | null;
       quantity: number | null;

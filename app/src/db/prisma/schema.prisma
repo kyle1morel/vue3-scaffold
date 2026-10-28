@@ -71,25 +71,40 @@ model kysely_migration_lock {
 }
 
 model submission {
-  id            String    @id @db.Uuid
-  firstName     String    @map("first_name")
+  id            String         @id @db.Uuid
+  firstName     String         @map("first_name")
   email         String
   phone         String?
-  province      String
-  contactMethod String    @map("contact_method")
-  startDate     DateTime? @map("start_date") @db.Date
+  province      province
+  contactMethod contact_method @map("contact_method")
+  startDate     DateTime?      @map("start_date") @db.Date
   quantity      Int?
   city          String?
   category      String?
   comments      String?
   notes         String?
-  createdBy     String?   @default("00000000-0000-4000-8000-000000000000") @map("created_by")
-  createdAt     DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedBy     String?   @map("updated_by")
-  updatedAt     DateTime? @map("updated_at") @db.Timestamptz(6)
-  deletedBy     String?   @map("deleted_by")
-  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz(6)
+  createdBy     String?        @default("00000000-0000-4000-8000-000000000000") @map("created_by")
+  createdAt     DateTime?      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedBy     String?        @map("updated_by")
+  updatedAt     DateTime?      @map("updated_at") @db.Timestamptz(6)
+  deletedBy     String?        @map("deleted_by")
+  deletedAt     DateTime?      @map("deleted_at") @db.Timestamptz(6)
 
   @@index([createdAt], map: "submission_created_at_index")
+  @@schema("app")
+}
+
+enum contact_method {
+  email
+  phone
+
+  @@schema("app")
+}
+
+enum province {
+  AB
+  BC
+  SK
+
   @@schema("app")
 }

@@ -1,7 +1,7 @@
 openapi: 3.0.4
 info:
   version: 1.0.0
-  title: Vue3 Scaffold
+  title: Vue 3 Scaffold
   description: A Vue 3 and Express application scaffold.
   license:
     name: Apache 2.0
@@ -55,8 +55,15 @@ components:
           nullable: true
         province:
           type: string
+          enum:
+            - AB
+            - BC
+            - SK
         contactMethod:
           type: string
+          enum:
+            - email
+            - phone
         startDate:
           type: string
           nullable: true

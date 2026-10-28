@@ -141,8 +141,8 @@ async function loadSubmission(id: string) {
       firstName: s.firstName,
       email: s.email,
       phone: s.phone,
-      province: s.province as (typeof PROVINCES)[number],
-      contactMethod: s.contactMethod as (typeof CONTACT_METHODS)[number],
+      province: s.province,
+      contactMethod: s.contactMethod,
       // A date-only value arrives as midnight UTC, so parse its date part as a local date
       startDate: s.startDate ? parseISO(s.startDate.slice(0, 10)) : null,
       quantity: s.quantity,
