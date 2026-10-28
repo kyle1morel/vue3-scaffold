@@ -67,6 +67,19 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true }
       },
       {
+        path: '/submissions',
+        name: RouteName.SUBMISSIONS,
+        component: () => import('@/views/SubmissionsView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/submissions/:submissionId',
+        name: RouteName.SUBMISSION,
+        component: () => import('@/views/DemoFormView.vue'),
+        props: createProps,
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/developer',
         name: RouteName.DEVELOPER,
         component: () => import('@/views/DeveloperView.vue'),

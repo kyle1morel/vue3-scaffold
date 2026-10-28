@@ -23,7 +23,9 @@ export const RouteName = {
   NOT_FOUND: 'not_found',
   OIDC_CALLBACK: 'oidc_callback',
   OIDC_LOGIN: 'oidc_login',
-  OIDC_LOGOUT: 'oidc_logout'
+  OIDC_LOGOUT: 'oidc_logout',
+  SUBMISSION: 'submission',
+  SUBMISSIONS: 'submissions'
 } as const;
 
 export type RouteName = (typeof RouteName)[keyof typeof RouteName];

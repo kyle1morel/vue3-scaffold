@@ -25,7 +25,7 @@ describe('UnitOfWork', () => {
   });
 
   describe('execute', () => {
-    const allRepositories = ['identityProvider', 'user'] as const;
+    const allRepositories = ['identityProvider', 'submission', 'user'] as const;
 
     it('invokes the callback with a RepositoryProvider and the transaction mock', async () => {
       const result = await unitOfWork.execute(async (repos, tx) => {

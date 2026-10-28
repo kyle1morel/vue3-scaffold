@@ -10,7 +10,8 @@
       "help": "Help",
       "home": "Home",
       "menu": "Menu",
-      "reportProblem": "Report a problem"
+      "reportProblem": "Report a problem",
+      "submissions": "Submissions"
     },
     "copyToClipboard": {
       "button": "Copy to clipboard",
@@ -46,11 +47,13 @@
     "actions": {
       "cancel": "Cancel",
       "close": "Close",
+      "delete": "Delete",
       "leave": "Leave",
       "logIn": "Log in",
       "logOut": "Log out",
       "ok": "OK",
-      "submit": "Submit"
+      "submit": "Submit",
+      "view": "View"
     },
     "errors": {
       "startup": "Unable to load the application. Please refresh the page or try again later.",
@@ -78,9 +81,13 @@
   },
   "views": {
     "demoForm": {
+      "back": "Back to submissions",
       "errors": {
         "agree": "You must accept the terms",
-        "email": "Email must be a valid email address"
+        "email": "Email must be a valid email address",
+        "load": "Unable to load the submission. Please try again.",
+        "notFound": "This submission doesn't exist or has been deleted.",
+        "save": "Unable to save the submission. Please try again."
       },
       "fields": {
         "agree": "I accept the terms",
@@ -104,7 +111,7 @@
         "password": "At least 8 characters",
         "quantity": "Between 1 and 100"
       },
-      "intro": "A front end only form showing the scaffold's form components with zod validation. Nothing is sent to the API.",
+      "intro": "A form showing the scaffold's form components with zod validation. Submissions are saved through the API, except the password and terms, which only demonstrate their components.",
       "options": {
         "categories": {
           "feedback": "Feedback",
@@ -137,9 +144,10 @@
         "unsaved": "Unsaved changes"
       },
       "submitted": {
-        "detail": "Nothing was sent; the submitted values are logged to the browser console",
+        "detail": "Your submission was saved",
         "title": "Form submitted"
       },
+      "submittedOn": "Submitted {date}",
       "title": "Demo form"
     },
     "developer": {
@@ -159,7 +167,11 @@
       "message": "Page not found."
     },
     "oidcCallback": {
-      "authorizing": "Authorizing..."
+      "authorizing": "Authorizing...",
+      "errors": {
+        "deactivated": "Your account is deactivated. Contact your administrator to restore access.",
+        "failed": "We couldn't log you in. Please try again."
+      }
     },
     "oidcLogin": {
       "headings": {
@@ -190,6 +202,32 @@
     },
     "oidcLogout": {
       "loggingOut": "Logging out..."
+    },
+    "submissions": {
+      "actions": {
+        "delete": "Delete the submission from {name}",
+        "view": "View the submission from {name}"
+      },
+      "columns": {
+        "actions": "Actions",
+        "city": "City",
+        "email": "Email",
+        "firstName": "First name",
+        "province": "Province",
+        "quantity": "Quantity",
+        "submitted": "Submitted"
+      },
+      "confirmDelete": {
+        "message": "Delete the submission from {name}? It will no longer appear in the list.",
+        "title": "Delete submission?"
+      },
+      "deleted": "Submission deleted",
+      "empty": "No submissions yet.",
+      "errors": {
+        "delete": "Unable to delete the submission. Please try again.",
+        "load": "Unable to load submissions. Please try again."
+      },
+      "title": "Submissions"
     }
   }
 }

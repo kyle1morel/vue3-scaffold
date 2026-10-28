@@ -1,6 +1,7 @@
 import express from 'express';
 
 import docs from './docs.ts';
+import submission from './submission.ts';
 import user from './user.ts';
 import { hasAuthentication } from '#src/middleware/authentication';
 import { requestContext } from '#src/types/context';
@@ -21,11 +22,12 @@ router.use((_req, res, next) => {
 // Base v1 Responder
 router.get('/', (_req, res) => {
   res.status(200).json({
-    endpoints: ['/docs', '/user']
+    endpoints: ['/docs', '/submission', '/user']
   });
 });
 
 router.use('/docs', docs);
+router.use('/submission', submission);
 router.use('/user', user);
 
 export default router;

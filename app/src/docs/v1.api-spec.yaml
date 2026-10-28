@@ -13,6 +13,8 @@ security:
   - BearerAuth: []
     OpenID: []
 tags:
+  - name: Submission
+    description: Operations for demo form submissions
   - name: User
     description: Operations for managing users
 components:
@@ -27,6 +29,111 @@ components:
       description: OpenID Connect endpoint for acquiring JWT tokens
       openIdConnectUrl: ''
   schemas:
+    SubmissionPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Submission'
+        total:
+          type: integer
+      required:
+        - items
+        - total
+    Submission:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        province:
+          type: string
+        contactMethod:
+          type: string
+        startDate:
+          type: string
+          nullable: true
+          format: date-time
+        quantity:
+          type: integer
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        category:
+          type: string
+          nullable: true
+        comments:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        createdBy:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          nullable: true
+          format: date-time
+        updatedBy:
+          type: string
+          nullable: true
+        updatedAt:
+          type: string
+          nullable: true
+          format: date-time
+        deletedBy:
+          type: string
+          nullable: true
+        deletedAt:
+          type: string
+          nullable: true
+          format: date-time
+      required:
+        - id
+        - firstName
+        - email
+        - phone
+        - province
+        - contactMethod
+        - startDate
+        - quantity
+        - city
+        - category
+        - comments
+        - notes
+        - createdBy
+        - createdAt
+        - updatedBy
+        - updatedAt
+        - deletedBy
+        - deletedAt
+      additionalProperties: false
+    Problem:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: number
+        detail:
+          type: string
+        instance:
+          type: string
+      required:
+        - type
+        - title
+        - status
     User:
       type: object
       properties:
@@ -92,25 +199,223 @@ components:
         - deletedBy
         - deletedAt
       additionalProperties: false
-    Problem:
-      type: object
-      properties:
-        type:
-          type: string
-        title:
-          type: string
-        status:
-          type: number
-        detail:
-          type: string
-        instance:
-          type: string
-      required:
-        - type
-        - title
-        - status
   parameters: {}
 paths:
+  /submission:
+    get:
+      operationId: listSubmissions
+      summary: List submissions, newest first
+      tags:
+        - Submission
+      parameters:
+        - schema:
+            type: integer
+            minimum: 1
+            default: 1
+          required: false
+          name: page
+          in: query
+        - schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+          required: false
+          name: pageSize
+          in: query
+      responses:
+        '200':
+          description: A page of submissions and the total number of submissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionPage'
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '422':
+          description: Validation error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    post:
+      operationId: createSubmission
+      summary: Save a demo form submission
+      tags:
+        - Submission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                email:
+                  type: string
+                  maxLength: 255
+                  format: email
+                phone:
+                  type: string
+                  nullable: true
+                  pattern: ^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$
+                province:
+                  type: string
+                  enum:
+                    - AB
+                    - BC
+                    - SK
+                contactMethod:
+                  type: string
+                  enum:
+                    - email
+                    - phone
+                startDate:
+                  type: string
+                  nullable: true
+                  format: date
+                quantity:
+                  type: integer
+                  nullable: true
+                  minimum: 1
+                  maximum: 100
+                city:
+                  type: string
+                  nullable: true
+                  maxLength: 255
+                category:
+                  type: string
+                  nullable: true
+                  maxLength: 100
+                comments:
+                  type: string
+                  nullable: true
+                  maxLength: 1000
+                notes:
+                  type: string
+                  nullable: true
+                  maxLength: 10000
+              required:
+                - firstName
+                - email
+                - province
+                - contactMethod
+              additionalProperties: false
+      responses:
+        '201':
+          description: The saved submission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '422':
+          description: Validation error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /submission/{submissionId}:
+    get:
+      operationId: getSubmission
+      summary: Get a submission
+      tags:
+        - Submission
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: submissionId
+          in: path
+      responses:
+        '200':
+          description: The submission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '422':
+          description: Validation error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    delete:
+      operationId: deleteSubmission
+      summary: Soft delete a submission
+      tags:
+        - Submission
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: submissionId
+          in: path
+      responses:
+        '204':
+          description: The submission was deleted
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '422':
+          description: Validation error
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+  /user/me:
+    get:
+      operationId: getCurrentUser
+      summary: Get the current user
+      tags:
+        - User
+      responses:
+        '200':
+          description: The user making the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
   /user/search:
     post:
       operationId: searchUsers

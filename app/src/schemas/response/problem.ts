@@ -23,6 +23,11 @@ export const FORBIDDEN_RESPONSE = {
   schema: problemSchema,
   contentType: 'application/problem+json'
 };
+export const NOT_FOUND_RESPONSE = {
+  description: 'Not found',
+  schema: problemSchema,
+  contentType: 'application/problem+json'
+};
 export const VALIDATION_ERROR_RESPONSE = {
   description: 'Validation error',
   schema: problemSchema,

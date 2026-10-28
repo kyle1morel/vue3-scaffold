@@ -55,7 +55,13 @@ describe('AppDrawer', () => {
 
       const { vm } = mountAppDrawer();
 
-      expect(vm.permittedItems.map((item) => item.label)).toEqual(['Home', 'Demo form', 'Developer', 'Help']);
+      expect(vm.permittedItems.map((item) => item.label)).toEqual([
+        'Home',
+        'Demo form',
+        'Submissions',
+        'Developer',
+        'Help'
+      ]);
     });
 
     it('links the help item to a support email', () => {

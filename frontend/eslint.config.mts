@@ -12,7 +12,15 @@ import vitest from '@vitest/eslint-plugin';
 export default defineConfig([
   {
     // Locale files are the only JSON the vue-i18n rules need to lint
-    ignores: ['coverage', 'dist', 'node_modules', '*.config.js', '**/*.json', '!src/locales/*.json']
+    ignores: [
+      'coverage',
+      'dist',
+      'node_modules',
+      '*.config.js',
+      '**/*.json',
+      '!src/locales/*.json',
+      'src/types/api/generated.ts'
+    ]
   },
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,vue}'],

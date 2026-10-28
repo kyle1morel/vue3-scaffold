@@ -5,7 +5,7 @@
  */
 import { AuthType, IdentityProviderKind } from '#src/utils/enums/application';
 
-import type { CurrentContext, User } from '#types';
+import type { CurrentContext, Submission, User } from '#types';
 
 export const TEST_IDIR_USER_1: User = {
   bceidBusinessName: null,
@@ -17,6 +17,27 @@ export const TEST_IDIR_USER_1: User = {
   fullName: 'Doe, John',
   lastName: 'Doe',
   active: true,
+  createdAt: null,
+  createdBy: null,
+  updatedAt: null,
+  updatedBy: null,
+  deletedBy: null,
+  deletedAt: null
+};
+
+export const TEST_SUBMISSION_1: Submission = {
+  id: '0b6a1f3e-6d2c-4f0e-9a51-3c8e2d7b4a10',
+  firstName: 'Jane',
+  email: 'jane.doe@example.com',
+  phone: '(250) 555-1234',
+  province: 'BC',
+  contactMethod: 'email',
+  startDate: new Date('2026-01-15'),
+  quantity: 3,
+  city: 'Victoria',
+  category: 'question',
+  comments: null,
+  notes: '<p>Some notes</p>',
   createdAt: null,
   createdBy: null,
   updatedAt: null,

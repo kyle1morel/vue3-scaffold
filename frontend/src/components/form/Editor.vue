@@ -5,10 +5,12 @@ import { Editor } from '@/lib/primevue';
 
 // Props
 const {
+  disabled = false,
   helpText = '',
   name,
   height = '160px'
 } = defineProps<{
+  disabled?: boolean;
   helpText?: string;
   name: string;
   height?: string;
@@ -22,6 +24,8 @@ const { errorMessage, handleBlur, value } = useField<string>(name);
     <Editor
       v-model="value"
       :editor-style="`height: ${height}`"
+      :readonly="disabled"
+      :pt="{ toolbar: { class: { hidden: disabled } } }"
       @blur="handleBlur"
     />
 

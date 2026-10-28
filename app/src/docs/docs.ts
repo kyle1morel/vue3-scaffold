@@ -4,7 +4,10 @@ import { registry } from '#src/schemas/openapi';
 
 import type { OpenAPIObject } from 'openapi3-ts/oas30';
 
-const TAGS = [{ name: 'User', description: 'Operations for managing users' }];
+const TAGS = [
+  { name: 'Submission', description: 'Operations for demo form submissions' },
+  { name: 'User', description: 'Operations for managing users' }
+];
 
 /**
  * Generates a ReDocs HTML string for the documentation page of the Vue3 Scaffold API.

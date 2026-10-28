@@ -8,6 +8,7 @@ import developer from '@/assets/images/developer.svg';
 import form from '@/assets/images/form.svg';
 import help from '@/assets/images/help.svg';
 import home from '@/assets/images/home.svg';
+import list from '@/assets/images/list.svg';
 import { Button, Drawer } from '@/lib/primevue';
 import { useAuthNStore } from '@/store';
 import { SUPPORT_CONTACT } from '@/utils/constants/application';
@@ -44,6 +45,11 @@ const items = computed<DrawerItem[]>(() => [
     icon: form,
     label: t('components.appDrawer.demoForm'),
     route: RouteName.DEMO_FORM
+  },
+  {
+    icon: list,
+    label: t('components.appDrawer.submissions'),
+    route: RouteName.SUBMISSIONS
   },
   {
     icon: developer,

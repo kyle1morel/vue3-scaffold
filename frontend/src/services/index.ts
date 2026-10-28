@@ -1,3 +1,4 @@
 export { default as AuthService } from './authService';
-export { configService } from './configService';
-export { userService } from './userService';
+export * from './configService';
+export * from './submissionService';
+export * from './userService';
