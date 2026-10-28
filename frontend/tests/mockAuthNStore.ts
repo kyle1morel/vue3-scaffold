@@ -43,7 +43,8 @@ export const mockAuthNStore = {
   init: vi.fn(),
   login: vi.fn(),
   loginCallback: vi.fn(),
-  logout: vi.fn()
+  logout: vi.fn(),
+  removeUser: vi.fn()
 };
 
 export function resetMockAuthNStore() {
@@ -61,4 +62,5 @@ export function resetMockAuthNStore() {
   mockAuthNStore.login.mockClear();
   mockAuthNStore.loginCallback.mockClear();
   mockAuthNStore.logout.mockClear();
+  mockAuthNStore.removeUser.mockClear();
 }

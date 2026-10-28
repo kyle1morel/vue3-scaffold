@@ -1,6 +1,6 @@
 import { Log, UserManager, WebStorageStateStore } from 'oidc-client-ts';
 
-import { configService } from './configService';
+import { getCachedConfig } from './configService';
 
 import type { User, UserManagerSettings } from 'oidc-client-ts';
 
@@ -33,7 +33,7 @@ export default class AuthService {
    * @throws If OIDC configuration is missing or incomplete
    */
   public getOidcSettings(): UserManagerSettings {
-    const config = configService.getCachedConfig();
+    const config = getCachedConfig();
 
     if (!config?.oidc?.authority || !config?.oidc?.clientId) {
       throw new Error('OIDC is misconfigured');
@@ -91,6 +91,14 @@ export default class AuthService {
     await AuthService._userManager.signinRedirectCallback();
     // signinRedirectCallback appears to do this already?
     // await AuthService._userManager.storeUser(user);
+  }
+
+  /**
+   * Clears the stored user without redirecting to the OIDC logout.
+   * @returns Resolves once the user is removed.
+   */
+  public async removeUser(): Promise<void> {
+    return AuthService._userManager.removeUser();
   }
 
   /**

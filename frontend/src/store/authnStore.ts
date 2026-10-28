@@ -98,6 +98,10 @@ export const useAuthNStore = defineStore('authn', () => {
     return authService.logout();
   }
 
+  async function removeUser() {
+    return authService.removeUser();
+  }
+
   return {
     // State
     ...state,
@@ -111,7 +115,8 @@ export const useAuthNStore = defineStore('authn', () => {
     init,
     login,
     loginCallback,
-    logout
+    logout,
+    removeUser
   };
 });
 

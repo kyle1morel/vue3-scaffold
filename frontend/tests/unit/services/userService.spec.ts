@@ -1,5 +1,5 @@
 import { appAxios } from '@/services/interceptors';
-import { searchUsers, userService } from '@/services/userService';
+import { getCurrentUser, searchUsers } from '@/services/userService';
 
 // Mocks
 
@@ -14,14 +14,42 @@ vi.mock('@/services/interceptors', () => ({
 // Tests
 
 describe('user service', () => {
+  const mockGet = vi.fn();
   const mockPost = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
 
     vi.mocked(appAxios).mockReturnValue({
+      get: mockGet,
       post: mockPost
     } as never);
+  });
+
+  describe('getCurrentUser', () => {
+    it('gets and returns the current user', async () => {
+      const user = {
+        id: 'user-1',
+        firstName: 'John'
+      };
+
+      mockGet.mockResolvedValue({
+        data: user
+      });
+
+      const result = await getCurrentUser();
+
+      expect(mockGet).toHaveBeenCalledWith('user/me', undefined);
+      expect(result).toEqual(user);
+    });
+
+    it('propagates errors', async () => {
+      const error = new Error('request failed');
+
+      mockGet.mockRejectedValue(error);
+
+      await expect(getCurrentUser()).rejects.toThrow(error);
+    });
   });
 
   describe('searchUsers', () => {
@@ -68,12 +96,6 @@ describe('user service', () => {
       mockPost.mockRejectedValue(error);
 
       await expect(searchUsers({} as never)).rejects.toThrow(error);
-    });
-  });
-
-  it('exports all service functions', () => {
-    expect(userService).toEqual({
-      searchUsers
     });
   });
 });

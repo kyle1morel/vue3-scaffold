@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
-import { configService } from '@/services';
+import { getConfig } from '@/services';
 
 import type { Ref } from 'vue';
 import type { Config } from '@/types';
@@ -20,7 +20,7 @@ export const useConfigStore = defineStore('config', () => {
   };
 
   async function init(): Promise<void> {
-    const config = await configService.getConfig();
+    const config = await getConfig();
     state.config.value = config;
   }
 

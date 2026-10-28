@@ -2,7 +2,7 @@ import express from 'express';
 import { z } from 'zod';
 
 import { openapiRoute } from './openapiRoute.ts';
-import { searchUsersController } from '#src/controllers/user';
+import { getCurrentUserController, searchUsersController } from '#src/controllers/user';
 import { hasIdentity } from '#src/middleware/identity';
 import { requireSomeAuth } from '#src/middleware/requireSomeAuth';
 import { IdentityProviderKind } from '#src/utils/enums/application';
@@ -13,7 +13,19 @@ import { schema } from '#src/schemas/request/user';
 const basePath = '/user';
 const router = express.Router();
 router.use(requireSomeAuth);
-router.use(hasIdentity(IdentityProviderKind.AZUREIDIR));
+
+openapiRoute(basePath, router, {
+  method: 'get',
+  path: '/me',
+  operationId: 'getCurrentUser',
+  summary: 'Get the current user',
+  tags: ['User'],
+  responses: {
+    200: { description: 'The user making the request', schema: userSchema },
+    401: UNAUTHORIZED_RESPONSE
+  },
+  handler: getCurrentUserController
+});
 
 openapiRoute(basePath, router, {
   method: 'post',
@@ -22,6 +34,7 @@ openapiRoute(basePath, router, {
   summary: 'Search users',
   tags: ['User'],
   schema: schema.searchUsers,
+  middleware: [hasIdentity(IdentityProviderKind.AZUREIDIR)],
   responses: {
     200: { description: 'A list of users matching the search criteria', schema: z.array(userSchema) },
     401: UNAUTHORIZED_RESPONSE,

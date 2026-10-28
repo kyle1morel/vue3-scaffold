@@ -1,7 +1,22 @@
-import { searchUsersService } from '#src/services/user';
+import { getUserService, searchUsersService } from '#src/services/user';
 
 import type { Request, Response } from 'express';
-import type { SearchUsersRequest, User } from '#types';
+import type { LocalContext, SearchUsersRequest, User } from '#types';
+
+/**
+ * Gets the user making the request.
+ * @param _req - The request.
+ * @param res - The response, sent the current user.
+ */
+export const getCurrentUserController = async (
+  _req: Request<never, never, never, never>,
+  res: Response<User, LocalContext>
+) => {
+  // requireSomeAuth guarantees a logged in user
+  const response = await getUserService(res.locals.currentContext.userId!);
+
+  res.status(200).json(response);
+};
 
 /**
  * Searches users by the filters in the request body.

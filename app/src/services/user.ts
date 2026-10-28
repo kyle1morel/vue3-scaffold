@@ -3,6 +3,16 @@ import { unitOfWork } from '#src/db/unitOfWork';
 import type { User, UserSearchParameters } from '#types';
 
 /**
+ * Gets a user by id.
+ * @param id - The user id.
+ * @returns A Promise that resolves to the user.
+ * @throws {@link NotFoundProblem} When no user has the id.
+ */
+export const getUserService = async (id: string): Promise<User> => {
+  return await unitOfWork.execute(async ({ user }) => await user.findUniqueOrThrow({ where: { id } }));
+};
+
+/**
  * Search and filter for specific users.
  * @param params - Optional filtering parameters.
  * @param params.id - Optional array of user ids.

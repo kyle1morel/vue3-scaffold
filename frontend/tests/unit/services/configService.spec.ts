@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { getConfig, refreshConfig, getCachedConfig, configService } from '@/services/configService';
+import { getConfig, refreshConfig, getCachedConfig } from '@/services/configService';
 import { StorageKey } from '@/utils/enums/application';
 
 // Mocks
@@ -163,14 +163,6 @@ describe('configService', () => {
       expect(result).toBeNull();
 
       expect(window.sessionStorage.getItem(StorageKey.CONFIG)).toBeNull();
-    });
-  });
-
-  it('exports all service functions', () => {
-    expect(configService).toEqual({
-      getConfig,
-      refreshConfig,
-      getCachedConfig
     });
   });
 });

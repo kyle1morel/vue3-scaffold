@@ -2,7 +2,7 @@ import { mockReset } from 'vitest-mock-extended';
 
 import { TEST_IDIR_USER_1 } from '#tests/unit/data/index';
 import { mockRepos } from '#tests/__mocks__/unitOfWorkMock';
-import { searchUsersService } from '#src/services/user';
+import { getUserService, searchUsersService } from '#src/services/user';
 
 import type { UserSearchParameters } from '#types';
 
@@ -10,6 +10,24 @@ describe('user service', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockReset(mockRepos);
+  });
+
+  describe('getUserService', () => {
+    it('returns the user with the id', async () => {
+      mockRepos.user.findUniqueOrThrow.mockResolvedValue(TEST_IDIR_USER_1 as never);
+
+      const result = await getUserService(TEST_IDIR_USER_1.id);
+
+      expect(mockRepos.user.findUniqueOrThrow).toHaveBeenCalledWith({ where: { id: TEST_IDIR_USER_1.id } });
+      expect(result).toEqual(TEST_IDIR_USER_1);
+    });
+
+    it('propagates the not found error', async () => {
+      const error = new Error('not found');
+      mockRepos.user.findUniqueOrThrow.mockRejectedValue(error);
+
+      await expect(getUserService('missing-id')).rejects.toThrow(error);
+    });
   });
 
   describe('searchUsersService', () => {

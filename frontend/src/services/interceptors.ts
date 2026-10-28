@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import AuthService from './authService';
-import { configService } from './configService';
+import { getCachedConfig } from './configService';
 
 import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 
@@ -10,7 +10,7 @@ import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } fr
  * @returns An axios instance.
  */
 export function appAxios(options: AxiosRequestConfig = {}): AxiosInstance {
-  const cfg = configService.getCachedConfig();
+  const cfg = getCachedConfig();
   if (!cfg) throw new Error('Unable to obtain config');
 
   const instance = axios.create({

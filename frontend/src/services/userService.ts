@@ -11,8 +11,17 @@ import type { RequestBody, User } from '@/types';
 const userRoute = createRouteBuilder('user');
 
 const userRoutes = {
+  me: () => userRoute('me'),
   search: () => userRoute('search')
 } as const;
+
+/**
+ * Gets the logged in user, which also records their login in the API.
+ * @returns A promise resolving to the current user.
+ */
+export function getCurrentUser(): Promise<User> {
+  return api.get<User>(userRoutes.me());
+}
 
 /**
  * Searches users using the supplied filters.
@@ -22,15 +31,3 @@ const userRoutes = {
 export function searchUsers(req: RequestBody<'searchUsers'>): Promise<User[]> {
   return api.post<User[]>(userRoutes.search(), req);
 }
-
-/**
- * Backward compatibility layer for legacy default-export service usage.
- *
- * This object preserves the previous pattern:
- *   export default { ...serviceMethods }.
- *
- * It may be removed once all consumers are migrated to named imports.
- */
-export const userService = {
-  searchUsers
-};

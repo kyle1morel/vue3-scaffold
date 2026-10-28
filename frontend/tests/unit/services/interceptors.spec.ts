@@ -1,5 +1,5 @@
 import { appAxios } from '@/services/interceptors';
-import { configService } from '@/services/configService';
+import { getCachedConfig } from '@/services/configService';
 
 import type { Config } from '@/types';
 import type { InternalAxiosRequestConfig } from 'axios';
@@ -15,7 +15,7 @@ vi.mock('@/services/authService', () => ({
 }));
 
 vi.mock('@/services/configService', () => ({
-  configService: { getCachedConfig: vi.fn() }
+  getCachedConfig: vi.fn()
 }));
 
 // Fixtures
@@ -43,7 +43,7 @@ beforeEach(() => {
 describe('interceptors', () => {
   describe('config guard', () => {
     it('appAxios throws when no cached config is available', () => {
-      vi.mocked(configService.getCachedConfig).mockReturnValue(null);
+      vi.mocked(getCachedConfig).mockReturnValue(null);
 
       expect(() => appAxios()).toThrow('Unable to obtain config');
     });
@@ -51,7 +51,7 @@ describe('interceptors', () => {
 
   describe('appAxios', () => {
     beforeEach(() => {
-      vi.mocked(configService.getCachedConfig).mockReturnValue(baseConfig);
+      vi.mocked(getCachedConfig).mockReturnValue(baseConfig);
     });
 
     it('builds an instance from the app api path and a 10s timeout', () => {

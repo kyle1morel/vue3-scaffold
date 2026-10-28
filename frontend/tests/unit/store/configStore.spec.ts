@@ -1,14 +1,12 @@
 import { createPinia, setActivePinia } from 'pinia';
 
-import { configService } from '@/services/configService';
+import { getConfig } from '@/services/configService';
 import { useConfigStore } from '@/store/configStore';
 
 // Mocks
 
 vi.mock('@/services/configService', () => ({
-  configService: {
-    getConfig: vi.fn()
-  }
+  getConfig: vi.fn()
 }));
 
 // Fixtures
@@ -18,7 +16,7 @@ vi.mock('@/services/configService', () => ({
 // Tests
 
 describe('configStore', () => {
-  const mockGetConfig = vi.mocked(configService.getConfig);
+  const mockGetConfig = vi.mocked(getConfig);
 
   beforeEach(() => {
     vi.clearAllMocks();
