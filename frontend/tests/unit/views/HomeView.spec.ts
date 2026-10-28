@@ -1,6 +1,7 @@
 import { RouteName } from '@/utils/enums/application';
 import HomeView from '@/views/HomeView.vue';
 
+import { expectNoAxeViolations } from '../../expectNoAxeViolations';
 import { mockAuthNStore, resetMockAuthNStore } from '../../mockAuthNStore';
 import { mockRouter, resetMockRouter } from '../../mockRouter';
 import { mountComponent } from '../../mountComponent';
@@ -55,6 +56,14 @@ describe('HomeView', () => {
       await button.trigger('click');
 
       expect(mockRouter.push).toHaveBeenCalledWith({ name: RouteName.DEMO_FORM });
+    });
+  });
+
+  describe('accessibility', () => {
+    it('has no axe violations', async () => {
+      const { wrapper } = mountHomeView();
+
+      await expectNoAxeViolations(wrapper.element);
     });
   });
 });

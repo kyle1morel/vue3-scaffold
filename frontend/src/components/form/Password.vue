@@ -40,11 +40,13 @@ const { errorMessage, handleBlur, value } = useField<string>(name);
         *
       </span>
     </label>
+    <!-- Only inputProps reach the input; plain attributes land on PrimeVue's wrapper div. Feedback is off, so there's
+         no popup for aria-expanded to describe -->
     <Password
       v-model="value"
-      :aria-describedby="`${name}-help`"
       :aria-labelledby="`${name}-label`"
-      :aria-required="required"
+      :input-id="name"
+      :input-props="{ 'aria-describedby': `${name}-help`, 'aria-required': required, 'aria-expanded': undefined }"
       :name="name"
       :type="type"
       :placeholder="placeholder"

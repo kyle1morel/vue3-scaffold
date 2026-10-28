@@ -9,7 +9,7 @@ const { title } = defineProps<{
 
 <template>
   <div class="col-span-12 mb-4 flex items-center">
-    <h4 class="flex-none m-0 pr-4">{{ title }}</h4>
+    <h3 class="flex-none m-0 pr-4">{{ title }}</h3>
     <Divider />
   </div>
 </template>

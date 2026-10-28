@@ -7,6 +7,7 @@ import { createSubmission, getSubmission } from '@/services/submissionService';
 import { RouteName } from '@/utils/enums/application';
 import DemoFormView from '@/views/DemoFormView.vue';
 
+import { expectNoAxeViolations } from '../../expectNoAxeViolations';
 import { mockRouter, resetMockRouter } from '../../mockRouter';
 import { mountComponent } from '../../mountComponent';
 
@@ -220,6 +221,29 @@ describe('DemoFormView', () => {
       const { wrapper } = await mountReadOnlyDemoFormView();
 
       expect(wrapper.text()).toContain('Unable to load the submission. Please try again.');
+    });
+  });
+
+  describe('accessibility', () => {
+    it('has no axe violations when empty', async () => {
+      const { wrapper } = mountDemoFormView();
+
+      await expectNoAxeViolations(wrapper.element);
+    });
+
+    it('has no axe violations when showing validation errors', async () => {
+      const { wrapper } = mountDemoFormView();
+      await wrapper.find('form').trigger('submit');
+      await vi.waitFor(() => expect(wrapper.text()).toContain('First name is a required field'));
+
+      await expectNoAxeViolations(wrapper.element);
+    });
+
+    it('has no axe violations when read only', async () => {
+      vi.mocked(getSubmission).mockResolvedValue(testSubmission);
+      const { wrapper } = await mountReadOnlyDemoFormView();
+
+      await expectNoAxeViolations(wrapper.element);
     });
   });
 });

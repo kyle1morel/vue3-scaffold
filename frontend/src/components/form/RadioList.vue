@@ -91,7 +91,7 @@ onBeforeMount(() => {
             v-model="value"
             :aria-describedby="`${name}-help`"
             :aria-labelledby="`${name}-option-${getRadioListOptionValue(option)}`"
-            :input-id="getRadioListOptionValue(option)"
+            :input-id="`${name}-${getRadioListOptionValue(option)}`"
             :name="name"
             :value="getRadioListOptionValue(option)"
             :invalid="!!errorMessage"
@@ -101,7 +101,7 @@ onBeforeMount(() => {
           />
           <label
             :id="`${name}-option-${getRadioListOptionValue(option)}`"
-            :for="getRadioListOptionValue(option)"
+            :for="`${name}-${getRadioListOptionValue(option)}`"
             class="ml-2 mb-0"
           >
             {{ getRadioListOptionLabel(option) }}

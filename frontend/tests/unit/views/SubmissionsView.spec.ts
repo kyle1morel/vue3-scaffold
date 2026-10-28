@@ -5,6 +5,7 @@ import { deleteSubmission, listSubmissions } from '@/services/submissionService'
 import { RouteName } from '@/utils/enums/application';
 import SubmissionsView from '@/views/SubmissionsView.vue';
 
+import { expectNoAxeViolations } from '../../expectNoAxeViolations';
 import { mountComponent } from '../../mountComponent';
 
 import type { ConfirmationOptions } from 'primevue/confirmationoptions';
@@ -181,6 +182,22 @@ describe('SubmissionsView', () => {
 
       expect(mockToast.error).toHaveBeenCalledWith('Unable to delete the submission. Please try again.');
       expect(listSubmissions).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe('accessibility', () => {
+    it('has no axe violations with submissions', async () => {
+      vi.mocked(listSubmissions).mockResolvedValue({ items: [testSubmission], total: 1 });
+      const { wrapper } = await mountSubmissionsView();
+
+      await expectNoAxeViolations(wrapper.element);
+    });
+
+    it('has no axe violations when empty', async () => {
+      vi.mocked(listSubmissions).mockResolvedValue({ items: [], total: 0 });
+      const { wrapper } = await mountSubmissionsView();
+
+      await expectNoAxeViolations(wrapper.element);
     });
   });
 });

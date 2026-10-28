@@ -9,10 +9,10 @@ It isn't exhaustive -- add to it as new patterns get established.
 Two shared entry points live in `tests/`. Pick based on what the
 component under test actually needs:
 
-| Utility | Use when the component... |
-| --- | --- |
-| `mountComponent` | Establishes its own `<Form>` context internally, or needs no vee-validate form context at all -- just Pinia / provide / stubs. This is the default. |
-| `mountWithFormContext` | **Assumes an ancestor** already provides vee-validate's form context (a field/section component that doesn't render its own `<Form>`). |
+| Utility                | Use when the component...                                                                                                                           |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mountComponent`       | Establishes its own `<Form>` context internally, or needs no vee-validate form context at all -- just Pinia / provide / stubs. This is the default. |
+| `mountWithFormContext` | **Assumes an ancestor** already provides vee-validate's form context (a field/section component that doesn't render its own `<Form>`).              |
 
 `mountWithFormContext` mounts the component inside a synthetic harness
 that calls `useForm()` on its behalf. Reach for it only when the
@@ -23,6 +23,27 @@ later. When in doubt, start with `mountComponent`; only switch to
 `mountWithFormContext` if the component throws on a missing form
 context (e.g. `useIsFormDirty`/`useFormValues`/`useField` with no
 provider).
+
+## Accessibility checks
+
+`tests/expectNoAxeViolations.ts` runs axe-core over a mounted element and
+fails with one line per violation. Give every view spec an
+`accessibility` block that checks each distinct state the view renders
+(empty, with data, with validation errors, read only), since each
+state renders different markup:
+
+```ts
+it('has no axe violations when empty', async () => {
+  const { wrapper } = mountDemoFormView();
+
+  await expectNoAxeViolations(wrapper.element);
+});
+```
+
+It can't check colour contrast (happy-dom has no layout), so contrast is
+still verified against the theme by hand. It only fails on violations,
+not on what axe marks as needing review, which includes duplicate IDs
+under happy-dom.
 
 ## Router mocking
 
@@ -103,7 +124,7 @@ seeding state feels inconvenient.
 
 ## Authn store mocking (exception to "seed it, don't mock it")
 
-`useAuthNStore` (`src/store/authnStore.ts`) is a Pinia *setup* store. Even
+`useAuthNStore` (`src/store/authnStore.ts`) is a Pinia _setup_ store. Even
 under `createTestingPinia`, only the store's returned actions get
 auto-stubbed -- the setup() body itself still runs for real, which
 unconditionally constructs a real `AuthService` / `oidc-client-ts`
@@ -267,7 +288,7 @@ actions, not "looks like a function call" vs. "looks like a property."
 **`.props('key')` can fail to typecheck on a union of wrapper types.**
 `VueWrapper#props()` is overloaded (`props(): Props` and
 `props<K>(key: K): Props[K]`). When you call `.props('key')` on a value
-whose type is a union of *different* generic instantiations of
+whose type is a union of _different_ generic instantiations of
 `VueWrapper` (e.g. iterating `[...findAllComponents(A), ...findAllComponents(B)]`),
 TypeScript can't merge the overload sets across the union and falls back
 to the zero-arg overload only. Use `.props().key` in that situation --
@@ -280,7 +301,7 @@ Vue's template auto-unwrap only triggers for real reactive refs (objects
 carrying the internal ref marker), not a plain `{ value: x }` object that
 merely looks ref-shaped. If the real app provides a value via
 `provide(someKey, computed(() => ...))` and the component reads it
-*inside its template* with no `.value`, the test's `provide` option must
+_inside its template_ with no `.value`, the test's `provide` option must
 use an actual `ref()`/`computed()` too:
 
 ```ts
