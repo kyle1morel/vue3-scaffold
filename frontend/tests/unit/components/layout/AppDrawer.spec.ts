@@ -1,4 +1,4 @@
-import { flushPromises } from '@vue/test-utils';
+import { enableAutoUnmount, flushPromises } from '@vue/test-utils';
 
 import AppDrawer from '@/components/layout/AppDrawer.vue';
 
@@ -17,7 +17,6 @@ vi.mock('@/store/authnStore', () => ({
 interface DrawerItem {
   label: string;
   items?: DrawerItem[];
-  mailTo?: string;
 }
 
 // Mount
@@ -34,6 +33,9 @@ beforeEach(() => {
   resetMockAuthNStore();
 });
 
+// An open drawer teleports to the body and outlives its test, re-rendering when a later test changes the auth mock
+enableAutoUnmount(afterEach);
+
 // Tests
 
 describe('AppDrawer', () => {
@@ -47,7 +49,7 @@ describe('AppDrawer', () => {
     it('shows only public items when logged out', () => {
       const { vm } = mountAppDrawer();
 
-      expect(vm.permittedItems.map((item) => item.label)).toEqual(['Home', 'Help']);
+      expect(vm.permittedItems.map((item) => item.label)).toEqual(['Home']);
     });
 
     it('shows every item when logged in', () => {
@@ -55,20 +57,16 @@ describe('AppDrawer', () => {
 
       const { vm } = mountAppDrawer();
 
-      expect(vm.permittedItems.map((item) => item.label)).toEqual([
-        'Home',
-        'Demo form',
-        'Submissions',
-        'Developer',
-        'Help'
-      ]);
+      expect(vm.permittedItems.map((item) => item.label)).toEqual(['Home', 'Demo', 'Developer']);
     });
 
-    it('links the help item to a support email', () => {
-      const { vm } = mountAppDrawer();
-      const help = vm.permittedItems.find((item) => item.label === 'Help');
+    it('nests the demo form and submissions under Demo', () => {
+      mockAuthNStore.getIsAuthenticated.value = true;
 
-      expect(help?.items?.find((item) => item.mailTo)?.mailTo).toContain('mailto:');
+      const { vm } = mountAppDrawer();
+      const demo = vm.permittedItems.find((item) => item.label === 'Demo');
+
+      expect(demo?.items?.map((item) => item.label)).toEqual(['Demo form', 'Submissions']);
     });
   });
 
@@ -80,6 +78,18 @@ describe('AppDrawer', () => {
       await flushPromises();
 
       expect(vm.visible).toBe(true);
+    });
+
+    it('lists the nested items once the drawer is open', async () => {
+      mockAuthNStore.getIsAuthenticated.value = true;
+      const { wrapper } = mountAppDrawer();
+
+      await wrapper.find('button').trigger('click');
+      await flushPromises();
+
+      // The drawer teleports to the body, outside the wrapper
+      const nested = [...document.body.querySelectorAll('ul ul li')].map((li) => li.textContent?.trim());
+      expect(nested).toEqual(['Demo form', 'Submissions']);
     });
   });
 });

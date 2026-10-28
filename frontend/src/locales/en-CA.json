@@ -1,16 +1,15 @@
 {
   "app": {
     "logoAlt": "B.C. Government Logo",
-    "name": "Vue3 Scaffold"
+    "name": "Vue 3 Scaffold"
   },
   "components": {
     "appDrawer": {
+      "demo": "Demo",
       "demoForm": "Demo form",
       "developer": "Developer",
-      "help": "Help",
       "home": "Home",
       "menu": "Menu",
-      "reportProblem": "Report a problem",
       "submissions": "Submissions"
     },
     "copyToClipboard": {

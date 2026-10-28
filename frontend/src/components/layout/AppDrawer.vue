@@ -6,12 +6,9 @@ import { useI18n } from 'vue-i18n';
 
 import developer from '@/assets/images/developer.svg';
 import form from '@/assets/images/form.svg';
-import help from '@/assets/images/help.svg';
 import home from '@/assets/images/home.svg';
-import list from '@/assets/images/list.svg';
 import { Button, Drawer } from '@/lib/primevue';
 import { useAuthNStore } from '@/store';
-import { SUPPORT_CONTACT } from '@/utils/constants/application';
 import { RouteName } from '@/utils/enums/application';
 
 // Types
@@ -21,7 +18,6 @@ interface DrawerItem {
   route?: string;
   public?: boolean;
   items?: DrawerItem[];
-  mailTo?: string;
 }
 
 // Composables
@@ -43,30 +39,16 @@ const items = computed<DrawerItem[]>(() => [
   },
   {
     icon: form,
-    label: t('components.appDrawer.demoForm'),
-    route: RouteName.DEMO_FORM
-  },
-  {
-    icon: list,
-    label: t('components.appDrawer.submissions'),
-    route: RouteName.SUBMISSIONS
+    label: t('components.appDrawer.demo'),
+    items: [
+      { label: t('components.appDrawer.demoForm'), route: RouteName.DEMO_FORM },
+      { label: t('components.appDrawer.submissions'), route: RouteName.SUBMISSIONS }
+    ]
   },
   {
     icon: developer,
     label: t('components.appDrawer.developer'),
     route: RouteName.DEVELOPER
-  },
-  {
-    icon: help,
-    label: t('components.appDrawer.help'),
-    public: true,
-    items: [
-      {
-        label: t('components.appDrawer.reportProblem'),
-        mailTo: `mailto:${SUPPORT_CONTACT.email}?subject=${SUPPORT_CONTACT.subject}`,
-        public: true
-      }
-    ]
   }
 ]);
 
@@ -168,18 +150,7 @@ const permittedItems = computed(() =>
                   :key="subItem.label"
                   class="my-3"
                 >
-                  <Button
-                    v-if="subItem.mailTo"
-                    class="no-underline w-full justify-start"
-                    :href="subItem.mailTo"
-                    text
-                    as="a"
-                    @click="closeCallback"
-                  >
-                    <span class="font-medium">{{ subItem.label }}</span>
-                  </Button>
                   <router-link
-                    v-else
                     v-slot="{ href, navigate }"
                     :to="{ name: subItem.route ?? RouteName.HOME }"
                     custom
