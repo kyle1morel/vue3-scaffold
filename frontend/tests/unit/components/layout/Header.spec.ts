@@ -46,7 +46,7 @@ describe('Header', () => {
       const { wrapper } = mountHeader();
       const link = wrapper.findComponent(RouterLinkStub);
 
-      expect(link.text()).toBe('Vue3 Scaffold');
+      expect(link.text()).toBe('Vue 3 Scaffold');
       expect(link.props('to')).toEqual({ name: RouteName.HOME });
     });
 

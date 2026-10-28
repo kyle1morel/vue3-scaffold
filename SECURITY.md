@@ -1,6 +1,6 @@
 # Security Policies and Procedures
 
-This document outlines security procedures and general policies for the Vue3 Scaffold
+This document outlines security procedures and general policies for the Vue 3 Scaffold
 project.
 
 - [Supported Versions](#supported-versions)
@@ -10,7 +10,7 @@ project.
 
 ## Supported Versions
 
-At this time, only the latest version of Vue3 Scaffold is supported.
+At this time, only the latest version of Vue 3 Scaffold is supported.
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -19,14 +19,14 @@ At this time, only the latest version of Vue3 Scaffold is supported.
 
 ## Reporting a Bug
 
-The `Vue3 Scaffold` team and community take all security bugs in `Vue3 Scaffold` seriously.
-Thank you for improving the security of `Vue3 Scaffold`. We appreciate your efforts and
+The `Vue 3 Scaffold` team and community take all security bugs in `Vue 3 Scaffold` seriously.
+Thank you for improving the security of `Vue 3 Scaffold`. We appreciate your efforts and
 responsible disclosure and will make every effort to acknowledge your
 contributions.
 
 Report security bugs by sending an email to < EMAIL >.
 
-The `Vue3 Scaffold` team will acknowledge your email within 48 hours, and will send a
+The `Vue 3 Scaffold` team will acknowledge your email within 48 hours, and will send a
 more detailed response within 48 hours indicating the next steps in handling
 your report. After the initial reply to your report, the security team will
 endeavor to keep you informed of the progress towards a fix and full

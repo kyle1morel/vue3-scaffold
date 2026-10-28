@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "Apache-2.0",
   "private": true,
-  "description": "Vue3 Scaffold",
+  "description": "Vue 3 Scaffold",
   "author": "Kyle Morel",
   "engines": {
     "node": ">=24"

@@ -10,7 +10,7 @@ const TAGS = [
 ];
 
 /**
- * Generates a ReDocs HTML string for the documentation page of the Vue3 Scaffold API.
+ * Generates a ReDocs HTML string for the documentation page of the Vue 3 Scaffold API.
  * @param version - The version of the API documentation to display. Defaults to 'v1'.
  * @returns The HTML string for the documentation page.
  */
@@ -18,7 +18,7 @@ export function getDocHTML(version = 'v1'): string {
   return `<!DOCTYPE html>
   <html>
     <head>
-      <title>Vue3 Scaffold API - Documentation ${version}</title>
+      <title>Vue 3 Scaffold API - Documentation ${version}</title>
       <!-- Needed for adaptive design -->
       <meta charset="utf-8"/>
       <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -50,7 +50,7 @@ export function getSpec(): OpenAPIObject {
       openapi: '3.0.4',
       info: {
         version: '1.0.0',
-        title: 'Vue3 Scaffold',
+        title: 'Vue 3 Scaffold',
         description: 'A Vue 3 and Express application scaffold.',
         license: { name: 'Apache 2.0', url: 'https://www.apache.org/licenses/LICENSE-2.0.html' }
       },

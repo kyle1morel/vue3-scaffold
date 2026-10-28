@@ -1,4 +1,4 @@
-# Vue3 Scaffold Database
+# Vue 3 Scaffold Database
 
 ## Directory Structure
 

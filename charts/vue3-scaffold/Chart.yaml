@@ -5,7 +5,7 @@ name: vue3-scaffold
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
 version: 0.1.0
 kubeVersion: ">= 1.13.0"
-description: Vue3 Scaffold
+description: Vue 3 Scaffold
 # A chart can be either an 'application' or a 'library' chart.
 # Application charts are a collection of templates that can be packaged into versioned archives
 # to be deployed.
