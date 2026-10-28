@@ -10,20 +10,17 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'callback',
         name: RouteName.OIDC_CALLBACK,
-        component: () => import('@/views/oidc/OidcCallbackView.vue'),
-        meta: { title: 'Authenticating...' }
+        component: () => import('@/views/oidc/OidcCallbackView.vue')
       },
       {
         path: 'login',
         name: RouteName.OIDC_LOGIN,
-        component: () => import('@/views/oidc/OidcLoginView.vue'),
-        meta: { title: 'Logging in...' }
+        component: () => import('@/views/oidc/OidcLoginView.vue')
       },
       {
         path: 'logout',
         name: RouteName.OIDC_LOGOUT,
-        component: () => import('@/views/oidc/OidcLogoutView.vue'),
-        meta: { title: 'Logging out...' }
+        component: () => import('@/views/oidc/OidcLogoutView.vue')
       }
     ]
   }

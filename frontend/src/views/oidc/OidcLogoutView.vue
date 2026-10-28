@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 import { Spinner } from '@/components/layout';
@@ -7,6 +8,7 @@ import { useAuthNStore } from '@/store';
 
 const authnStore = useAuthNStore();
 const router = useRouter();
+const { t } = useI18n();
 
 onMounted(async () => {
   if (authnStore.getIsAuthenticated) await authnStore.logout();
@@ -17,14 +19,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h2 class="mt-40 text-center">Logging out...</h2>
+  <h2 class="mt-40 text-center">{{ t('views.oidcLogout.loggingOut') }}</h2>
   <Spinner />
 </template>
-
-<style lang="scss" scoped>
-.p-progress-spinner {
-  display: flex;
-  margin-top: 4rem;
-  position: relative;
-}
-</style>

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { i18n } from '@/i18n';
 import { Regex } from '@/utils/enums/application';
 import { coerceDate, coerceNumber, delimitEmails, isBlank } from '@/utils/utils';
 
@@ -53,7 +54,7 @@ const blankToNull = (value: unknown) => (typeof value === 'string' ? value.trim(
  * @returns The date schema.
  */
 export const dateSchema = (label: string) =>
-  z.preprocess(coerceDate, z.date(`${label} must be a valid date`).nullish());
+  z.preprocess(coerceDate, z.date(i18n.t('validation.invalidDate', { label })).nullish());
 
 /**
  * Builds a list of email addresses that accepts an array or a space, comma or semicolon separated string.
@@ -69,7 +70,12 @@ export const emailListSchema = (min: number, message: string) =>
         z
           .string()
           .trim()
-          .pipe(z.email({ pattern: Regex.EMAIL, error: (issue) => `${issue.input} is not a valid email` }))
+          .pipe(
+            z.email({
+              pattern: Regex.EMAIL,
+              error: (issue) => i18n.t('validation.invalidEmail', { email: String(issue.input) })
+            })
+          )
       )
       .min(min, message)
   );
@@ -88,7 +94,7 @@ export const formSection = <T extends z.ZodType>(schema: T) => schema.prefault({
  * @param max - The maximum length.
  * @returns The max-length message.
  */
-export const maxMessage = (label: string, max: number) => `${label} must be at most ${max} characters`;
+export const maxMessage = (label: string, max: number) => i18n.t('validation.maxLength', { label, max });
 
 /**
  * Builds an optional enum where only a missing value means unset; unlike blankOrOneOfSchema, it rejects blanks.
@@ -105,7 +111,7 @@ export const missingOrOneOfSchema = <T extends string>(label: string, values: re
  * @returns The date schema.
  */
 export const notInFutureSchema = (label: string) =>
-  dateSchema(label).refine((date) => !date || date.getTime() <= Date.now(), 'Date cannot be in the future');
+  dateSchema(label).refine((date) => !date || date.getTime() <= Date.now(), i18n.t('validation.futureDate'));
 
 /**
  * Builds an optional number within inclusive bounds that also accepts numeric text.
@@ -118,9 +124,9 @@ export const numberRangeSchema = (label: string, min: number, max: number) =>
   z.preprocess(
     coerceNumber,
     z
-      .number(`${label} must be a number`)
-      .min(min, `${label} must be greater than or equal to ${min}`)
-      .max(max, `${label} must be less than or equal to ${max}`)
+      .number(i18n.t('validation.notNumber', { label }))
+      .min(min, i18n.t('validation.min', { label, min }))
+      .max(max, i18n.t('validation.max', { label, max }))
       .nullish()
   );
 
@@ -131,7 +137,7 @@ export const numberRangeSchema = (label: string, min: number, max: number) =>
  * @returns The allowed-values message.
  */
 export const oneOfMessage = (label: string, values: readonly unknown[]) =>
-  `${label} must be one of the following values: ${values.join(', ')}`;
+  i18n.t('validation.oneOf', { label, values: values.join(', ') });
 
 /**
  * Builds optional text that is trimmed, with blank text output as null.
@@ -147,7 +153,7 @@ export const optionalTextSchema = (label: string, max?: number) =>
  * @param label - The field label.
  * @returns The required message.
  */
-export const requiredMessage = (label: string) => `${label} is a required field`;
+export const requiredMessage = (label: string) => i18n.t('validation.required', { label });
 
 /**
  * Builds a required enum with the required message for missing values and the allowed-values message otherwise.

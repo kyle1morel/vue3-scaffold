@@ -17,6 +17,9 @@ const instance = createI18n({
   globalInjection: true
 });
 
+/** The shape of the locale messages, for typing the variable part of a dynamic key. */
+export type MessageSchema = typeof enCA;
+
 export default instance;
 
 export const i18n = instance.global;

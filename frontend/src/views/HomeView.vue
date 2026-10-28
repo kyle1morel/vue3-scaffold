@@ -21,16 +21,16 @@ const { getIsAuthenticated } = storeToRefs(useAuthNStore());
     <div class="poly" />
     <div class="flex items-center justify-start h-full">
       <div class="text-left">
-        <h3>{{ t('views.homeView.welcome') }}</h3>
-        <h1 class="mt-0!">{{ t('views.homeView.title') }}</h1>
+        <h3>{{ t('views.home.welcome') }}</h3>
+        <h1 class="mt-0!">{{ t('app.name') }}</h1>
         <Button
           v-if="getIsAuthenticated"
-          :label="t('views.homeView.developer')"
-          @click="router.push({ name: RouteName.DEVELOPER })"
+          :label="t('views.demoForm.title')"
+          @click="router.push({ name: RouteName.DEMO_FORM })"
         />
         <Button
           v-else
-          :label="t('views.homeView.login')"
+          :label="t('ui.actions.logIn')"
           @click="router.push({ name: RouteName.OIDC_LOGIN })"
         />
       </div>
@@ -41,7 +41,7 @@ const { getIsAuthenticated } = storeToRefs(useAuthNStore());
 <style scoped lang="scss">
 h1,
 h3 {
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 h3 {
@@ -59,8 +59,8 @@ h3 {
   height: 100%;
 }
 
+// The angled panel needs room beside it; on phones it covers the full width
 .poly {
-  clip-path: polygon(0% 0%, 55% 0%, 45% 100%, 0% 100%);
   z-index: -500;
   position: fixed;
   top: 0;
@@ -69,10 +69,13 @@ h3 {
   height: 100%;
   background-color: var(--p-primary-color);
   opacity: 0.9;
+
+  @media (min-width: 768px) {
+    clip-path: polygon(0% 0%, 55% 0%, 45% 100%, 0% 100%);
+  }
 }
 
 .p-button {
-  border-width: 2px;
   width: 12.5rem;
   &:not(.p-button-secondary, .p-button-success, .p-button-info, .p-button-warning, .p-button-help, .p-button-danger) {
     color: var(--p-primary-color);

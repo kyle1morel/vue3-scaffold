@@ -1,3 +1,4 @@
+import { i18n } from '@/i18n';
 import { useConfirm } from '@/lib/primevue';
 
 /**
@@ -13,7 +14,7 @@ export function useAlert(header: string, message: string) {
     confirm.require({
       header: header,
       message: message,
-      acceptLabel: 'OK',
+      acceptLabel: i18n.t('ui.actions.ok'),
       rejectClass: 'hidden'
     });
   };

@@ -15,6 +15,7 @@ export const Regex = {
 } as const;
 
 export const RouteName = {
+  DEMO_FORM: 'demo_form',
   DEVELOPER: 'developer',
   FORBIDDEN: 'forbidden',
   HOME: 'home',

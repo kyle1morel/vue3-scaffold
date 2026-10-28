@@ -1,5 +1,21 @@
 {
-  "common": {
+  "app": {
+    "logoAlt": "B.C. Government Logo",
+    "name": "Vue3 Scaffold"
+  },
+  "components": {
+    "appDrawer": {
+      "demoForm": "Demo form",
+      "developer": "Developer",
+      "help": "Help",
+      "home": "Home",
+      "menu": "Menu",
+      "reportProblem": "Report a problem"
+    },
+    "copyToClipboard": {
+      "button": "Copy to clipboard",
+      "copied": "Copied to clipboard"
+    },
     "footer": {
       "about": "About gov.bc.ca",
       "accessibility": "Accessibility",
@@ -12,60 +28,168 @@
       "contactUs": "Contact us",
       "copyright": "Copyright",
       "disclaimer": "Disclaimer",
-      "gov": "Government of British Columbia",
+      "government": "Government of British Columbia",
       "home": "Home",
-      "moreInfo": "MORE INFO",
+      "moreInfo": "More info",
       "privacy": "Privacy"
     },
-    "header": {
-      "name": "Vue3 Scaffold"
+    "formNavigationGuard": {
+      "message": "Are you sure you want to leave this page? Any unsaved changes will be lost.",
+      "title": "Leave this page?"
     },
-    "headerMenu": {
-      "logout": "Log out"
+    "stepperNavigation": {
+      "next": "Go to next page",
+      "previous": "Go to previous page"
     }
-  },
-  "views": {
-    "homeView": {
-      "developer": "Developer",
-      "login": "Log in",
-      "title": "Vue3 Scaffold",
-      "welcome": "Welcome to the"
-    }
-  },
-  "loginButton": {
-    "login": "Log in",
-    "logout": "Log out"
   },
   "ui": {
     "actions": {
       "cancel": "Cancel",
-      "leave": "Leave"
+      "close": "Close",
+      "leave": "Leave",
+      "logIn": "Log in",
+      "logOut": "Log out",
+      "ok": "OK",
+      "submit": "Submit"
     },
     "errors": {
-      "startup": "Unable to load the application. Please refresh the page or try again later."
+      "startup": "Unable to load the application. Please refresh the page or try again later.",
+      "title": "Error"
+    },
+    "loading": "Loading",
+    "toast": {
+      "error": "Error: {title}",
+      "info": "Info: {title}",
+      "success": "Success: {title}",
+      "warning": "Warning: {title}"
     }
   },
-  "formNavigationGuard": {
-    "header": "Leave this page?",
-    "message": "Are you sure you want to leave this page? Any unsaved changes will be lost."
+  "validation": {
+    "futureDate": "Date cannot be in the future",
+    "invalidDate": "{label} must be a valid date",
+    "invalidEmail": "{email} is not a valid email",
+    "max": "{label} must be less than or equal to {max}",
+    "maxLength": "{label} must be at most {max} characters",
+    "min": "{label} must be greater than or equal to {min}",
+    "minLength": "{label} must be at least {min} characters",
+    "notNumber": "{label} must be a number",
+    "oneOf": "{label} must be one of the following values: {values}",
+    "required": "{label} is a required field"
   },
-  "stepperNavigation": {
-    "next": "Go to next page",
-    "previous": "Go to previous page"
-  },
-  "oidcLoginView": {
-    "BCServicesCardRequirement": "If you do not have a BC Services Card, you must live in Canada and provide 2 pieces of government-issued ID.",
-    "BCeIDRequirement": "Use when accessing a service in a personal capacity. You just need an email.",
-    "BusinessBCeIDRequirement": "Use when representing a legal entity. You must have documentation to prove the business or organization's identity.",
-    "getBasicBCeID": "Get a Basic BCeID.",
-    "getBusinessBCeID": "Get a Business BCeID.",
-    "internalGovUsers": "Internal Government Users",
-    "login": "Login",
-    "loginBCServicesCard": "Login with BC Services Card",
-    "loginBasicBCeID": "Login with Basic BCeID",
-    "loginBusinessBCeID": "Login with Business BCeID",
-    "loginIDIRMFA": "Login with IDIR - MFA",
-    "register": "Need an account?",
-    "setupBCServicesCard": "Set up a BC Services Card account."
+  "views": {
+    "demoForm": {
+      "errors": {
+        "agree": "You must accept the terms",
+        "email": "Email must be a valid email address"
+      },
+      "fields": {
+        "agree": "I accept the terms",
+        "category": "Category",
+        "city": "City",
+        "comments": "Comments",
+        "contactMethod": "Preferred contact method",
+        "email": "Email",
+        "firstName": "First name",
+        "notes": "Notes",
+        "password": "Password",
+        "phone": "Phone",
+        "province": "Province",
+        "quantity": "Quantity",
+        "startDate": "Start date"
+      },
+      "help": {
+        "comments": "Up to 1000 characters",
+        "firstName": "Your given name",
+        "notes": "Rich text, stored as HTML",
+        "password": "At least 8 characters",
+        "quantity": "Between 1 and 100"
+      },
+      "intro": "A front end only form showing the scaffold's form components with zod validation. Nothing is sent to the API.",
+      "options": {
+        "categories": {
+          "feedback": "Feedback",
+          "question": "Question",
+          "request": "Request"
+        },
+        "contactMethods": {
+          "email": "Email",
+          "phone": "Phone"
+        },
+        "provinces": {
+          "alberta": "Alberta",
+          "britishColumbia": "British Columbia",
+          "saskatchewan": "Saskatchewan"
+        }
+      },
+      "placeholders": {
+        "category": "Pick one or type your own",
+        "city": "Start typing a B.C. city",
+        "phone": "(250) 555-0100",
+        "province": "Select a province"
+      },
+      "sections": {
+        "contact": "Contact",
+        "details": "Details",
+        "notes": "Notes"
+      },
+      "status": {
+        "saved": "Draft saved {time}",
+        "unsaved": "Unsaved changes"
+      },
+      "submitted": {
+        "detail": "Nothing was sent; the submitted values are logged to the browser console",
+        "title": "Form submitted"
+      },
+      "title": "Demo form"
+    },
+    "developer": {
+      "appVersion": "Application version:",
+      "config": "Config",
+      "profile": "Profile",
+      "title": "Developer",
+      "token": "Token"
+    },
+    "forbidden": {
+      "message": "You don't have permission to view this page."
+    },
+    "home": {
+      "welcome": "Welcome to the"
+    },
+    "notFound": {
+      "message": "Page not found."
+    },
+    "oidcCallback": {
+      "authorizing": "Authorizing..."
+    },
+    "oidcLogin": {
+      "headings": {
+        "internalUsers": "Internal government users",
+        "register": "Need an account?"
+      },
+      "providers": {
+        "basicBceid": {
+          "login": "Log in with Basic BCeID",
+          "register": "Get a Basic BCeID",
+          "requirement": "Use when accessing a service in a personal capacity. You only need an email address."
+        },
+        "bcsc": {
+          "login": "Log in with BC Services Card",
+          "register": "Set up a BC Services Card account",
+          "requirement": "To get a BC Services Card, you must live in Canada and provide 2 pieces of government-issued ID."
+        },
+        "businessBceid": {
+          "login": "Log in with Business BCeID",
+          "register": "Get a Business BCeID",
+          "requirement": "Use when representing a legal entity. You must have documentation to prove the business or organization's identity."
+        },
+        "idir": {
+          "login": "Log in with IDIR - MFA"
+        }
+      },
+      "title": "Log in"
+    },
+    "oidcLogout": {
+      "loggingOut": "Logging out..."
+    }
   }
 }

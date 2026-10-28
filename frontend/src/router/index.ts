@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, START_LOCATION } from 'vue-router';
 
 import oidcRoutes from '@/router/oidc';
 import { AuthService } from '@/services';
@@ -61,6 +61,12 @@ const routes: RouteRecordRaw[] = [
         meta: { hideBreadcrumb: true }
       },
       {
+        path: '/demo-form',
+        name: RouteName.DEMO_FORM,
+        component: () => import('@/views/DemoFormView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/developer',
         name: RouteName.DEVELOPER,
         component: () => import('@/views/DeveloperView.vue'),
@@ -97,7 +103,8 @@ export default function getRouter() {
     routes,
     // Views with tabs should keep the active tab in the query, or a restored position lands on the wrong layout
     scrollBehavior(to, from, savedPosition) {
-      if (savedPosition) {
+      // vue-router also passes the position saved before a reload; only back/forward should restore it
+      if (savedPosition && from !== START_LOCATION) {
         const { top } = savedPosition;
         return waitFor(() => document.documentElement.scrollHeight - window.innerHeight >= top).then(
           () => savedPosition
