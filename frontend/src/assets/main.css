@@ -1,11 +1,8 @@
-/* PrimeVue sits below utilities so Tailwind classes can restyle its components (see cssLayer in main.ts) */
-@layer properties, theme, base, main, components, primevue, utilities, keyframes;
-
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 
-@layer main {
-  /* Plain HTML elements */
+/* Must come after the tailwindcss import to beat preflight */
+@layer base {
   :root {
     font-size: 16px;
   }
@@ -97,8 +94,10 @@
     display: inline-block;
     margin-bottom: 0.5rem;
   }
+}
 
-  /* Shared classes */
+/* After the import, so it wins over Tailwind utilities on the same element */
+@layer utilities {
   .app-error-message {
     color: var(--p-textdanger);
     font-size: 0.8rem;
