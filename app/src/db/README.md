@@ -8,6 +8,7 @@ db/                       - Database Root
 ├── generators/           - Prisma generators (relations map used by extensions)
 ├── migrations/           - Kysely database migration files, run by ../../migrate.ts
 ├── prisma/               - Location of the Prisma schema
+├── seeds/                - Local development data, run with `npm run seed`
 └── utils/                - Utility functions
     └── migrations/       - Helper functions for migrations
 database.ts               - Defines the Prisma database and database health checks

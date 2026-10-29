@@ -47,6 +47,7 @@
     "prisma:sync": "prisma db pull",
     "purge": "rimraf node_modules",
     "reinstall": "npm run purge && npm install",
+    "seed": "node ./src/db/seeds/submission.ts",
     "dev": "node --watch --watch-preserve-output --env-file-if-exists=.env ./server.ts",
     "start": "node ./server.ts",
     "test": "vitest run --coverage",

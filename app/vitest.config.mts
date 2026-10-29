@@ -18,6 +18,9 @@ export default defineConfig({
         'src/db/migrations/**',
         'src/db/utils/migrations/**',
 
+        // Local development data
+        'src/db/seeds/**',
+
         ...coverageConfigDefaults.exclude
       ]
     },

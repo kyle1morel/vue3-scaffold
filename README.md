@@ -69,7 +69,9 @@ You can quickly run this application in development mode after cloning by openin
 ```sh
 cd app
 npm i
+docker compose up -d # Optional: local Postgres from app/compose.yaml, using the app/.env DB settings
 npm run migrate:latest
+npm run seed # Optional: demo submissions
 npm run dev
 ```
 
