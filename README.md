@@ -61,7 +61,7 @@ SECURITY.md                - Security Policy and Reporting
 
 You can quickly run this application in development mode after cloning by opening two terminal windows and running the following commands (assuming you have already set up local configuration as well). Refer to the [Database Readme](app/src/db/README.md) and [Frontend Readme](frontend/README.md) for more details.
 
-- Use Node 24, as pinned in [.nvmrc](.nvmrc) (`nvm use` on macOS/Linux; nvm-windows needs `nvm use 24`). `npm ci` refuses older versions.
+- Use Node 26, as pinned in [.nvmrc](.nvmrc) (`nvm use` on macOS/Linux; nvm-windows needs `nvm use 26`). `npm ci` refuses older versions.
 - Create `app/.env` (git-ignored) to override the defaults in [app/.env.default](app/.env.default). It is loaded with [dotenv](https://github.com/motdotla/dotenv); real environment variables always take precedence. At minimum set:
   - `SERVER_DB_USERNAME`, `SERVER_DB_PASSWORD`, `SERVER_DB_DATABASE` (used by the app, migrations and the Prisma CLI)
   - `FRONTEND_OIDC_AUTHORITY`, `FRONTEND_OIDC_CLIENTID`, `SERVER_OIDC_AUTHORITY`, `SERVER_OIDC_AUDIENCE`
