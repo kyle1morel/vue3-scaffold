@@ -1,4 +1,3 @@
-export type CallbackFn = (...args: unknown[]) => void;
 export type DeepPartial<T> = T extends (...args: unknown[]) => unknown
   ? T
   : T extends readonly (infer U)[]

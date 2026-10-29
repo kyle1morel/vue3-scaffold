@@ -7,12 +7,10 @@ import { onBeforeRouteLeave, useRouter } from 'vue-router';
 import { FormAutosave } from '@/components/form';
 import { useConfirm } from '@/lib/primevue';
 
-import type { CallbackFn } from '@/types';
-
 // Props
 const { autoSaveRef = null, callback = () => {} } = defineProps<{
   autoSaveRef?: InstanceType<typeof FormAutosave> | null;
-  callback?: CallbackFn;
+  callback?: () => void | Promise<void>;
 }>();
 
 // Composables

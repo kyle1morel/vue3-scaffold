@@ -2,14 +2,12 @@
 import { useFormValues, useIsFormDirty } from 'vee-validate';
 import { onBeforeUnmount, ref, watch } from 'vue';
 
-import type { CallbackFn } from '@/types';
-
 // Constants
 const DEFAULT_DELAY = 10000;
 
 // Props
 const { callback, delay = DEFAULT_DELAY } = defineProps<{
-  callback: CallbackFn;
+  callback: () => void | Promise<void>;
   delay?: number;
 }>();
 

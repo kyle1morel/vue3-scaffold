@@ -19,7 +19,6 @@ import { StorageKey } from '@/utils/enums/application';
 import '@bcgov/bc-sans/css/BCSans.css';
 import 'primeicons/primeicons.css';
 import '@/assets/main.css';
-import type { CallbackFn } from './types';
 
 /**
  * Initializes and mounts the Vue instance.
@@ -66,7 +65,7 @@ function initializeApp(): void {
  * Services must load in the following order: config, auth, then app.
  * @param next - Optional callback function.
  */
-async function initializeServices(next?: CallbackFn): Promise<void> {
+async function initializeServices(next?: () => void): Promise<void> {
   await refreshConfig();
   await AuthService.init();
   if (next) next();

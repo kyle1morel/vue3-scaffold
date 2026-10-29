@@ -4,8 +4,6 @@ import { useI18n } from 'vue-i18n';
 
 import { Button } from '@/lib/primevue';
 
-import type { CallbackFn } from '@/types';
-
 // Props
 const {
   nextCallback = () => {},
@@ -13,9 +11,9 @@ const {
   prevCallback = () => {},
   prevDisabled = false
 } = defineProps<{
-  nextCallback?: CallbackFn;
+  nextCallback?: () => void;
   nextDisabled?: boolean;
-  prevCallback?: CallbackFn;
+  prevCallback?: () => void;
   prevDisabled?: boolean;
 }>();
 
