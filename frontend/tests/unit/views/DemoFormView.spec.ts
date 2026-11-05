@@ -29,6 +29,7 @@ vi.mock('@/services/submissionService', () => ({
 
 vi.mock('vue-router', () => ({
   onBeforeRouteLeave: vi.fn(),
+  onBeforeRouteUpdate: vi.fn(),
   useRouter: () => mockRouter
 }));
 
@@ -63,8 +64,8 @@ function testAxiosError(status: number) {
 
 // Fills the required fields plus a start date, through each component's own input
 async function fillValidForm(wrapper: VueWrapper) {
-  await wrapper.find('input#firstName').setValue('Jane');
-  await wrapper.find('input#email').setValue('jane.doe@example.com');
+  await wrapper.find('input[name="firstName"]').setValue('Jane');
+  await wrapper.find('input[name="email"]').setValue('jane.doe@example.com');
   await wrapper.find('input[type="password"]').setValue('secret-password');
   wrapper
     .findAllComponents(PrimeSelect)
@@ -164,7 +165,7 @@ describe('DemoFormView', () => {
       await flushPromises();
       expect(mockToast.error).toHaveBeenCalledWith('Unable to save the submission. Please try again.');
       expect(mockRouter.push).not.toHaveBeenCalled();
-      expect((wrapper.find('input#firstName').element as HTMLInputElement).value).toBe('Jane');
+      expect((wrapper.find('input[name="firstName"]').element as HTMLInputElement).value).toBe('Jane');
     });
   });
 
@@ -175,8 +176,8 @@ describe('DemoFormView', () => {
       const { wrapper } = await mountReadOnlyDemoFormView();
 
       expect(getSubmission).toHaveBeenCalledWith(testSubmission.id);
-      expect((wrapper.find('input#firstName').element as HTMLInputElement).value).toBe('Jane');
-      expect((wrapper.find('input#email').element as HTMLInputElement).value).toBe('jane.doe@example.com');
+      expect((wrapper.find('input[name="firstName"]').element as HTMLInputElement).value).toBe('Jane');
+      expect((wrapper.find('input[name="email"]').element as HTMLInputElement).value).toBe('jane.doe@example.com');
       expect(wrapper.find('input[type="radio"][value="email"]').element).toHaveProperty('checked', true);
       expect(wrapper.find('input[type="checkbox"]').element).toHaveProperty('checked', true);
       const select = wrapper.findAllComponents(PrimeSelect).find((c) => c.classes('p-select'))!;

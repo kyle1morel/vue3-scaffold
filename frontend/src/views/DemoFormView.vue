@@ -2,7 +2,7 @@
 import { isAxiosError } from 'axios';
 import { format, parseISO } from 'date-fns';
 import { useForm } from 'vee-validate';
-import { onMounted, ref, useTemplateRef } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { z } from 'zod';
@@ -13,10 +13,7 @@ import {
   CancelButton,
   Checkbox,
   DatePicker,
-  EditableSelect,
   Editor,
-  FormAutosave,
-  FormNavigationGuard,
   InputMask,
   InputNumber,
   InputText,
@@ -27,11 +24,12 @@ import {
   TextArea
 } from '@/components/form';
 import { Spinner } from '@/components/layout';
+import { useFormNavigationGuard } from '@/composables/useFormNavigationGuard';
 import { Button, Card, Message, useToast } from '@/lib/primevue';
 import { createSubmission, getSubmission } from '@/services';
 import { RouteName } from '@/utils/enums/application';
 import { formatDateLong } from '@/utils/formatters';
-import { scrollToFirstError } from '@/utils/utils';
+import { focusFirstError } from '@/utils/utils';
 import {
   notInFutureSchema,
   numberRangeSchema,
@@ -83,16 +81,16 @@ const schema = z.object({
   agree: z.boolean().refine((agreed) => agreed, t('views.demoForm.errors.agree'))
 });
 
-// The Checkbox component sets a missing value to false, which would otherwise mark the form dirty on load
+// Unticked terms start as false, not missing, so they fail with the terms message rather than a type error
 const { handleSubmit, meta, resetForm } = useForm({
   validationSchema: toTypedSchema(schema),
   initialValues: { agree: false }
 });
 
+useFormNavigationGuard(() => meta.value.dirty);
+
 // State
-const autoSave = useTemplateRef('autoSave');
 const citySuggestions = ref<string[]>([]);
-const lastSaved = ref<Date>();
 const loadError = ref<string>();
 const readOnly = !!submissionId;
 const submission = ref<Submission>();
@@ -116,11 +114,6 @@ const provinces = [
 // Actions
 function filterCities(event: AutoCompleteCompleteEvent) {
   citySuggestions.value = CITIES.filter((city) => city.toLowerCase().includes(event.query.toLowerCase()));
-}
-
-// Only submitting saves to the API, so a draft save just records the time
-function saveDraft() {
-  lastSaved.value = new Date();
 }
 
 async function loadSubmission(id: string) {
@@ -186,27 +179,19 @@ const onSubmit = handleSubmit(
     resetForm();
     router.push({ name: RouteName.SUBMISSIONS });
   },
-  ({ errors }) => scrollToFirstError(errors as Record<string, string>)
+  ({ errors }) => focusFirstError(errors as Record<string, string>)
 );
 </script>
 
 <template>
   <div class="flex items-center gap-4">
     <h2>{{ t('views.demoForm.title') }}</h2>
-    <template v-if="!readOnly">
-      <StatusPill
-        v-if="meta.dirty"
-        :status="t('views.demoForm.status.unsaved')"
-        bg-color="var(--p-support-warning-surface)"
-        border-color="var(--p-support-warning-border)"
-      />
-      <StatusPill
-        v-else-if="lastSaved"
-        :status="t('views.demoForm.status.saved', { time: lastSaved.toLocaleTimeString() })"
-        bg-color="var(--p-support-success-surface)"
-        border-color="var(--p-support-success-border)"
-      />
-    </template>
+    <StatusPill
+      v-if="!readOnly && meta.dirty"
+      :status="t('views.demoForm.status.unsaved')"
+      bg-color="var(--p-support-warning-surface)"
+      border-color="var(--p-support-warning-border)"
+    />
   </div>
 
   <Message
@@ -228,16 +213,10 @@ const onSubmit = handleSubmit(
         novalidate
         @submit="onSubmit"
       >
-        <template v-if="!readOnly">
-          <FormNavigationGuard :auto-save-ref="autoSave" />
-          <FormAutosave
-            ref="autoSave"
-            :callback="saveDraft"
-            :delay="5000"
-          />
-        </template>
-
-        <SectionHeader :title="t('views.demoForm.sections.contact')" />
+        <SectionHeader
+          class="col-span-12"
+          :title="t('views.demoForm.sections.contact')"
+        />
         <InputText
           class="col-span-12 md:col-span-6"
           name="firstName"
@@ -289,7 +268,10 @@ const onSubmit = handleSubmit(
           required
         />
 
-        <SectionHeader :title="t('views.demoForm.sections.details')" />
+        <SectionHeader
+          class="col-span-12"
+          :title="t('views.demoForm.sections.details')"
+        />
         <DatePicker
           class="col-span-12 md:col-span-6"
           name="startDate"
@@ -302,6 +284,7 @@ const onSubmit = handleSubmit(
           name="quantity"
           :disabled="readOnly"
           :label="field('quantity')"
+          :max-fraction-digits="0"
           :help-text="t('views.demoForm.help.quantity')"
         />
         <AutoComplete
@@ -313,13 +296,14 @@ const onSubmit = handleSubmit(
           :suggestions="citySuggestions"
           @complete="filterCities"
         />
-        <EditableSelect
+        <Select
           class="col-span-12 md:col-span-6"
           name="category"
           :disabled="readOnly"
+          editable
           :label="field('category')"
           :options="categories"
-          get-option-label="label"
+          option-label="label"
           option-value="value"
           :placeholder="t('views.demoForm.placeholders.category')"
         />
@@ -331,11 +315,15 @@ const onSubmit = handleSubmit(
           :tooltip="t('views.demoForm.help.comments')"
         />
 
-        <SectionHeader :title="t('views.demoForm.sections.notes')" />
+        <SectionHeader
+          class="col-span-12"
+          :title="t('views.demoForm.sections.notes')"
+        />
         <Editor
           class="col-span-12"
           name="notes"
           :disabled="readOnly"
+          :label="field('notes')"
           :help-text="t('views.demoForm.help.notes')"
         />
 
@@ -344,17 +332,24 @@ const onSubmit = handleSubmit(
           name="agree"
           :disabled="readOnly"
           :label="field('agree')"
+          required
         />
         <div
           v-if="!readOnly"
-          class="col-span-12 flex mt-4"
+          class="col-span-12 flex gap-2 mt-4"
         >
           <Button
             type="submit"
             :label="t('ui.actions.submit')"
-            icon="pi pi-check"
-          />
-          <CancelButton @clicked="resetForm()" />
+          >
+            <template #icon="{ class: iconClass }">
+              <font-awesome-icon
+                :class="iconClass"
+                icon="fa-solid fa-check"
+              />
+            </template>
+          </Button>
+          <CancelButton @click="resetForm()" />
         </div>
       </form>
     </template>
@@ -366,7 +361,13 @@ const onSubmit = handleSubmit(
     as="router-link"
     :to="{ name: RouteName.SUBMISSIONS }"
     :label="t('views.demoForm.back')"
-    icon="pi pi-arrow-left"
     outlined
-  />
+  >
+    <template #icon="{ class: iconClass }">
+      <font-awesome-icon
+        :class="iconClass"
+        icon="fa-solid fa-arrow-left"
+      />
+    </template>
+  </Button>
 </template>

@@ -14,7 +14,8 @@
     },
     "copyToClipboard": {
       "button": "Copy to clipboard",
-      "copied": "Copied to clipboard"
+      "copied": "Copied to clipboard",
+      "failed": "Unable to copy to the clipboard"
     },
     "footer": {
       "about": "About gov.bc.ca",
@@ -32,14 +33,6 @@
       "home": "Home",
       "moreInfo": "More info",
       "privacy": "Privacy"
-    },
-    "formNavigationGuard": {
-      "message": "Are you sure you want to leave this page? Any unsaved changes will be lost.",
-      "title": "Leave this page?"
-    },
-    "stepperNavigation": {
-      "next": "Go to next page",
-      "previous": "Go to previous page"
     }
   },
   "ui": {
@@ -64,6 +57,10 @@
       "info": "Info: {title}",
       "success": "Success: {title}",
       "warning": "Warning: {title}"
+    },
+    "unsavedChanges": {
+      "message": "Are you sure you want to leave this page? Any unsaved changes will be lost.",
+      "title": "Leave this page?"
     }
   },
   "validation": {
@@ -139,7 +136,6 @@
         "notes": "Notes"
       },
       "status": {
-        "saved": "Draft saved {time}",
         "unsaved": "Unsaved changes"
       },
       "submitted": {
