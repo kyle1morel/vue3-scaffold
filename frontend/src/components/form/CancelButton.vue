@@ -4,29 +4,26 @@ import { useI18n } from 'vue-i18n';
 
 import { Button } from '@/lib/primevue';
 
-// Props
-const { canDisable = true, editable = true } = defineProps<{
-  canDisable?: boolean;
-  editable?: boolean;
-}>();
-
-// Emits
-const emit = defineEmits<{ clicked: [] }>();
+// Composables
+const { t } = useI18n();
 
 // State
 const isDirty = useIsFormDirty();
-
-// Actions
-const { t } = useI18n();
 </script>
 
 <template>
+  <!-- A clean form has nothing to cancel; @click and :disabled fall through to the Button -->
   <Button
     outlined
-    class="ml-2 p-button-danger"
-    icon="pi pi-times"
-    :disabled="canDisable && (!editable || !isDirty)"
+    severity="danger"
+    :disabled="!isDirty"
     :label="t('ui.actions.cancel')"
-    @click="emit('clicked')"
-  />
+  >
+    <template #icon="{ class: iconClass }">
+      <font-awesome-icon
+        :class="iconClass"
+        icon="fa-solid fa-xmark"
+      />
+    </template>
+  </Button>
 </template>

@@ -55,7 +55,8 @@ function login(kind: IdentityProviderKind) {
           <h4 class="my-3">{{ t('views.oidcLogin.headings.internalUsers') }}</h4>
 
           <Button
-            class="p-button-outlined mt-3"
+            outlined
+            class="mt-3"
             data-test="idir-mfa-login-button"
             :aria-label="t('views.oidcLogin.providers.idir.login')"
             @click="login(IdentityProviderKind.AZUREIDIR)"

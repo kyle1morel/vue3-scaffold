@@ -65,7 +65,7 @@ function confirmDelete(submission: Submission) {
     header: t('views.submissions.confirmDelete.title'),
     message: t('views.submissions.confirmDelete.message', { name: submission.firstName }),
     acceptLabel: t('ui.actions.delete'),
-    acceptClass: 'p-button-danger',
+    acceptProps: { severity: 'danger' },
     rejectLabel: t('ui.actions.cancel'),
     rejectProps: { outlined: true },
     accept: () => removeSubmission(submission)
@@ -121,18 +121,30 @@ onMounted(() => loadPage());
             v-tooltip.bottom="t('ui.actions.view')"
             as="router-link"
             :to="{ name: RouteName.SUBMISSION, params: { submissionId: data.id } }"
-            icon="pi pi-eye"
             text
             :aria-label="t('views.submissions.actions.view', { name: data.firstName })"
-          />
+          >
+            <template #icon="{ class: iconClass }">
+              <font-awesome-icon
+                :class="iconClass"
+                icon="fa-solid fa-eye"
+              />
+            </template>
+          </Button>
           <Button
             v-tooltip.bottom="t('ui.actions.delete')"
-            icon="pi pi-trash"
             severity="danger"
             text
             :aria-label="t('views.submissions.actions.delete', { name: data.firstName })"
             @click="confirmDelete(data)"
-          />
+          >
+            <template #icon="{ class: iconClass }">
+              <font-awesome-icon
+                :class="iconClass"
+                icon="fa-solid fa-trash"
+              />
+            </template>
+          </Button>
         </div>
       </template>
     </Column>

@@ -1,10 +1,3 @@
-export const ButtonMode = {
-  BUTTON: 0,
-  ICON: 1
-} as const;
-
-export type ButtonMode = (typeof ButtonMode)[keyof typeof ButtonMode];
-
 // Custom patterns only; prefer zod's built-in formats (z.uuidv4(), z.iso.date(), ...) where one exists
 export const Regex = {
   /**

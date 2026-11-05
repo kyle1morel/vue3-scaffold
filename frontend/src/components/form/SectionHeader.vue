@@ -2,14 +2,20 @@
 import Divider from '@/components/common/Divider.vue';
 
 // Props
-const { title } = defineProps<{
+const { level = 3, title } = defineProps<{
+  level?: 2 | 3 | 4 | 5 | 6;
   title: string;
 }>();
 </script>
 
 <template>
-  <div class="col-span-12 mb-4 flex items-center">
-    <h3 class="flex-none m-0 pr-4">{{ title }}</h3>
+  <div class="mb-4 flex items-center">
+    <component
+      :is="`h${level}`"
+      class="flex-none m-0 pr-4"
+    >
+      {{ title }}
+    </component>
     <Divider />
   </div>
 </template>

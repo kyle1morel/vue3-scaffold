@@ -10,15 +10,15 @@ import { mountWithFormContext, setFieldValue } from '../../../mountWithFormConte
 
 // Mount
 
-function mountCancelButton(options: { editable?: boolean } = {}) {
-  const onClicked = vi.fn();
+function mountCancelButton() {
+  const onClick = vi.fn();
 
   const { wrapper } = mountWithFormContext(CancelButton, {
     fields: ['testField'],
-    componentProps: { ...options, onClicked }
+    componentProps: { onClick }
   });
 
-  return { wrapper, onClicked };
+  return { wrapper, onClick };
 }
 
 beforeEach(() => {
@@ -51,22 +51,13 @@ describe('CancelButton', () => {
     expect(wrapper.find('button').attributes('disabled')).toBeUndefined();
   });
 
-  it('stays disabled when the form is dirty but `editable` is false', async () => {
-    const { wrapper } = mountCancelButton({ editable: false });
-    await flushPromises();
-
-    await setFieldValue(wrapper, 'testField', 'something');
-
-    expect(wrapper.find('button').attributes('disabled')).toBeDefined();
-  });
-
-  it('emits "clicked" when clicked while enabled', async () => {
-    const { wrapper, onClicked } = mountCancelButton();
+  it('passes clicks to the listener while enabled', async () => {
+    const { wrapper, onClick } = mountCancelButton();
     await flushPromises();
 
     await setFieldValue(wrapper, 'testField', 'something');
     await wrapper.find('button').trigger('click');
 
-    expect(onClicked).toHaveBeenCalledOnce();
+    expect(onClick).toHaveBeenCalledOnce();
   });
 });

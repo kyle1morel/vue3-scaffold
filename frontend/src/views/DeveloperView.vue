@@ -3,9 +3,8 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { CopyToClipboard } from '@/components/form';
+import CopyToClipboard from '@/components/common/CopyToClipboard.vue';
 import { useAuthNStore, useConfigStore } from '@/store';
-import { ButtonMode } from '@/utils/enums/application';
 
 // Composables
 const { t } = useI18n();
@@ -32,7 +31,7 @@ const appVersion = computed(() => {
       <div class="flex items-center gap-2">
         <h4>{{ t('views.developer.config') }}</h4>
         <CopyToClipboard
-          :mode="ButtonMode.ICON"
+          icon-only
           :to-copy="JSON.stringify(getConfig)"
         />
       </div>
@@ -43,7 +42,7 @@ const appVersion = computed(() => {
       <div class="flex items-center gap-2">
         <h4>{{ t('views.developer.token') }}</h4>
         <CopyToClipboard
-          :mode="ButtonMode.ICON"
+          icon-only
           :to-copy="getAccessToken"
         />
       </div>
@@ -54,7 +53,7 @@ const appVersion = computed(() => {
       <div class="flex items-center gap-2">
         <h4>{{ t('views.developer.profile') }}</h4>
         <CopyToClipboard
-          :mode="ButtonMode.ICON"
+          icon-only
           :to-copy="JSON.stringify(getProfile)"
         />
       </div>
