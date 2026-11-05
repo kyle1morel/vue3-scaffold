@@ -82,11 +82,17 @@ const permittedItems = computed(() =>
             <Button
               type="button"
               :label="t('ui.actions.close')"
-              icon="pi pi-times"
               rectangle
               variant="outlined"
               @click="closeCallback"
-            ></Button>
+            >
+              <template #icon="{ class: iconClass }">
+                <font-awesome-icon
+                  :class="iconClass"
+                  icon="fa-solid fa-xmark"
+                />
+              </template>
+            </Button>
           </span>
         </div>
         <div class="overflow-y-auto">
@@ -133,11 +139,11 @@ const permittedItems = computed(() =>
                     aria-hidden="true"
                   />
                   <span class="font-medium">{{ item.label }}</span>
-                  <i
+                  <font-awesome-icon
                     v-if="item.items"
-                    class="pi pi-chevron-down ml-auto"
-                    aria-hidden="true"
-                  ></i>
+                    class="ml-auto"
+                    icon="fa-solid fa-chevron-down"
+                  />
                 </Button>
               </router-link>
 

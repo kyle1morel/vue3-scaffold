@@ -1,5 +1,18 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { fas } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowLeft,
+  faBars,
+  faCheck,
+  faChevronDown,
+  faCircleInfo,
+  faCircleQuestion,
+  faClipboard,
+  faEye,
+  faRightFromBracket,
+  faTrash,
+  faUser,
+  faXmark
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import PrimeVue from '@primevue/core/config';
 import ConfirmationService from 'primevue/confirmationservice';
@@ -18,14 +31,27 @@ import { StorageKey } from '@/utils/enums/application';
 
 import '@bcgov/bc-sans/css/BC_Sans.css';
 import '@bcgov/design-tokens/css/variables.css';
-import 'primeicons/primeicons.css';
 import '@/assets/main.css';
 
 /**
  * Initializes and mounts the Vue instance.
  */
 function initializeApp(): void {
-  library.add(fas);
+  // Only the icons in use are bundled, so a new icon renders nothing until it's added here
+  library.add(
+    faArrowLeft,
+    faBars,
+    faCheck,
+    faChevronDown,
+    faCircleInfo,
+    faCircleQuestion,
+    faClipboard,
+    faEye,
+    faRightFromBracket,
+    faTrash,
+    faUser,
+    faXmark
+  );
 
   const app = createApp(App);
   const pinia = createPinia();
@@ -39,6 +65,8 @@ function initializeApp(): void {
   app.use(getRouter());
   app.use(i18n);
   app.use(PrimeVue, {
+    // Year first, so dates can't be misread the way PrimeVue's default mm/dd/yy can
+    locale: { dateFormat: 'yy/mm/dd' },
     theme: {
       preset: ThemeOverride,
       options: {

@@ -16,7 +16,7 @@ const { t } = useI18n();
 const items = ref([
   {
     label: t('ui.actions.logOut'),
-    icon: 'pi pi-sign-out',
+    icon: 'fa-solid fa-right-from-bracket',
     command: () => {
       router.push({ name: RouteName.OIDC_LOGOUT });
     }
@@ -59,6 +59,13 @@ const toggle = (event: Event) => {
       ref="menu"
       :model="items"
       :popup="true"
-    />
+    >
+      <template #itemicon="{ item, class: iconClass }">
+        <font-awesome-icon
+          :class="iconClass"
+          :icon="item.icon!"
+        />
+      </template>
+    </Menu>
   </div>
 </template>
