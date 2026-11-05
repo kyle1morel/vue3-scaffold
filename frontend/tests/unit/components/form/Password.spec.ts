@@ -70,16 +70,11 @@ describe('Password', () => {
       expect(label.classes()).toContain('font-bold');
     });
 
-    it('omits the bold class when bold is false', () => {
-      const { wrapper } = mountPassword({ props: { label: 'Password', bold: false } });
-
-      expect(wrapper.find('label').classes()).not.toContain('font-bold');
-    });
-
-    it('renders the help text', () => {
+    it('links the help text to the input', () => {
       const { wrapper } = mountPassword({ props: { helpText: 'Must be at least 8 characters' } });
 
-      expect(wrapper.find('#account\\.password-help').text()).toBe('Must be at least 8 characters');
+      const describedBy = wrapper.find('input').attributes('aria-describedby');
+      expect(wrapper.find(`[id="${describedBy}"]`).text()).toBe('Must be at least 8 characters');
     });
   });
 });

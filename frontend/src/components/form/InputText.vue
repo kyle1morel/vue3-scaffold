@@ -1,68 +1,52 @@
 <script setup lang="ts">
-import { ErrorMessage } from 'vee-validate';
+import { useField } from 'vee-validate';
 
-import InputTextInternal from './internal/InputTextInternal.vue';
-import { FloatLabel } from '@/lib/primevue';
+import { InputText } from '@/lib/primevue';
+
+import FormField from './FormField.vue';
 
 // Props
 const {
-  helpText = '',
-  label = '',
-  labelUrl = undefined,
+  helpText = undefined,
+  label = undefined,
   name,
-  placeholder = '',
+  placeholder = undefined,
   disabled = false,
-  floatLabel = false,
-  bold = true,
   tooltip = undefined,
   required = false
 } = defineProps<{
   helpText?: string;
   label?: string;
-  labelUrl?: string;
   name: string;
   placeholder?: string;
   disabled?: boolean;
-  bold?: boolean;
-  floatLabel?: boolean;
   tooltip?: string;
   required?: boolean;
 }>();
 
-// Emits
-const emit = defineEmits<{
-  change: [event: Event];
-  click: [event: MouseEvent];
-  input: [event: Event];
-}>();
+// State
+const { errorMessage, handleBlur, value } = useField<string | undefined>(() => name);
 </script>
 
 <template>
-  <div>
-    <FloatLabel v-if="floatLabel">
-      <InputTextInternal
-        v-bind="{ label, labelUrl, name, placeholder, disabled, bold, tooltip, required }"
-        @change="(e: Event) => emit('change', e)"
-        @click="(e: MouseEvent) => emit('click', e)"
-        @input="(e: Event) => emit('input', e)"
-      />
-    </FloatLabel>
-    <InputTextInternal
-      v-else
-      v-bind="{ label, labelUrl, name, placeholder, disabled, bold, tooltip, required }"
-      @change="(e: Event) => emit('change', e)"
-      @click="(e: MouseEvent) => emit('click', e)"
-      @input="(e: Event) => emit('input', e)"
+  <FormField
+    v-slot="{ id, inputAttrs, invalid, listeners }"
+    :error="errorMessage"
+    :help-text
+    :label
+    :required
+    :tooltip
+  >
+    <InputText
+      :id
+      v-model="value"
+      v-bind="{ ...listeners, ...inputAttrs }"
+      class="w-full"
+      :disabled
+      :invalid
+      :name
+      :placeholder
+      @blur="handleBlur"
     />
-
-    <small :id="`${name}-help`">
-      {{ helpText }}
-    </small>
-    <div class="mt-2">
-      <ErrorMessage
-        :name="name"
-        class="app-error-message"
-      />
-    </div>
-  </div>
+  </FormField>
 </template>

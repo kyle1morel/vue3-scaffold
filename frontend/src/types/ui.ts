@@ -23,10 +23,6 @@ export interface IdentityProvider {
   username: string;
 }
 
-export interface InputEvent extends Event {
-  target: HTMLInputElement;
-}
-
 export interface DateTimeStrings {
   date: Nullable<string>;
   time: Nullable<string>;

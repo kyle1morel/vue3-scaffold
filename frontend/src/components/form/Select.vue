@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { ErrorMessage } from 'vee-validate';
+import { useField } from 'vee-validate';
 
-import SelectInternal from './internal/SelectInternal.vue';
-import { FloatLabel } from '@/lib/primevue';
+import { Select } from '@/lib/primevue';
 
-import type { SelectChangeEvent } from 'primevue/select';
+import FormField from './FormField.vue';
+
+import type { SelectChangeEvent, SelectProps } from 'primevue/select';
 
 // Props
 const {
-  helpText = '',
-  label = '',
+  helpText = undefined,
+  label = undefined,
   name,
-  placeholder = '',
+  placeholder = undefined,
   disabled = false,
+  editable = false,
   options,
   optionLabel = undefined,
   optionValue = undefined,
-  bold = true,
-  loading = undefined,
-  floatLabel = false,
+  loading = false,
   required = false
 } = defineProps<{
   helpText?: string;
@@ -26,65 +26,49 @@ const {
   name: string;
   placeholder?: string;
   disabled?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  options: readonly any[]; // Matches Prisma type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  optionLabel?: string | ((data: any) => string) | undefined; // Matches Prisma type
-  optionValue?: string;
-  bold?: boolean;
+  // Typed text that matches no option is saved as entered
+  editable?: boolean;
+  options: SelectProps['options'];
+  optionLabel?: SelectProps['optionLabel'];
+  optionValue?: SelectProps['optionValue'];
   loading?: boolean;
-  floatLabel?: boolean;
   required?: boolean;
 }>();
 
 // Emits
 const emit = defineEmits<{ change: [event: SelectChangeEvent] }>();
+
+// State
+const { errorMessage, handleBlur, value } = useField<unknown>(() => name);
 </script>
 
 <template>
-  <div>
-    <FloatLabel v-if="floatLabel">
-      <SelectInternal
-        v-bind="{
-          label,
-          name,
-          placeholder,
-          disabled,
-          options,
-          optionLabel,
-          optionValue,
-          bold,
-          loading,
-          floatLabel,
-          required
-        }"
-        @change="(e) => emit('change', e)"
-      />
-    </FloatLabel>
-    <SelectInternal
-      v-else
-      v-bind="{
-        label,
-        name,
-        placeholder,
-        disabled,
-        optionLabel,
-        options,
-        optionValue,
-        bold,
-        loading,
-        floatLabel,
-        required
-      }"
-      @change="(e) => emit('change', e)"
+  <FormField
+    v-slot="{ id, inputAttrs, invalid, labelId, listeners }"
+    :error="errorMessage"
+    :help-text
+    :label
+    :non-labelable="!editable"
+    :required
+  >
+    <Select
+      v-model="value"
+      v-bind="listeners"
+      :aria-labelledby="labelId"
+      class="w-full"
+      :disabled
+      :editable
+      :input-id="id"
+      :invalid
+      :loading
+      :name
+      :options
+      :option-label
+      :option-value
+      :placeholder
+      :pt="{ label: inputAttrs }"
+      @blur="handleBlur"
+      @change="(e: SelectChangeEvent) => emit('change', e)"
     />
-
-    <small :id="`${name}-help`">{{ helpText }}</small>
-    <div class="mt-2">
-      <ErrorMessage
-        :name="name"
-        class="app-error-message"
-      />
-    </div>
-  </div>
+  </FormField>
 </template>

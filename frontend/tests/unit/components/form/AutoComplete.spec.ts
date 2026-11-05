@@ -32,13 +32,13 @@ describe('AutoComplete', () => {
     it('renders the label', () => {
       const { wrapper } = mountAutoComplete({ label: 'City' });
 
-      expect(wrapper.find(`#${testName}-label`).text()).toContain('City');
+      expect(wrapper.find('label').text()).toContain('City');
     });
 
     it('marks the field as required when asked to', () => {
       const { wrapper } = mountAutoComplete({ label: 'City', required: true });
 
-      expect(wrapper.find(`#${testName}-label`).text()).toContain('*');
+      expect(wrapper.find('label').text()).toContain('*');
     });
 
     it('passes the suggestions to the input', () => {

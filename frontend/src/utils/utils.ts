@@ -1,4 +1,5 @@
 import { isAxiosError } from 'axios';
+import { nextTick } from 'vue';
 import { useToast } from '@/lib/primevue';
 import { useConfigStore } from '@/store';
 import { IdentityProviderKind } from '@/utils/enums/application';
@@ -277,23 +278,22 @@ export function partition<T>(arr: T[], predicate: (v: T, i: number, ar: T[]) => 
 }
 
 /**
- * Scrolls to the topmost invalid field in a form.
+ * Scrolls to and focuses the first invalid field in a form, so a screen reader announces its error.
  * @param errors - The error messages, keyed by field name.
  */
-export function scrollToFirstError(errors: Record<string, string>) {
-  let first: Element | null = null;
+export async function focusFirstError(errors: Record<string, string>) {
+  const names = Object.keys(errors);
+  if (!names.length) return;
 
-  for (const error of Object.keys(errors)) {
-    const el = document.querySelector(`[name="${error}"]`);
-    const rect = el?.getBoundingClientRect();
+  // The error messages must render first, or they're missing from the field's description when it's focused
+  await nextTick();
 
-    if (rect) {
-      if (!first) first = el;
-      else if (rect.top < first.getBoundingClientRect().top) first = el;
-    }
-  }
+  // Document order, which is also the focus order
+  const first = document.querySelector<HTMLElement>(names.map((name) => `[name="${name}"]`).join(','));
 
   first?.scrollIntoView({ behavior: 'smooth' });
+  // Without preventScroll, focusing jumps straight there and cuts the smooth scroll short
+  first?.focus({ preventScroll: true });
 }
 
 /**

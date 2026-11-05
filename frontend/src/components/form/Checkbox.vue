@@ -1,69 +1,62 @@
 <script setup lang="ts">
-import { useField, ErrorMessage, useSetFieldValue } from 'vee-validate';
-import { watch } from 'vue';
+import { useField } from 'vee-validate';
 
 import { Checkbox } from '@/lib/primevue';
 
+import FormField from './FormField.vue';
+
 // Props
 const {
-  helpText = '',
-  label = '',
+  helpText = undefined,
+  label = undefined,
   name,
   disabled = false,
-  bold = true,
-  invalid = false
+  required = false
 } = defineProps<{
   helpText?: string;
   label?: string;
   name: string;
   disabled?: boolean;
-  bold?: boolean;
-  invalid?: boolean;
+  required?: boolean;
 }>();
 
-// Composables
-const { errorMessage, handleBlur, value } = useField<string>(name);
-const setFieldValue = useSetFieldValue(name);
-
-// Actions
-// Default to false if value is null or undefined
-watch(
-  value,
-  () => {
-    if (value.value === null || value.value === undefined) setFieldValue(false);
-  },
-  { immediate: true }
-);
+// State
+const { errorMessage, handleBlur, value } = useField<boolean | undefined>(() => name);
 </script>
 
 <template>
-  <div>
+  <FormField
+    v-slot="{ id, inputAttrs, invalid, listeners }"
+    :error="errorMessage"
+    :help-text
+    :required
+  >
     <div class="flex items-center">
       <Checkbox
         v-model="value"
+        v-bind="listeners"
         binary
-        :aria-describedby="`${name}-help`"
-        :aria-labelledby="`${name}-label`"
-        :name="name"
-        :class="{ 'p-invalid': errorMessage || invalid }"
-        :disabled="disabled"
+        :disabled
+        :input-id="id"
+        :invalid
+        :name
+        :pt="{ input: inputAttrs }"
         @blur="handleBlur"
       />
       <label
-        :id="`${name}-label`"
-        class="pl-2 mb-0"
-        :class="{ 'font-bold': bold }"
-        :for="name"
+        v-if="label"
+        class="pl-2 mb-0 font-bold"
+        :for="id"
       >
         {{ label }}
+        <span
+          v-if="required"
+          aria-hidden="true"
+          class="text-[var(--p-support-required-text)]"
+        >
+          *
+        </span>
       </label>
     </div>
-    <small :id="`${name}-help`">{{ helpText }}</small>
-    <div class="mt-2">
-      <ErrorMessage
-        :name="name"
-        class="app-error-message"
-      />
-    </div>
-  </div>
+  </FormField>
 </template>

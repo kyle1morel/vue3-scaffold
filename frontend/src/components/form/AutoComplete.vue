@@ -1,25 +1,23 @@
 <script setup lang="ts">
-import { useField, ErrorMessage } from 'vee-validate';
-import { onBeforeMount } from 'vue';
+import { useField } from 'vee-validate';
 
 import { AutoComplete } from '@/lib/primevue';
 
-import type { AutoCompleteChangeEvent, AutoCompleteCompleteEvent } from 'primevue/autocomplete';
+import FormField from './FormField.vue';
+
+import type { AutoCompleteChangeEvent, AutoCompleteCompleteEvent, AutoCompleteProps } from 'primevue/autocomplete';
 
 // Props
-
 const {
-  helpText = '',
-  label = '',
+  helpText = undefined,
+  label = undefined,
   name,
-  placeholder = '',
+  placeholder = undefined,
   disabled = false,
   suggestions,
-  getOptionLabel = undefined,
-  bold = true,
+  optionLabel = undefined,
   forceSelection = false,
   loading = false,
-  editable = false,
   delay = 300,
   required = false
 } = defineProps<{
@@ -28,13 +26,10 @@ const {
   name: string;
   placeholder?: string;
   disabled?: boolean;
-  suggestions: unknown[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getOptionLabel?: string | ((data: any) => string) | undefined; // Matches Prisma type
-  bold?: boolean;
+  suggestions: AutoCompleteProps['suggestions'];
+  optionLabel?: AutoCompleteProps['optionLabel'];
   forceSelection?: boolean;
   loading?: boolean;
-  editable?: boolean;
   delay?: number;
   required?: boolean;
 }>();
@@ -45,56 +40,39 @@ const emit = defineEmits<{
   complete: [event: AutoCompleteCompleteEvent];
   select: [value: unknown];
 }>();
-const { errorMessage, handleBlur, value, resetField } = useField<string>(name);
 
-onBeforeMount(() => {
-  resetField({ touched: false });
-});
+// State
+const { errorMessage, handleBlur, value } = useField<unknown>(() => name);
 </script>
 
 <template>
-  <div>
-    <label
-      :id="`${name}-label`"
-      :class="{ 'font-bold': bold }"
-      :for="name"
-    >
-      {{ label }}
-      <span
-        v-if="required"
-        class="text-[var(--p-support-required-text)]"
-      >
-        *
-      </span>
-    </label>
+  <FormField
+    v-slot="{ id, inputAttrs, invalid, listeners }"
+    :error="errorMessage"
+    :help-text
+    :label
+    :required
+  >
     <AutoComplete
       v-model="value"
-      append-to="body"
-      :aria-describedby="`${name}-help`"
-      :aria-labelledby="`${name}-label`"
+      v-bind="listeners"
       class="w-full"
-      :invalid="!!errorMessage"
-      :delay="delay"
-      :disabled="disabled"
-      :editable="editable"
-      :force-selection="forceSelection"
+      :delay
+      :disabled
+      :force-selection
       input-class="w-full"
-      :loading="loading"
-      :name="name"
-      :option-label="getOptionLabel"
-      :placeholder="placeholder"
-      :suggestions="suggestions"
+      :input-id="id"
+      :invalid
+      :loading
+      :name
+      :option-label
+      :placeholder
+      :pt="{ pcInputText: { root: inputAttrs } }"
+      :suggestions
       @blur="handleBlur"
       @change="(e: AutoCompleteChangeEvent) => emit('change', e)"
       @complete="(e: AutoCompleteCompleteEvent) => emit('complete', e)"
       @option-select="(e) => emit('select', e.value)"
     />
-    <small :id="`${name}-help`">{{ helpText }}</small>
-    <div class="mt-2">
-      <ErrorMessage
-        :name="name"
-        class="app-error-message"
-      />
-    </div>
-  </div>
+  </FormField>
 </template>

@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import { useField, ErrorMessage } from 'vee-validate';
+import { useField } from 'vee-validate';
 
 import { InputNumber } from '@/lib/primevue';
+
+import FormField from './FormField.vue';
+
 import type { InputNumberBlurEvent } from 'primevue/inputnumber';
 
 // Props
 const {
-  helpText = '',
-  label = '',
+  helpText = undefined,
+  label = undefined,
   name,
-  placeholder = '',
+  placeholder = undefined,
   disabled = false,
-  bold = true,
+  maxFractionDigits = undefined,
   required = false
 } = defineProps<{
   helpText?: string;
@@ -19,53 +22,34 @@ const {
   name: string;
   placeholder?: string;
   disabled?: boolean;
-  bold?: boolean;
+  maxFractionDigits?: number;
   required?: boolean;
 }>();
 
 // State
-const { errorMessage, handleBlur, value } = useField<number>(name);
+const { errorMessage, handleBlur, value } = useField<number | null | undefined>(() => name);
 </script>
 
 <template>
-  <div>
-    <label
-      :id="`${name}-label`"
-      :class="{ 'font-bold': bold }"
-      :for="name"
-    >
-      {{ label }}
-    </label>
+  <FormField
+    v-slot="{ id, inputAttrs, invalid, listeners }"
+    :error="errorMessage"
+    :help-text
+    :label
+    :required
+  >
     <InputNumber
       v-model="value"
-      :aria-describedby="`${name}-help`"
-      :aria-labelledby="`${name}-label`"
-      :name="name"
-      :placeholder="placeholder"
+      v-bind="listeners"
       class="w-full"
-      :invalid="!!errorMessage"
-      :disabled="disabled"
-      :min-fraction-digits="0"
-      :max-fraction-digits="6"
+      :disabled
+      :input-id="id"
+      :invalid
+      :max-fraction-digits
+      :name
+      :placeholder
+      :pt="{ pcInputText: { root: inputAttrs } }"
       @blur="(e: InputNumberBlurEvent) => handleBlur(e.originalEvent)"
     />
-    <small
-      v-if="helpText"
-      :id="`${name}-help`"
-    >
-      {{ helpText }}
-      <span
-        v-if="required"
-        class="text-[var(--p-support-required-text)]"
-      >
-        *
-      </span>
-    </small>
-    <div class="mt-2">
-      <ErrorMessage
-        :name="name"
-        class="app-error-message"
-      />
-    </div>
-  </div>
+  </FormField>
 </template>

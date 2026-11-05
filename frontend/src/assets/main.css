@@ -90,7 +90,8 @@
     text-decoration: underline;
   }
 
-  label {
+  label,
+  legend {
     display: inline-block;
     margin-bottom: var(--layout-margin-small);
   }

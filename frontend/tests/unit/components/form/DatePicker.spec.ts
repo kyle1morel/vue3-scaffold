@@ -20,11 +20,12 @@ function mountDatePicker(options: { helpText?: string; label?: string; required?
 
 describe('DatePicker', () => {
   describe('rendering', () => {
-    it('renders the label and help text with ids based on the name', () => {
+    it('links the label and help text to the input', () => {
       const { wrapper } = mountDatePicker({ label: 'Start date', helpText: 'Pick a day' });
 
-      expect(wrapper.find(`#${testName}-label`).text()).toContain('Start date');
-      expect(wrapper.find(`#${testName}-help`).text()).toBe('Pick a day');
+      const input = wrapper.find('input');
+      expect(wrapper.find(`label[for="${input.attributes('id')}"]`).text()).toContain('Start date');
+      expect(wrapper.find(`[id="${input.attributes('aria-describedby')}"]`).text()).toBe('Pick a day');
     });
 
     it('omits the label when none is given', () => {
@@ -36,7 +37,7 @@ describe('DatePicker', () => {
     it('marks the field as required when asked to', () => {
       const { wrapper } = mountDatePicker({ label: 'Start date', required: true });
 
-      expect(wrapper.find(`#${testName}-label`).text()).toContain('*');
+      expect(wrapper.find('label').text()).toContain('*');
     });
   });
 });

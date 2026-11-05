@@ -1,71 +1,23 @@
 <script setup lang="ts">
-// Defaults tooltip to right if not stated.
-const {
-  bottom,
-  left,
-  icon = 'fa-solid fa-circle-info',
-  right = true,
-  text = undefined,
-  top
-} = defineProps<{
-  bottom?: boolean;
-  left?: boolean;
+// Props
+const { icon = 'fa-solid fa-circle-info', text } = defineProps<{
   icon?: string;
-  right?: boolean;
-  text?: string;
-  top?: boolean;
+  text: string;
 }>();
 </script>
 
 <template>
+  <!-- PrimeVue's popup is visual only, so the text is also here for screen readers and aria-describedby -->
   <span
+    v-tooltip.right="text"
     class="text-primary"
-    role="tooltip"
-    :aria-label="text"
   >
     <span
-      v-if="bottom"
-      v-tooltip.bottom="text"
+      v-tooltip.focus.right="text"
+      tabindex="0"
     >
-      <span
-        v-tooltip.focus.bottom="text"
-        tabindex="0"
-      >
-        <font-awesome-icon :icon />
-      </span>
-    </span>
-    <span
-      v-else-if="left"
-      v-tooltip.left="text"
-    >
-      <span
-        v-tooltip.focus.left="text"
-        tabindex="0"
-      >
-        <font-awesome-icon :icon />
-      </span>
-    </span>
-    <span
-      v-else-if="top"
-      v-tooltip.top="text"
-    >
-      <span
-        v-tooltip.focus.top="text"
-        tabindex="0"
-      >
-        <font-awesome-icon :icon />
-      </span>
-    </span>
-    <span
-      v-else-if="right"
-      v-tooltip.right="text"
-    >
-      <span
-        v-tooltip.focus.right="text"
-        tabindex="0"
-      >
-        <font-awesome-icon :icon />
-      </span>
+      <font-awesome-icon :icon />
+      <span class="sr-only">{{ text }}</span>
     </span>
   </span>
 </template>

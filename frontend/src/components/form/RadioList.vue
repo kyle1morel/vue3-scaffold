@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { ErrorMessage, useField } from 'vee-validate';
-import { onBeforeMount, watch } from 'vue';
+import { useField } from 'vee-validate';
+import { computed } from 'vue';
 
 import { RadioButton } from '@/lib/primevue';
 
+import FormField from './FormField.vue';
+
 // Interfaces
-interface RadioOptionObject {
+interface RadioOption {
   label: string | number;
   value: string | number;
 }
 
 // Props
 const {
-  helpText = '',
-  label = '',
+  helpText = undefined,
+  label = undefined,
   name,
   disabled = false,
-  bold = true,
   options,
   required = false
 } = defineProps<{
@@ -24,98 +25,67 @@ const {
   label?: string;
   name: string;
   disabled?: boolean;
-  bold?: boolean;
-  options: readonly (RadioOptionObject | string)[] | undefined;
+  options: readonly (RadioOption | string)[];
   required?: boolean;
 }>();
 
 // Emits
-const emit = defineEmits<{
-  change: [value: string];
-  click: [value: string];
-}>();
+const emit = defineEmits<{ change: [value: string | number] }>();
 
 // State
-const { errorMessage, handleBlur, value, resetField } = useField<string>(name);
+const { errorMessage, handleBlur, value } = useField<string | number | undefined>(() => name);
 
-// Actions
-function isRadioListOptionObject(option: RadioOptionObject | string): option is RadioOptionObject {
-  return typeof option === 'object' && option !== null && 'label' in option && 'value' in option;
-}
-
-function getRadioListOptionLabel(option: RadioOptionObject | string): string {
-  return isRadioListOptionObject(option) ? option.label.toString() : option;
-}
-
-function getRadioListOptionValue(option: RadioOptionObject | string): string {
-  return isRadioListOptionObject(option) ? option.value.toString() : option;
-}
-
-watch(value, () => {
-  emit('change', value.value);
-});
-
-onBeforeMount(() => {
-  resetField({ touched: false });
-});
+const radioOptions = computed(() =>
+  options.map((option) => (typeof option === 'string' ? { label: option, value: option } : option))
+);
 </script>
 
 <template>
-  <div>
-    <label
-      v-if="label"
-      :id="`${name}-label`"
-      :class="{ 'font-bold': bold }"
-    >
-      {{ label }}
-      <span
-        v-if="required"
-        class="text-[var(--p-support-required-text)]"
+  <!-- The legend names the group; aria-required isn't valid on a fieldset, so each radio is marked required instead -->
+  <FormField
+    v-slot="{ id, inputAttrs, invalid, listeners }"
+    :error="errorMessage"
+    :help-text
+  >
+    <fieldset v-bind="{ ...listeners, ...inputAttrs }">
+      <legend
+        v-if="label"
+        class="font-bold"
       >
-        *
-      </span>
-    </label>
-    <div
-      class="flex flex-col gap-4"
-      role="radiogroup"
-      :aria-labelledby="label ? `${name}-label` : undefined"
-      :aria-required="required"
-    >
-      <div
-        v-for="option in options"
-        :key="getRadioListOptionValue(option)"
-        class="flex flex-col items-start"
-      >
-        <div class="my-0">
+        {{ label }}
+        <span
+          v-if="required"
+          aria-hidden="true"
+          class="text-[var(--p-support-required-text)]"
+        >
+          *
+        </span>
+      </legend>
+      <div class="flex flex-col gap-4">
+        <div
+          v-for="(option, index) in radioOptions"
+          :key="option.value"
+          class="flex items-center"
+        >
           <RadioButton
             v-model="value"
-            :aria-describedby="`${name}-help`"
-            :aria-labelledby="`${name}-option-${getRadioListOptionValue(option)}`"
-            :input-id="`${name}-${getRadioListOptionValue(option)}`"
-            :name="name"
-            :value="getRadioListOptionValue(option)"
-            :invalid="!!errorMessage"
-            :disabled="disabled"
+            :disabled
+            :input-id="`${id}-${index}`"
+            :invalid
+            :name
+            :pt="{ input: { required: required || undefined } }"
+            :value="option.value"
             @blur="handleBlur"
-            @click="emit('click', value)"
+            @change="emit('change', option.value)"
           />
           <label
-            :id="`${name}-option-${getRadioListOptionValue(option)}`"
-            :for="`${name}-${getRadioListOptionValue(option)}`"
             class="ml-2 mb-0"
+            :for="`${id}-${index}`"
           >
-            {{ getRadioListOptionLabel(option) }}
+            {{ option.label }}
           </label>
         </div>
       </div>
-    </div>
-
-    <small :id="`${name}-help`">{{ helpText }}</small>
-    <div class="mt-2">
-      <ErrorMessage
-        :name="name"
-        class="app-error-message"
-      />
-    </div>
-  </div>
+    </fieldset>
+  </FormField>
 </template>

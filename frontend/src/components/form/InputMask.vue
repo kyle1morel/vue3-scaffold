@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { ErrorMessage } from 'vee-validate';
+import { useField } from 'vee-validate';
+import { computed } from 'vue';
 
-import InputMaskInternal from './internal/InputMaskInternal.vue';
-import { FloatLabel } from '@/lib/primevue';
+import { InputMask } from '@/lib/primevue';
+
+import FormField from './FormField.vue';
 
 // Props
 const {
-  helpText = '',
-  label = '',
+  helpText = undefined,
+  label = undefined,
   name,
   mask,
-  placeholder = '',
+  placeholder = undefined,
   disabled = false,
-  bold = true,
-  floatLabel = false,
   required = false
 } = defineProps<{
   helpText?: string;
@@ -22,28 +22,38 @@ const {
   mask: string;
   placeholder?: string;
   disabled?: boolean;
-  bold?: boolean;
-  floatLabel?: boolean;
   required?: boolean;
 }>();
+
+// State
+const { errorMessage, handleBlur, value } = useField<string | undefined>(() => name);
+
+// A cleared mask is no value, not an empty string
+const maskedValue = computed({
+  get: () => value.value || undefined,
+  set: (val?: string) => (value.value = val || undefined)
+});
 </script>
 
 <template>
-  <div>
-    <FloatLabel v-if="floatLabel">
-      <InputMaskInternal v-bind="{ label, name, mask, placeholder, disabled, bold, required }" />
-    </FloatLabel>
-    <InputMaskInternal
-      v-else
-      v-bind="{ label, name, mask, placeholder, disabled, bold, required }"
+  <FormField
+    v-slot="{ id, inputAttrs, invalid, listeners }"
+    :error="errorMessage"
+    :help-text
+    :label
+    :required
+  >
+    <InputMask
+      :id
+      v-model="maskedValue"
+      v-bind="{ ...listeners, ...inputAttrs }"
+      class="w-full"
+      :disabled
+      :invalid
+      :mask
+      :name
+      :placeholder
+      @blur="handleBlur"
     />
-
-    <small :id="`${name}-help`">{{ helpText }}</small>
-    <div class="mt-2">
-      <ErrorMessage
-        :name="name"
-        class="app-error-message"
-      />
-    </div>
-  </div>
+  </FormField>
 </template>

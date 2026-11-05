@@ -47,10 +47,10 @@ describe('Editor', () => {
       expect(wrapper.findComponent(PvEditorStub).props('editorStyle')).toBe('height: 300px');
     });
 
-    it('renders the help text scoped to the given name', () => {
+    it('renders the help text', () => {
       const { wrapper } = mountEditor({ props: { helpText: 'Describe the project' } });
 
-      expect(wrapper.find('#basic\\.description-help').text()).toBe('Describe the project');
+      expect(wrapper.find('small').text()).toBe('Describe the project');
     });
 
     it('is editable with a toolbar by default', () => {

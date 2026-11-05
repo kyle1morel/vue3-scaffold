@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { useField, ErrorMessage } from 'vee-validate';
+import { useField } from 'vee-validate';
 
 import { DatePicker } from '@/lib/primevue';
 
-import type { InputNumberBlurEvent } from 'primevue/inputnumber';
+import FormField from './FormField.vue';
+
+import type { DatePickerBlurEvent } from 'primevue/datepicker';
 
 // Props
 const {
-  helpText = '',
-  label = '',
+  helpText = undefined,
+  label = undefined,
   name,
   disabled = false,
   showTime = false,
-  bold = true,
-  placeholder = '',
+  placeholder = undefined,
   maxDate = undefined,
   required = false
 } = defineProps<{
@@ -22,55 +23,38 @@ const {
   name: string;
   disabled?: boolean;
   showTime?: boolean;
-  bold?: boolean;
   placeholder?: string;
   maxDate?: Date;
   required?: boolean;
 }>();
 
-const { errorMessage, handleBlur, value } = useField<Date>(name);
+// State
+const { errorMessage, handleBlur, value } = useField<Date | null | undefined>(() => name);
 </script>
 
 <template>
-  <div>
-    <label
-      v-if="label"
-      :id="`${name}-label`"
-      :class="{ 'font-bold': bold }"
-      :for="name"
-    >
-      {{ label }}
-      <span
-        v-if="required"
-        class="text-[var(--p-support-required-text)]"
-      >
-        *
-      </span>
-    </label>
+  <FormField
+    v-slot="{ id, inputAttrs, invalid, listeners }"
+    :error="errorMessage"
+    :help-text
+    :label
+    :required
+  >
     <DatePicker
       v-model="value"
-      :aria-describedby="`${name}-help`"
-      :aria-labelledby="`${name}-label`"
-      :name="name"
-      class="w-full"
-      :invalid="!!errorMessage"
-      :disabled="disabled"
-      :show-time="showTime"
-      hour-format="24"
+      v-bind="listeners"
+      :disabled
       fluid
-      show-icon
       icon-display="input"
-      date-format="yy/mm/dd"
-      :placeholder="placeholder"
-      :max-date="maxDate"
-      @blur="(e: InputNumberBlurEvent) => handleBlur(e.originalEvent)"
+      :input-id="id"
+      :invalid
+      :max-date
+      :name
+      :placeholder
+      :pt="{ pcInputText: { root: inputAttrs } }"
+      show-icon
+      :show-time
+      @blur="(e: DatePickerBlurEvent) => handleBlur(e.originalEvent)"
     />
-    <small :id="`${name}-help`">{{ helpText }}</small>
-    <div>
-      <ErrorMessage
-        :name="name"
-        class="app-error-message"
-      />
-    </div>
-  </div>
+  </FormField>
 </template>
