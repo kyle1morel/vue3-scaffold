@@ -27,7 +27,7 @@ import {
   TextArea
 } from '@/components/form';
 import { Spinner } from '@/components/layout';
-import { Button, Message, useToast } from '@/lib/primevue';
+import { Button, Card, Message, useToast } from '@/lib/primevue';
 import { createSubmission, getSubmission } from '@/services';
 import { RouteName } from '@/utils/enums/application';
 import { formatDateLong } from '@/utils/formatters';
@@ -221,141 +221,144 @@ const onSubmit = handleSubmit(
     <p v-else>{{ t('views.demoForm.intro') }}</p>
   </template>
 
-  <form
-    v-if="!readOnly || submission"
-    class="grid grid-cols-12 gap-x-6 gap-y-2"
-    novalidate
-    @submit="onSubmit"
-  >
-    <template v-if="!readOnly">
-      <FormNavigationGuard :auto-save-ref="autoSave" />
-      <FormAutosave
-        ref="autoSave"
-        :callback="saveDraft"
-        :delay="5000"
-      />
+  <Card v-if="!readOnly || submission">
+    <template #content>
+      <form
+        class="grid grid-cols-12 gap-x-6 gap-y-2"
+        novalidate
+        @submit="onSubmit"
+      >
+        <template v-if="!readOnly">
+          <FormNavigationGuard :auto-save-ref="autoSave" />
+          <FormAutosave
+            ref="autoSave"
+            :callback="saveDraft"
+            :delay="5000"
+          />
+        </template>
+
+        <SectionHeader :title="t('views.demoForm.sections.contact')" />
+        <InputText
+          class="col-span-12 md:col-span-6"
+          name="firstName"
+          :disabled="readOnly"
+          :label="field('firstName')"
+          :tooltip="t('views.demoForm.help.firstName')"
+          required
+        />
+        <InputText
+          class="col-span-12 md:col-span-6"
+          name="email"
+          :disabled="readOnly"
+          :label="field('email')"
+          required
+        />
+        <InputMask
+          class="col-span-12 md:col-span-6"
+          name="phone"
+          :disabled="readOnly"
+          :label="field('phone')"
+          mask="(999) 999-9999"
+          :placeholder="t('views.demoForm.placeholders.phone')"
+        />
+        <Password
+          v-if="!readOnly"
+          class="col-span-12 md:col-span-6"
+          name="password"
+          :label="field('password')"
+          :help-text="t('views.demoForm.help.password')"
+          required
+        />
+        <Select
+          class="col-span-12 md:col-span-6"
+          name="province"
+          :disabled="readOnly"
+          :label="field('province')"
+          :options="provinces"
+          option-label="label"
+          option-value="value"
+          :placeholder="t('views.demoForm.placeholders.province')"
+          required
+        />
+        <RadioList
+          class="col-span-12 md:col-span-6"
+          name="contactMethod"
+          :disabled="readOnly"
+          :label="field('contactMethod')"
+          :options="contactMethods"
+          required
+        />
+
+        <SectionHeader :title="t('views.demoForm.sections.details')" />
+        <DatePicker
+          class="col-span-12 md:col-span-6"
+          name="startDate"
+          :disabled="readOnly"
+          :label="field('startDate')"
+          :max-date="new Date()"
+        />
+        <InputNumber
+          class="col-span-12 md:col-span-6"
+          name="quantity"
+          :disabled="readOnly"
+          :label="field('quantity')"
+          :help-text="t('views.demoForm.help.quantity')"
+        />
+        <AutoComplete
+          class="col-span-12 md:col-span-6"
+          name="city"
+          :disabled="readOnly"
+          :label="field('city')"
+          :placeholder="t('views.demoForm.placeholders.city')"
+          :suggestions="citySuggestions"
+          @complete="filterCities"
+        />
+        <EditableSelect
+          class="col-span-12 md:col-span-6"
+          name="category"
+          :disabled="readOnly"
+          :label="field('category')"
+          :options="categories"
+          get-option-label="label"
+          option-value="value"
+          :placeholder="t('views.demoForm.placeholders.category')"
+        />
+        <TextArea
+          class="col-span-12"
+          name="comments"
+          :disabled="readOnly"
+          :label="field('comments')"
+          :tooltip="t('views.demoForm.help.comments')"
+        />
+
+        <SectionHeader :title="t('views.demoForm.sections.notes')" />
+        <Editor
+          class="col-span-12"
+          name="notes"
+          :disabled="readOnly"
+          :help-text="t('views.demoForm.help.notes')"
+        />
+
+        <Checkbox
+          class="col-span-12 mt-4"
+          name="agree"
+          :disabled="readOnly"
+          :label="field('agree')"
+        />
+        <div
+          v-if="!readOnly"
+          class="col-span-12 flex mt-4"
+        >
+          <Button
+            type="submit"
+            :label="t('ui.actions.submit')"
+            icon="pi pi-check"
+          />
+          <CancelButton @clicked="resetForm()" />
+        </div>
+      </form>
     </template>
-
-    <SectionHeader :title="t('views.demoForm.sections.contact')" />
-    <InputText
-      class="col-span-12 md:col-span-6"
-      name="firstName"
-      :disabled="readOnly"
-      :label="field('firstName')"
-      :tooltip="t('views.demoForm.help.firstName')"
-      required
-    />
-    <InputText
-      class="col-span-12 md:col-span-6"
-      name="email"
-      :disabled="readOnly"
-      :label="field('email')"
-      required
-    />
-    <InputMask
-      class="col-span-12 md:col-span-6"
-      name="phone"
-      :disabled="readOnly"
-      :label="field('phone')"
-      mask="(999) 999-9999"
-      :placeholder="t('views.demoForm.placeholders.phone')"
-    />
-    <Password
-      v-if="!readOnly"
-      class="col-span-12 md:col-span-6"
-      name="password"
-      :label="field('password')"
-      :help-text="t('views.demoForm.help.password')"
-      required
-    />
-    <Select
-      class="col-span-12 md:col-span-6"
-      name="province"
-      :disabled="readOnly"
-      :label="field('province')"
-      :options="provinces"
-      option-label="label"
-      option-value="value"
-      :placeholder="t('views.demoForm.placeholders.province')"
-      required
-    />
-    <RadioList
-      class="col-span-12 md:col-span-6"
-      name="contactMethod"
-      :disabled="readOnly"
-      :label="field('contactMethod')"
-      :options="contactMethods"
-      required
-    />
-
-    <SectionHeader :title="t('views.demoForm.sections.details')" />
-    <DatePicker
-      class="col-span-12 md:col-span-6"
-      name="startDate"
-      :disabled="readOnly"
-      :label="field('startDate')"
-      :max-date="new Date()"
-    />
-    <InputNumber
-      class="col-span-12 md:col-span-6"
-      name="quantity"
-      :disabled="readOnly"
-      :label="field('quantity')"
-      :help-text="t('views.demoForm.help.quantity')"
-    />
-    <AutoComplete
-      class="col-span-12 md:col-span-6"
-      name="city"
-      :disabled="readOnly"
-      :label="field('city')"
-      :placeholder="t('views.demoForm.placeholders.city')"
-      :suggestions="citySuggestions"
-      @complete="filterCities"
-    />
-    <EditableSelect
-      class="col-span-12 md:col-span-6"
-      name="category"
-      :disabled="readOnly"
-      :label="field('category')"
-      :options="categories"
-      get-option-label="label"
-      option-value="value"
-      :placeholder="t('views.demoForm.placeholders.category')"
-    />
-    <TextArea
-      class="col-span-12"
-      name="comments"
-      :disabled="readOnly"
-      :label="field('comments')"
-      :tooltip="t('views.demoForm.help.comments')"
-    />
-
-    <SectionHeader :title="t('views.demoForm.sections.notes')" />
-    <Editor
-      class="col-span-12"
-      name="notes"
-      :disabled="readOnly"
-      :help-text="t('views.demoForm.help.notes')"
-    />
-
-    <Checkbox
-      class="col-span-12 mt-4"
-      name="agree"
-      :disabled="readOnly"
-      :label="field('agree')"
-    />
-    <div
-      v-if="!readOnly"
-      class="col-span-12 flex mt-4"
-    >
-      <Button
-        type="submit"
-        :label="t('ui.actions.submit')"
-        icon="pi pi-check"
-      />
-      <CancelButton @clicked="resetForm()" />
-    </div>
-  </form>
+  </Card>
 
   <Button
     v-if="readOnly"

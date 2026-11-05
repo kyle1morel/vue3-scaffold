@@ -24,7 +24,7 @@ const route = useRoute();
           :alt="t('app.logoAlt')"
         />
       </a>
-      <div class="hidden sm:block mx-2 bg-[#d8d8d8] w-px h-8" />
+      <div class="hidden sm:block mx-2 bg-[var(--surface-color-border-default)] w-px h-8" />
       <h2 class="grow min-w-0 my-0 truncate text-lg sm:text-[2rem]">
         <router-link
           :to="{ name: RouteName.HOME }"

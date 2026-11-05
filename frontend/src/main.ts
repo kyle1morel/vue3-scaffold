@@ -16,7 +16,8 @@ import { ThemeOverride } from '@/ThemeOverride';
 import { AuthService, refreshConfig } from '@/services';
 import { StorageKey } from '@/utils/enums/application';
 
-import '@bcgov/bc-sans/css/BCSans.css';
+import '@bcgov/bc-sans/css/BC_Sans.css';
+import '@bcgov/design-tokens/css/variables.css';
 import 'primeicons/primeicons.css';
 import '@/assets/main.css';
 

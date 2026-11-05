@@ -1,16 +1,14 @@
 /*
 
-BCGov design system colour guide
-https://www2.gov.bc.ca/gov/content/digital/design-system/foundations/colour
-
-Good site for generating shades
-https://maketintsandshades.com/#003366
+BC Design System tokens, the source for every value below that has one
+https://www2.gov.bc.ca/gov/content/digital/design-system/foundations/design-tokens
 
 PrimeVue design tokens ref
 https://github.com/primefaces/primevue/blob/master/packages/themes/src/presets/material/base/index.js
 
 */
 
+import * as tokens from '@bcgov/design-tokens/js';
 import { definePreset } from '@primeuix/themes';
 import Material from '@primeuix/themes/material';
 
@@ -26,114 +24,116 @@ export const ThemeOverride = definePreset(Material, {
   primitive: {
     // bcblue.950 is the BC primary blue; BC has 10 shades, so 50 is filled with the BC info surface
     bcblue: {
-      50: '#F7F9FC',
-      100: '#F1F8FE',
-      200: '#D8EAFD',
-      300: '#C1DDFC',
-      400: '#A8D0FB',
-      500: '#91C4FA',
-      600: '#7AB8F9',
-      700: '#5595D9',
-      800: '#3470B1',
-      900: '#1E5189',
-      950: '#013366'
+      50: tokens.supportSurfaceColorInfo,
+      100: tokens.themeBlue10,
+      200: tokens.themeBlue20,
+      300: tokens.themeBlue30,
+      400: tokens.themeBlue40,
+      500: tokens.themeBlue50,
+      600: tokens.themeBlue60,
+      700: tokens.themeBlue70,
+      800: tokens.themeBlue80,
+      900: tokens.themeBlue90,
+      950: tokens.themeBlue100
     },
+    // BC has no green scale, only the success tokens; the rest are tints and shades of the success border
     green: {
-      // Override base green hues, for base values see link at top
-      50: '#F6FFF8',
+      50: tokens.supportSurfaceColorSuccess,
       100: '#d9e6db',
       200: '#b3cdb7',
       300: '#8eb392',
       400: '#689a6e',
-      500: '#42814A',
-      600: '#42814A',
+      500: tokens.supportBorderColorSuccess,
+      600: tokens.supportBorderColorSuccess,
       700: '#35673b',
       800: '#284d2c',
       900: '#1a341e',
       950: '#0d1a0f'
     },
+    // BC has 10 gold shades, so 50 is filled with the lightest grey
     gold: {
-      50: '#FAF9F8',
-      100: '#FEF8E8',
-      200: '#FEF0D8',
-      300: '#FDE9C4',
-      400: '#FCE2B0',
-      500: '#FBDA9D',
-      600: '#FBD389',
-      700: '#FACC75',
-      800: '#F9C462',
-      900: '#F8BA47',
-      950: '#FCBA19'
+      50: tokens.themeGray10,
+      100: tokens.themeGold10,
+      200: tokens.themeGold20,
+      300: tokens.themeGold30,
+      400: tokens.themeGold40,
+      500: tokens.themeGold50,
+      600: tokens.themeGold60,
+      700: tokens.themeGold70,
+      800: tokens.themeGold80,
+      900: tokens.themeGold90,
+      950: tokens.themeGold100
     },
     greyscale: {
-      50: '#FAF9F8',
-      100: '#F3F2F1',
-      200: '#ECEAE8',
-      300: '#E0DEDC',
-      400: '#D1CFCD',
-      500: '#C6C5C3',
-      600: '#9F9D9C',
-      700: '#605E5C',
-      800: '#3D3C3B',
-      900: '#353433',
-      950: '#252423'
+      50: tokens.themeGray10,
+      100: tokens.themeGray20,
+      200: tokens.themeGray30,
+      300: tokens.themeGray40,
+      400: tokens.themeGray50,
+      500: tokens.themeGray60,
+      600: tokens.themeGray70,
+      700: tokens.themeGray80,
+      800: tokens.themeGray90,
+      900: tokens.themeGray100,
+      950: tokens.themeGray110
     },
+    // BC has no red scale, so it is banded from the danger surface, default and hover tokens
     red: {
-      // Override base red hues, for base values see link at top
-      50: '#F4E1E2',
-      100: '#F4E1E2',
-      200: '#F4E1E2',
-      300: '#F4E1E2',
-      400: '#CE3E39',
-      500: '#CE3E39',
-      600: '#CE3E39',
-      700: '#CE3E39',
-      800: '#A2312D',
-      900: '#A2312D',
-      950: '#A2312D'
+      50: tokens.supportSurfaceColorDanger,
+      100: tokens.supportSurfaceColorDanger,
+      200: tokens.supportSurfaceColorDanger,
+      300: tokens.supportSurfaceColorDanger,
+      400: tokens.surfaceColorPrimaryDangerButtonDefault,
+      500: tokens.surfaceColorPrimaryDangerButtonDefault,
+      600: tokens.surfaceColorPrimaryDangerButtonDefault,
+      700: tokens.surfaceColorPrimaryDangerButtonDefault,
+      800: tokens.surfaceColorPrimaryDangerButtonHover,
+      900: tokens.surfaceColorPrimaryDangerButtonHover,
+      950: tokens.surfaceColorPrimaryDangerButtonHover
     },
     support: {
       border: {
         width: '0.1rem'
       },
       info: {
-        border: '#053662',
-        icon: '#053662',
-        surface: '#F7F9FC'
+        border: tokens.supportBorderColorInfo,
+        icon: tokens.iconsColorInfo,
+        surface: tokens.supportSurfaceColorInfo
       },
       danger: {
-        border: '#CE3E39',
-        icon: '#CE3E39',
-        surface: '#F4E1E2'
+        border: tokens.supportBorderColorDanger,
+        icon: tokens.iconsColorDanger,
+        surface: tokens.supportSurfaceColorDanger
       },
       required: {
         text: '{red.400}'
       },
       success: {
-        border: '#42814A',
-        icon: '#42814A',
-        surface: '#F6FFF8'
+        border: tokens.supportBorderColorSuccess,
+        icon: tokens.iconsColorSuccess,
+        surface: tokens.supportSurfaceColorSuccess
       },
       warning: {
-        border: '#F8BB47',
-        icon: '#F8BB47',
-        surface: '#FEF1D8'
+        border: tokens.supportBorderColorWarning,
+        icon: tokens.iconsColorWarning,
+        surface: tokens.supportSurfaceColorWarning
       }
     },
-    // BC border tokens; medium meets the 3:1 contrast WCAG requires for control edges
-    borderactive: '#2E5DD7',
-    borderdark: '#353433',
-    borderlight: '#D8D8D8',
-    bordermedium: '#898785',
-    disabledcolor: '#EDEBE9',
-    primarypressed: '#01264C',
-    surfacehover: '#EDEBE9',
-    surfacepressed: '#E0DEDC',
-    textdanger: '#CE3E39',
-    textlink: '#255A90',
-    textprimary: '#2D2D2D',
-    textsecondary: '#474543',
-    white: '#FFFFFF'
+    // Medium border meets the 3:1 contrast WCAG requires for control edges
+    borderactive: tokens.surfaceColorBorderActive,
+    borderdark: tokens.surfaceColorBorderDark,
+    borderlight: tokens.surfaceColorBorderDefault,
+    bordermedium: tokens.surfaceColorBorderMedium,
+    disabledcolor: tokens.surfaceColorPrimaryDisabled,
+    overlay: tokens.surfaceColorOverlayDefault,
+    primarypressed: tokens.surfaceColorPrimaryPressed,
+    surfacehover: tokens.surfaceColorSecondaryHover,
+    surfacepressed: tokens.surfaceColorSecondaryPressed,
+    textdanger: tokens.typographyColorDanger,
+    textlink: tokens.typographyColorLink,
+    textprimary: tokens.typographyColorPrimary,
+    textsecondary: tokens.typographyColorSecondary,
+    white: tokens.themeGrayWhite
   },
   semantic: {
     primary: {
@@ -156,7 +156,7 @@ export const ThemeOverride = definePreset(Material, {
     formField: {
       focusRing: {
         color: '{borderactive}',
-        width: '2px',
+        width: tokens.layoutBorderWidthMedium,
         style: 'solid',
         offset: '2px'
       }
@@ -194,7 +194,7 @@ export const ThemeOverride = definePreset(Material, {
           }
         },
         mask: {
-          background: 'rgba(0, 0, 0, 0.45)'
+          background: '{overlay}'
         },
         text: {
           color: '{textprimary}',
@@ -210,8 +210,8 @@ export const ThemeOverride = definePreset(Material, {
           floatLabelInvalidColor: '{red.500}',
           disabledBackground: '{disabledcolor}',
           disabledColor: '{surface.600}',
-          paddingX: '0.5rem',
-          paddingY: '0.5rem',
+          paddingX: tokens.layoutPaddingSmall,
+          paddingY: tokens.layoutPaddingSmall,
           placeholderColor: '{surface.700}'
         },
         highlight: {
@@ -229,7 +229,7 @@ export const ThemeOverride = definePreset(Material, {
   components: {
     accordion: {
       header: {
-        padding: '1rem'
+        padding: tokens.layoutPaddingMedium
       },
       // Toggle icon before the title
       css: (options) => `
@@ -244,9 +244,9 @@ export const ThemeOverride = definePreset(Material, {
     // Matches the BC design system buttons: BC focus outline on every variant, BC disabled colours, not opacity
     button: {
       root: {
-        paddingY: '0.5rem',
+        paddingY: tokens.layoutPaddingSmall,
         focusRing: {
-          width: '2px',
+          width: tokens.layoutBorderWidthMedium,
           style: 'solid',
           offset: '2px'
         }
@@ -329,13 +329,13 @@ export const ThemeOverride = definePreset(Material, {
     },
     card: {
       body: {
-        padding: '1rem'
+        padding: tokens.layoutPaddingMedium
       },
       root: {
-        borderRadius: '0.5rem'
+        borderRadius: tokens.layoutBorderRadiusLarge
       },
       title: {
-        fontSize: '1rem'
+        fontSize: tokens.typographyFontSizeBody
       },
       css: () => `
         .p-card {
@@ -357,8 +357,8 @@ export const ThemeOverride = definePreset(Material, {
     },
     dialog: {
       title: {
-        fontSize: '1.25rem',
-        fontWeight: 'bold'
+        fontSize: tokens.typographyFontSizeH5,
+        fontWeight: String(tokens.typographyFontWeightsBold)
       },
       // Footer buttons are written primary-first; reverse them so the primary action sits on the right
       css: () => `
