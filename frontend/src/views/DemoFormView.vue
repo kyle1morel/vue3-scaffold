@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { z } from 'zod';
 
-import StatusPill from '@/components/common/StatusPill.vue';
+import Tag from '@/components/common/Tag.vue';
 import {
   AutoComplete,
   CancelButton,
@@ -186,12 +186,19 @@ const onSubmit = handleSubmit(
 <template>
   <div class="flex items-center gap-4">
     <h1>{{ t('views.demoForm.title') }}</h1>
-    <StatusPill
-      v-if="!readOnly && meta.dirty"
-      :status="t('views.demoForm.status.unsaved')"
-      bg-color="var(--p-support-warning-surface)"
-      border-color="var(--p-support-warning-border)"
-    />
+    <Tag
+      v-if="readOnly"
+      color="green"
+    >
+      {{ t('views.demoForm.status.submitted') }}
+    </Tag>
+    <Tag
+      v-else-if="meta.dirty"
+      color="yellow"
+    >
+      {{ t('views.demoForm.status.unsaved') }}
+    </Tag>
+    <Tag v-else>{{ t('views.demoForm.status.new') }}</Tag>
   </div>
 
   <Message

@@ -146,6 +146,8 @@
         "notes": "Notes"
       },
       "status": {
+        "new": "New",
+        "submitted": "Submitted",
         "unsaved": "Unsaved changes"
       },
       "submitted": {
