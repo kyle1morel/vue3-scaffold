@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, useAttrs, useId } from 'vue';
-
-import Tooltip from '@/components/common/Tooltip.vue';
+import { useI18n } from 'vue-i18n';
 
 // class and style stay on the wrapper; the field's other attributes go to its control through the slot
 defineOptions({ inheritAttrs: false });
@@ -12,8 +11,7 @@ const {
   helpText = undefined,
   label = undefined,
   nonLabelable = false,
-  required = false,
-  tooltip = undefined
+  required = false
 } = defineProps<{
   error?: string;
   // Several lines show one per row, as one description
@@ -22,7 +20,6 @@ const {
   // The control isn't an input a label can point at, so it's named with aria-labelledby instead
   nonLabelable?: boolean;
   required?: boolean;
-  tooltip?: string;
 }>();
 
 defineSlots<{
@@ -35,17 +32,18 @@ defineSlots<{
   }): unknown;
 }>();
 
+// Composables
+const { t } = useI18n();
+
 // State
 const attrs = useAttrs();
 const id = useId();
-const ids = { error: `${id}-error`, help: `${id}-help`, label: `${id}-label`, tooltip: `${id}-tooltip` };
+const ids = { error: `${id}-error`, help: `${id}-help`, label: `${id}-label` };
 const helpLines = computed(() => [helpText ?? []].flat().filter(Boolean));
 
 // Only rendered ids, so nothing points at a missing element
 const aria = computed(() => ({
-  'aria-describedby':
-    [tooltip && ids.tooltip, helpLines.value.length && ids.help, error && ids.error].filter(Boolean).join(' ') ||
-    undefined,
+  'aria-describedby': [helpLines.value.length && ids.help, error && ids.error].filter(Boolean).join(' ') || undefined,
   'aria-required': required || undefined
 }));
 
@@ -73,25 +71,17 @@ function splitAttrs() {
     <label
       v-if="label"
       :id="ids.label"
-      class="font-bold"
+      class="app-field-label"
       :for="nonLabelable ? undefined : id"
     >
       {{ label }}
       <span
         v-if="required"
-        aria-hidden="true"
-        class="text-[var(--p-support-required-text)]"
+        class="app-field-required"
       >
-        *
+        {{ t('components.formField.required') }}
       </span>
     </label>
-    <Tooltip
-      v-if="tooltip"
-      :id="ids.tooltip"
-      class="pl-2 mb-2"
-      icon="fa-solid fa-circle-question"
-      :text="tooltip"
-    />
     <slot
       v-bind="{
         ...splitAttrs(),
@@ -104,7 +94,7 @@ function splitAttrs() {
     <small
       v-if="helpLines.length"
       :id="ids.help"
-      class="whitespace-pre-line"
+      class="app-help-text block whitespace-pre-line"
     >
       {{ helpLines.join('\n') }}
     </small>
@@ -113,6 +103,7 @@ function splitAttrs() {
       :id="ids.error"
       class="app-error-message mt-2"
     >
+      <font-awesome-icon icon="fa-solid fa-circle-exclamation" />
       {{ error }}
     </div>
   </div>

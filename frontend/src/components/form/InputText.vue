@@ -13,7 +13,6 @@ const {
   placeholder = undefined,
   disabled = false,
   readonly = false,
-  tooltip = undefined,
   required = false
 } = defineProps<{
   helpText?: string;
@@ -22,7 +21,6 @@ const {
   placeholder?: string;
   disabled?: boolean;
   readonly?: boolean;
-  tooltip?: string;
   required?: boolean;
 }>();
 
@@ -37,7 +35,6 @@ const { errorMessage, handleBlur, value } = useField<string | undefined>(() => n
     :help-text
     :label
     :required
-    :tooltip
   >
     <InputText
       :id

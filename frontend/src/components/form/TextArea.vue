@@ -14,7 +14,6 @@ const {
   disabled = false,
   readonly = false,
   rows = 5,
-  tooltip = undefined,
   required = false
 } = defineProps<{
   helpText?: string;
@@ -24,7 +23,6 @@ const {
   disabled?: boolean;
   readonly?: boolean;
   rows?: number;
-  tooltip?: string;
   required?: boolean;
 }>();
 
@@ -39,7 +37,6 @@ const { errorMessage, handleBlur, value } = useField<string | undefined>(() => n
     :help-text
     :label
     :required
-    :tooltip
   >
     <Textarea
       :id

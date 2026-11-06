@@ -222,7 +222,7 @@ const onSubmit = handleSubmit(
           name="firstName"
           :readonly="readOnly"
           :label="field('firstName')"
-          :tooltip="t('views.demoForm.help.firstName')"
+          :help-text="t('views.demoForm.help.firstName')"
           required
         />
         <InputText
@@ -312,7 +312,7 @@ const onSubmit = handleSubmit(
           name="comments"
           :readonly="readOnly"
           :label="field('comments')"
-          :tooltip="t('views.demoForm.help.comments')"
+          :help-text="t('views.demoForm.help.comments')"
         />
 
         <SectionHeader

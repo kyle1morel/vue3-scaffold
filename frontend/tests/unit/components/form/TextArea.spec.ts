@@ -28,8 +28,8 @@ describe('TextArea', () => {
       expect(wrapper.find(`label[for="${textarea.attributes('id')}"]`).text()).toBe('Comments');
     });
 
-    it('describes the textarea with its tooltip', () => {
-      const { wrapper, textarea } = mountTextArea({ tooltip: 'Anything else we should know' });
+    it('describes the textarea with its help text', () => {
+      const { wrapper, textarea } = mountTextArea({ helpText: 'Anything else we should know' });
 
       expect(wrapper.find(`[id="${textarea.attributes('aria-describedby')}"]`).text()).toBe(
         'Anything else we should know'

@@ -39,7 +39,7 @@ describe('RadioList', () => {
       const { group, radios } = mountRadioList({ required: true });
 
       expect(group.find('legend').text()).toContain('Contact method');
-      expect(group.find('legend').text()).toContain('*');
+      expect(group.find('legend').text()).toContain('(required)');
       expect(radios.every((radio) => radio.attributes('required') !== undefined)).toBe(true);
     });
 

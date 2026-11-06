@@ -39,7 +39,7 @@ describe('DatePicker', () => {
     it('marks the field as required when asked to', () => {
       const { wrapper } = mountDatePicker({ label: 'Start date', required: true });
 
-      expect(wrapper.find('label').text()).toContain('*');
+      expect(wrapper.find('label').text()).toContain('(required)');
     });
   });
 });

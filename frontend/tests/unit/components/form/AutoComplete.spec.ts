@@ -38,7 +38,7 @@ describe('AutoComplete', () => {
     it('marks the field as required when asked to', () => {
       const { wrapper } = mountAutoComplete({ label: 'City', required: true });
 
-      expect(wrapper.find('label').text()).toContain('*');
+      expect(wrapper.find('label').text()).toContain('(required)');
     });
 
     it('passes the suggestions to the input', () => {

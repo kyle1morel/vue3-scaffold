@@ -33,7 +33,7 @@ describe('Checkbox', () => {
     it('marks the field as required', () => {
       const { wrapper, input } = mountCheckbox({ required: true });
 
-      expect(wrapper.find('label').text()).toContain('*');
+      expect(wrapper.find('label').text()).toContain('(required)');
       expect(input.attributes('aria-required')).toBe('true');
     });
 

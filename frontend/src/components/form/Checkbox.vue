@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useField } from 'vee-validate';
+import { useI18n } from 'vue-i18n';
 
 import { Checkbox } from '@/lib/primevue';
 
@@ -21,6 +22,9 @@ const {
   readonly?: boolean;
   required?: boolean;
 }>();
+
+// Composables
+const { t } = useI18n();
 
 // State
 const { errorMessage, handleBlur, value } = useField<boolean | undefined>(() => name);
@@ -54,17 +58,16 @@ function preventToggle(event: Event) {
       />
       <label
         v-if="label"
-        class="pl-2 mb-0 font-bold"
+        class="app-field-label pl-2 mb-0"
         :class="{ 'cursor-not-allowed': readonly }"
         :for="id"
       >
         {{ label }}
         <span
           v-if="required"
-          aria-hidden="true"
-          class="text-[var(--p-support-required-text)]"
+          class="app-field-required"
         >
-          *
+          {{ t('components.formField.required') }}
         </span>
       </label>
     </div>

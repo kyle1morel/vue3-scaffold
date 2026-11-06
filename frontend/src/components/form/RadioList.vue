@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useField } from 'vee-validate';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import { RadioButton } from '@/lib/primevue';
 
@@ -34,6 +35,9 @@ const {
 // Emits
 const emit = defineEmits<{ change: [value: string | number] }>();
 
+// Composables
+const { t } = useI18n();
+
 // State
 const { errorMessage, handleBlur, value } = useField<string | number | undefined>(() => name);
 
@@ -58,15 +62,14 @@ function preventChange(event: Event) {
     <fieldset v-bind="{ ...listeners, ...inputAttrs }">
       <legend
         v-if="label"
-        class="font-bold"
+        class="app-field-label"
       >
         {{ label }}
         <span
           v-if="required"
-          aria-hidden="true"
-          class="text-[var(--p-support-required-text)]"
+          class="app-field-required"
         >
-          *
+          {{ t('components.formField.required') }}
         </span>
       </legend>
       <div class="flex flex-col gap-4">

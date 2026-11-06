@@ -38,6 +38,9 @@
       "moreInfo": "More info",
       "privacy": "Privacy"
     },
+    "formField": {
+      "required": "(required)"
+    },
     "header": {
       "skipToMain": "Skip to main content"
     }

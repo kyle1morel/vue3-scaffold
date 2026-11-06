@@ -48,7 +48,7 @@ describe('Select', () => {
     it('marks the field as required', () => {
       const { wrapper, combobox } = mountSelect({ required: true });
 
-      expect(wrapper.find('label').text()).toContain('*');
+      expect(wrapper.find('label').text()).toContain('(required)');
       expect(combobox.attributes('aria-required')).toBe('true');
     });
 

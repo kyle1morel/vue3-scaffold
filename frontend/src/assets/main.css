@@ -99,8 +99,28 @@
 
 /* After the import, so it wins over Tailwind utilities on the same element */
 @layer utilities {
+  /* Field text as in the BC Design System form components */
+  .app-field-label,
+  .app-help-text,
   .app-error-message {
-    color: var(--p-textdanger);
-    font-size: 0.8rem;
+    font-size: var(--typography-font-size-small-body);
+    font-weight: var(--typography-font-weights-regular);
+    line-height: var(--typography-line-heights-xxdense);
+  }
+
+  .app-field-label {
+    color: var(--typography-color-primary);
+  }
+
+  .app-field-required,
+  .app-help-text {
+    color: var(--typography-color-secondary);
+  }
+
+  .app-error-message {
+    display: flex;
+    align-items: center;
+    gap: var(--layout-margin-xsmall);
+    color: var(--typography-color-danger);
   }
 }

@@ -62,12 +62,10 @@ describe('Password', () => {
       expect(wrapper.find('input').attributes('type')).toBe('password');
     });
 
-    it('renders the label text and applies the bold class by default', () => {
+    it('renders the label text', () => {
       const { wrapper } = mountPassword({ props: { label: 'Password' } });
 
-      const label = wrapper.find('label');
-      expect(label.text()).toBe('Password');
-      expect(label.classes()).toContain('font-bold');
+      expect(wrapper.find('label').text()).toBe('Password');
     });
 
     it('links the help text to the input', () => {

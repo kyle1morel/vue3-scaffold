@@ -33,16 +33,16 @@ describe('InputText', () => {
       expect(wrapper.find(`label[for="${input.attributes('id')}"]`).text()).toBe('First name');
     });
 
-    it('describes the input with its tooltip and help text', () => {
-      const { described } = mountInputText({ helpText: 'As on your ID', tooltip: 'Your legal name' });
+    it('describes the input with its help text', () => {
+      const { described } = mountInputText({ helpText: 'As on your ID' });
 
-      expect(described()).toEqual(['Your legal name', 'As on your ID']);
+      expect(described()).toEqual(['As on your ID']);
     });
 
     it('marks the field as required', () => {
       const { wrapper, input } = mountInputText({ label: 'First name', required: true });
 
-      expect(wrapper.find('label').text()).toContain('*');
+      expect(wrapper.find('label').text()).toContain('(required)');
       expect(input.attributes('aria-required')).toBe('true');
     });
 

@@ -105,9 +105,6 @@ export const ThemeOverride = definePreset(Material, {
         icon: tokens.iconsColorDanger,
         surface: tokens.supportSurfaceColorDanger
       },
-      required: {
-        text: '{red.400}'
-      },
       success: {
         border: tokens.supportBorderColorSuccess,
         icon: tokens.iconsColorSuccess,
