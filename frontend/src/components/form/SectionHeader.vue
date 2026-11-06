@@ -2,7 +2,7 @@
 import Divider from '@/components/common/Divider.vue';
 
 // Props
-const { level = 3, title } = defineProps<{
+const { level = 2, title } = defineProps<{
   level?: 2 | 3 | 4 | 5 | 6;
   title: string;
 }>();

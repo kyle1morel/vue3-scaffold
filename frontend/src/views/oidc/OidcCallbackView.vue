@@ -54,7 +54,7 @@ onMounted(async () => {
     />
   </div>
   <template v-else>
-    <h2 class="mt-40 text-center">{{ t('views.oidcCallback.authorizing') }}</h2>
+    <h1 class="mt-40 text-center">{{ t('views.oidcCallback.authorizing') }}</h1>
     <Spinner />
   </template>
 </template>

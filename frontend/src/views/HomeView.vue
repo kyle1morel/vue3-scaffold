@@ -21,7 +21,7 @@ const { getIsAuthenticated } = storeToRefs(useAuthNStore());
     <div class="poly" />
     <div class="flex items-center justify-start h-full">
       <div class="text-left">
-        <h3>{{ t('views.home.welcome') }}</h3>
+        <p>{{ t('views.home.welcome') }}</p>
         <h1 class="mt-0!">{{ t('app.name') }}</h1>
         <Button
           v-if="getIsAuthenticated"

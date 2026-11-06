@@ -6,5 +6,5 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <h3 class="font-bold">{{ t('views.forbidden.message') }}</h3>
+  <h1>{{ t('views.forbidden.message') }}</h1>
 </template>

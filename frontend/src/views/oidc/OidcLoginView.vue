@@ -20,7 +20,7 @@ function login(kind: IdentityProviderKind) {
     <Card class="w-full max-w-[28.75rem]">
       <template #title>
         <div>
-          <h3 class="mb-0 mx-2">{{ t('views.oidcLogin.title') }}</h3>
+          <h1 class="mb-0 mx-2">{{ t('views.oidcLogin.title') }}</h1>
         </div>
       </template>
       <template #content>
@@ -52,7 +52,7 @@ function login(kind: IdentityProviderKind) {
 
           <Divider />
 
-          <h4 class="my-3">{{ t('views.oidcLogin.headings.internalUsers') }}</h4>
+          <h2 class="my-3">{{ t('views.oidcLogin.headings.internalUsers') }}</h2>
 
           <Button
             outlined
@@ -67,7 +67,7 @@ function login(kind: IdentityProviderKind) {
             <Divider />
           </div>
 
-          <h4 class="mb-3">{{ t('views.oidcLogin.headings.register') }}</h4>
+          <h2 class="mb-3">{{ t('views.oidcLogin.headings.register') }}</h2>
           <div class="outline outline-[var(--p-borderlight)] rounded-lg p-2 mb-3">
             <a
               class="mb-3 mr-1"

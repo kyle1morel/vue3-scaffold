@@ -9,8 +9,12 @@ import { Header, Footer } from '@/components/layout';
       <Header />
     </div>
 
-    <!-- Main views -->
-    <main class="m-4 lg:mx-20 flex-auto">
+    <!-- Main views; focusable so the header's skip link can move focus here -->
+    <main
+      id="main-content"
+      class="m-4 lg:mx-20 flex-auto focus:outline-none"
+      tabindex="-1"
+    >
       <slot name="main" />
     </main>
 

@@ -19,6 +19,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h2 class="mt-40 text-center">{{ t('views.oidcLogout.loggingOut') }}</h2>
+  <h1 class="mt-40 text-center">{{ t('views.oidcLogout.loggingOut') }}</h1>
   <Spinner />
 </template>

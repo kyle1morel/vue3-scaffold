@@ -20,7 +20,7 @@ const appVersion = computed(() => {
 </script>
 
 <template>
-  <h2>{{ t('views.developer.title') }}</h2>
+  <h1>{{ t('views.developer.title') }}</h1>
   <div class="flex flex-col gap-6">
     <div class="flex gap-2">
       <span>{{ t('views.developer.appVersion') }}</span>
@@ -29,7 +29,7 @@ const appVersion = computed(() => {
 
     <section class="flex flex-col gap-2">
       <div class="flex items-center gap-2">
-        <h4>{{ t('views.developer.config') }}</h4>
+        <h2>{{ t('views.developer.config') }}</h2>
         <CopyToClipboard
           icon-only
           :to-copy="JSON.stringify(getConfig)"
@@ -40,7 +40,7 @@ const appVersion = computed(() => {
 
     <section class="flex flex-col gap-2">
       <div class="flex items-center gap-2">
-        <h4>{{ t('views.developer.token') }}</h4>
+        <h2>{{ t('views.developer.token') }}</h2>
         <CopyToClipboard
           icon-only
           :to-copy="getAccessToken"
@@ -51,7 +51,7 @@ const appVersion = computed(() => {
 
     <section class="flex flex-col gap-2">
       <div class="flex items-center gap-2">
-        <h4>{{ t('views.developer.profile') }}</h4>
+        <h2>{{ t('views.developer.profile') }}</h2>
         <CopyToClipboard
           icon-only
           :to-copy="JSON.stringify(getProfile)"

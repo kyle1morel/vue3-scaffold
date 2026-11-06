@@ -76,7 +76,7 @@ onMounted(() => loadPage());
 </script>
 
 <template>
-  <h2>{{ t('views.submissions.title') }}</h2>
+  <h1>{{ t('views.submissions.title') }}</h1>
 
   <DataTable
     v-model:first="first"
