@@ -6,36 +6,32 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 
 // State
-const linkColumns = computed(() => [
-  [
-    { label: t('components.footer.home'), href: 'https://www2.gov.bc.ca/gov/content/home' },
-    {
-      label: t('components.footer.about'),
-      href: 'https://www2.gov.bc.ca/gov/content?id=3C4F47288DFB454987435AB5EFEFBB7F'
-    },
-    {
-      label: t('components.footer.disclaimer'),
-      href: 'https://www2.gov.bc.ca/gov/content?id=79F93E018712422FBC8E674A67A70535'
-    },
-    {
-      label: t('components.footer.privacy'),
-      href: 'https://www2.gov.bc.ca/gov/content?id=9E890E16955E4FF4BF3B0E07B4722932'
-    }
-  ],
-  [
-    {
-      label: t('components.footer.accessibility'),
-      href: 'https://www2.gov.bc.ca/gov/content?id=E08E79740F9C41B9B0C484685CC5E412'
-    },
-    {
-      label: t('components.footer.copyright'),
-      href: 'https://www2.gov.bc.ca/gov/content?id=1AAACC9C65754E4D89A118B875E0FBDA'
-    },
-    {
-      label: t('components.footer.contactUs'),
-      href: 'https://www2.gov.bc.ca/gov/content?id=6A77C17D0CCB48F897F8598CCC019111'
-    }
-  ]
+const links = computed(() => [
+  { label: t('components.footer.home'), href: 'https://www2.gov.bc.ca/gov/content/home' },
+  {
+    label: t('components.footer.about'),
+    href: 'https://www2.gov.bc.ca/gov/content?id=3C4F47288DFB454987435AB5EFEFBB7F'
+  },
+  {
+    label: t('components.footer.disclaimer'),
+    href: 'https://www2.gov.bc.ca/gov/content?id=79F93E018712422FBC8E674A67A70535'
+  },
+  {
+    label: t('components.footer.privacy'),
+    href: 'https://www2.gov.bc.ca/gov/content?id=9E890E16955E4FF4BF3B0E07B4722932'
+  },
+  {
+    label: t('components.footer.accessibility'),
+    href: 'https://www2.gov.bc.ca/gov/content?id=E08E79740F9C41B9B0C484685CC5E412'
+  },
+  {
+    label: t('components.footer.copyright'),
+    href: 'https://www2.gov.bc.ca/gov/content?id=1AAACC9C65754E4D89A118B875E0FBDA'
+  },
+  {
+    label: t('components.footer.contactUs'),
+    href: 'https://www2.gov.bc.ca/gov/content?id=6A77C17D0CCB48F897F8598CCC019111'
+  }
 ]);
 </script>
 
@@ -70,25 +66,23 @@ const linkColumns = computed(() => [
             </template>
           </i18n-t>
         </div>
-        <div class="md:pr-20">
-          <p class="font-bold uppercase">{{ t('components.footer.moreInfo') }}</p>
-          <div class="flex gap-x-12 md:gap-x-20">
-            <div
-              v-for="(column, index) in linkColumns"
-              :key="index"
-              class="flex flex-col"
+        <!-- A captioned list, as in the BC Design System footer -->
+        <figure class="m-0 md:pr-20">
+          <figcaption class="mb-4 font-bold uppercase">{{ t('components.footer.moreInfo') }}</figcaption>
+          <ul class="m-0 p-0 list-none grid grid-flow-col grid-rows-4 gap-x-12 md:gap-x-20">
+            <li
+              v-for="link in links"
+              :key="link.href"
             >
               <a
-                v-for="link in column"
-                :key="link.href"
                 :href="link.href"
-                class="text-color py-2 pr-4 no-underline hover:underline"
+                class="text-color block py-2 pr-4 no-underline hover:underline"
               >
                 {{ link.label }}
               </a>
-            </div>
-          </div>
-        </div>
+            </li>
+          </ul>
+        </figure>
       </div>
       <div class="border-t border-surface-950 pt-8">
         © {{ new Date().getUTCFullYear() }} {{ t('components.footer.government') }}.
