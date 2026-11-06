@@ -16,7 +16,8 @@ const {
   tooltip = undefined
 } = defineProps<{
   error?: string;
-  helpText?: string;
+  // Several lines show one per row, as one description
+  helpText?: string | string[];
   label?: string;
   // The control isn't an input a label can point at, so it's named with aria-labelledby instead
   nonLabelable?: boolean;
@@ -38,11 +39,13 @@ defineSlots<{
 const attrs = useAttrs();
 const id = useId();
 const ids = { error: `${id}-error`, help: `${id}-help`, label: `${id}-label`, tooltip: `${id}-tooltip` };
+const helpLines = computed(() => [helpText ?? []].flat().filter(Boolean));
 
 // Only rendered ids, so nothing points at a missing element
 const aria = computed(() => ({
   'aria-describedby':
-    [tooltip && ids.tooltip, helpText && ids.help, error && ids.error].filter(Boolean).join(' ') || undefined,
+    [tooltip && ids.tooltip, helpLines.value.length && ids.help, error && ids.error].filter(Boolean).join(' ') ||
+    undefined,
   'aria-required': required || undefined
 }));
 
@@ -97,11 +100,13 @@ function splitAttrs() {
         labelId: label ? ids.label : undefined
       }"
     />
+    <!-- One text with line breaks, so screen readers still hear a space between lines -->
     <small
-      v-if="helpText"
+      v-if="helpLines.length"
       :id="ids.help"
+      class="whitespace-pre-line"
     >
-      {{ helpText }}
+      {{ helpLines.join('\n') }}
     </small>
     <div
       v-if="error"

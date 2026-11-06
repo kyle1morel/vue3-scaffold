@@ -20,12 +20,14 @@ function mountDatePicker(options: { helpText?: string; label?: string; required?
 
 describe('DatePicker', () => {
   describe('rendering', () => {
-    it('links the label and help text to the input', () => {
+    it('links the label, format hint and help text to the input', () => {
       const { wrapper } = mountDatePicker({ label: 'Start date', helpText: 'Pick a day' });
 
       const input = wrapper.find('input');
+      const description = wrapper.find(`[id="${input.attributes('aria-describedby')}"]`).text();
       expect(wrapper.find(`label[for="${input.attributes('id')}"]`).text()).toContain('Start date');
-      expect(wrapper.find(`[id="${input.attributes('aria-describedby')}"]`).text()).toBe('Pick a day');
+      expect(description).toContain('Format: year - month - day');
+      expect(description).toContain('Pick a day');
     });
 
     it('omits the label when none is given', () => {

@@ -65,8 +65,8 @@ function initializeApp(): void {
   app.use(getRouter());
   app.use(i18n);
   app.use(PrimeVue, {
-    // Year first, so dates can't be misread the way PrimeVue's default mm/dd/yy can
-    locale: { dateFormat: 'yy/mm/dd' },
+    // en-CA's 2026-01-15, as in the BC Design System; components.datePicker.format describes it to users
+    locale: { dateFormat: 'yy-mm-dd' },
     theme: {
       preset: ThemeOverride,
       options: {

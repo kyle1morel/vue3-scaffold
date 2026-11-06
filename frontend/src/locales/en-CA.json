@@ -17,6 +17,10 @@
       "copied": "Copied to clipboard",
       "failed": "Unable to copy to the clipboard"
     },
+    "datePicker": {
+      "format": "Format: year - month - day",
+      "formatWithTime": "Format: year - month - day, hour : minute (24-hour)"
+    },
     "footer": {
       "about": "About gov.bc.ca",
       "accessibility": "Accessibility",
@@ -33,6 +37,9 @@
       "home": "Home",
       "moreInfo": "More info",
       "privacy": "Privacy"
+    },
+    "header": {
+      "skipToMain": "Skip to main content"
     }
   },
   "ui": {
