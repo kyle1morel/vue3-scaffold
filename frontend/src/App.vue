@@ -32,10 +32,12 @@ onErrorCaptured((e: Error) => {
 
   <AppLayout>
     <template #main>
+      <!-- A status rather than PrimeVue's assertive alert, so it doesn't interrupt on every page load -->
       <Message
         v-if="getConfig?.notificationBanner"
         severity="warn"
         class="text-center"
+        :pt="{ root: { role: 'status', 'aria-live': 'polite' } }"
       >
         {{ getConfig?.notificationBanner }}
       </Message>
