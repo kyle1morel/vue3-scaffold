@@ -14,8 +14,7 @@ const isDirty = useIsFormDirty();
 <template>
   <!-- A clean form has nothing to cancel; @click and :disabled fall through to the Button -->
   <Button
-    outlined
-    severity="danger"
+    severity="secondary"
     :disabled="!isDirty"
     :label="t('ui.actions.cancel')"
   >
