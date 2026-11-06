@@ -14,6 +14,7 @@ const {
   name,
   placeholder = undefined,
   disabled = false,
+  readonly = false,
   maxFractionDigits = undefined,
   required = false
 } = defineProps<{
@@ -22,6 +23,7 @@ const {
   name: string;
   placeholder?: string;
   disabled?: boolean;
+  readonly?: boolean;
   maxFractionDigits?: number;
   required?: boolean;
 }>();
@@ -43,6 +45,7 @@ const { errorMessage, handleBlur, value } = useField<number | null | undefined>(
       v-bind="listeners"
       class="w-full"
       :disabled
+      :readonly
       :input-id="id"
       :invalid
       :max-fraction-digits

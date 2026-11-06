@@ -180,20 +180,22 @@ describe('DemoFormView', () => {
       expect((wrapper.find('input[name="email"]').element as HTMLInputElement).value).toBe('jane.doe@example.com');
       expect(wrapper.find('input[type="radio"][value="email"]').element).toHaveProperty('checked', true);
       expect(wrapper.find('input[type="checkbox"]').element).toHaveProperty('checked', true);
-      const select = wrapper.findAllComponents(PrimeSelect).find((c) => c.classes('p-select'))!;
-      expect(select.props('modelValue')).toBe('BC');
+      expect((wrapper.find('input[name="province"]').element as HTMLInputElement).value).toBe('British Columbia');
       const datePicker = wrapper.findAllComponents(PrimeDatePicker).find((c) => c.classes('p-datepicker'))!;
       const startDate = datePicker.props('modelValue') as Date;
       expect([startDate.getFullYear(), startDate.getMonth(), startDate.getDate()]).toEqual([2026, 0, 15]);
     });
 
-    it('disables every field', async () => {
+    it('makes every field read only rather than disabled', async () => {
       vi.mocked(getSubmission).mockResolvedValue(testSubmission);
 
       const { wrapper } = await mountReadOnlyDemoFormView();
 
-      const enabled = wrapper.findAll('input, textarea').filter((el) => el.attributes('disabled') === undefined);
-      expect(enabled.map((el) => el.attributes('id') ?? el.attributes('name'))).toEqual([]);
+      const fields = wrapper.findAll('input, textarea');
+      const editable = fields.filter((el) => el.attributes('readonly') === undefined);
+      const disabled = fields.filter((el) => el.attributes('disabled') !== undefined);
+      expect(editable.map((el) => el.attributes('name'))).toEqual([]);
+      expect(disabled.map((el) => el.attributes('name'))).toEqual([]);
     });
 
     it('hides the password, submit and cancel, and links back to the submissions', async () => {

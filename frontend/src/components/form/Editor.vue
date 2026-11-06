@@ -16,6 +16,7 @@ const {
   label = undefined,
   name,
   height = '160px',
+  readonly = false,
   required = false
 } = defineProps<{
   disabled?: boolean;
@@ -23,6 +24,7 @@ const {
   label?: string;
   name: string;
   height?: string;
+  readonly?: boolean;
   required?: boolean;
 }>();
 
@@ -54,7 +56,8 @@ const vEditableAttrs = { mounted: setEditableAttrs, updated: setEditableAttrs };
     non-labelable
     :required
   >
-    <!-- The name lets focusFirstError find the editable element -->
+    <!-- The name lets focusFirstError find the editable element; Quill drops contenteditable when read only, so a
+         read-only editor needs its own tab stop -->
     <div
       v-editable-attrs="
         loaded && {
@@ -62,8 +65,10 @@ const vEditableAttrs = { mounted: setEditableAttrs, updated: setEditableAttrs };
           'aria-invalid': invalid || undefined,
           'aria-labelledby': labelId,
           'aria-multiline': 'true',
+          'aria-readonly': readonly || undefined,
           name,
-          role: 'textbox'
+          role: 'textbox',
+          tabindex: readonly ? 0 : undefined
         }
       "
     >
@@ -72,8 +77,8 @@ const vEditableAttrs = { mounted: setEditableAttrs, updated: setEditableAttrs };
         v-model="value"
         v-bind="listeners"
         :editor-style="`height: ${height}`"
-        :pt="{ toolbar: { class: { hidden: disabled } } }"
-        :readonly="disabled"
+        :pt="{ toolbar: { class: { hidden: disabled || readonly } } }"
+        :readonly="disabled || readonly"
         @load="loaded = true"
         @selection-change="(e: EditorSelectionChangeEvent) => !e.range && handleBlur()"
       />

@@ -19,6 +19,7 @@ const {
   name,
   disabled = false,
   options,
+  readonly = false,
   required = false
 } = defineProps<{
   helpText?: string;
@@ -26,6 +27,7 @@ const {
   name: string;
   disabled?: boolean;
   options: readonly (RadioOption | string)[];
+  readonly?: boolean;
   required?: boolean;
 }>();
 
@@ -38,6 +40,12 @@ const { errorMessage, handleBlur, value } = useField<string | number | undefined
 const radioOptions = computed(() =>
   options.map((option) => (typeof option === 'string' ? { label: option, value: option } : option))
 );
+
+// Actions
+// PrimeVue's readonly only skips the update, so the click is cancelled to stop the native radio changing
+function preventChange(event: Event) {
+  if (readonly) event.preventDefault();
+}
 </script>
 
 <template>
@@ -73,13 +81,15 @@ const radioOptions = computed(() =>
             :input-id="`${id}-${index}`"
             :invalid
             :name
-            :pt="{ input: { required: required || undefined } }"
+            :pt="{ input: { required: required || undefined, onClick: preventChange } }"
+            :readonly
             :value="option.value"
             @blur="handleBlur"
             @change="emit('change', option.value)"
           />
           <label
             class="ml-2 mb-0"
+            :class="{ 'cursor-not-allowed': readonly }"
             :for="`${id}-${index}`"
           >
             {{ option.label }}

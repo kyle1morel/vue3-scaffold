@@ -14,6 +14,7 @@ const {
   mask,
   placeholder = undefined,
   disabled = false,
+  readonly = false,
   required = false
 } = defineProps<{
   helpText?: string;
@@ -22,6 +23,7 @@ const {
   mask: string;
   placeholder?: string;
   disabled?: boolean;
+  readonly?: boolean;
   required?: boolean;
 }>();
 
@@ -49,6 +51,7 @@ const maskedValue = computed({
       v-bind="{ ...listeners, ...inputAttrs }"
       class="w-full"
       :disabled
+      :readonly
       :invalid
       :mask
       :name

@@ -12,6 +12,7 @@ const {
   name,
   placeholder = undefined,
   disabled = false,
+  readonly = false,
   tooltip = undefined,
   required = false
 } = defineProps<{
@@ -20,6 +21,7 @@ const {
   name: string;
   placeholder?: string;
   disabled?: boolean;
+  readonly?: boolean;
   tooltip?: string;
   required?: boolean;
 }>();
@@ -43,6 +45,7 @@ const { errorMessage, handleBlur, value } = useField<string | undefined>(() => n
       v-bind="{ ...listeners, ...inputAttrs }"
       class="w-full"
       :disabled
+      :readonly
       :invalid
       :name
       :placeholder

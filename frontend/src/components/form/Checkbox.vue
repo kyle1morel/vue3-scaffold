@@ -11,17 +11,25 @@ const {
   label = undefined,
   name,
   disabled = false,
+  readonly = false,
   required = false
 } = defineProps<{
   helpText?: string;
   label?: string;
   name: string;
   disabled?: boolean;
+  readonly?: boolean;
   required?: boolean;
 }>();
 
 // State
 const { errorMessage, handleBlur, value } = useField<boolean | undefined>(() => name);
+
+// Actions
+// PrimeVue's readonly only skips the update, so the click is cancelled to stop the native checkbox toggling
+function preventToggle(event: Event) {
+  if (readonly) event.preventDefault();
+}
 </script>
 
 <template>
@@ -40,12 +48,14 @@ const { errorMessage, handleBlur, value } = useField<boolean | undefined>(() => 
         :input-id="id"
         :invalid
         :name
-        :pt="{ input: inputAttrs }"
+        :pt="{ input: { ...inputAttrs, 'aria-readonly': readonly || undefined, onClick: preventToggle } }"
+        :readonly
         @blur="handleBlur"
       />
       <label
         v-if="label"
         class="pl-2 mb-0 font-bold"
+        :class="{ 'cursor-not-allowed': readonly }"
         :for="id"
       >
         {{ label }}

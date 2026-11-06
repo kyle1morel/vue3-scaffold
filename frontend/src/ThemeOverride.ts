@@ -368,6 +368,23 @@ export const ThemeOverride = definePreset(Material, {
         }
       `
     },
+    // PrimeVue leaves read-only fields looking editable; BC greys them but keeps the text at full contrast
+    editor: {
+      css: () => `
+        .p-editor .p-editor-content .ql-editor[aria-readonly='true'] {
+          background: ${tokens.surfaceColorFormsDisabled};
+        }
+      `
+    },
+    checkbox: {
+      css: () => '.p-checkbox-input[readonly] { cursor: not-allowed; }'
+    },
+    inputtext: {
+      css: () => `.p-inputtext[readonly] { background: ${tokens.surfaceColorFormsDisabled}; }`
+    },
+    textarea: {
+      css: () => `.p-textarea[readonly] { background: ${tokens.surfaceColorFormsDisabled}; }`
+    },
     menu: {
       item: {
         color: '{text.color}',
@@ -464,7 +481,11 @@ export const ThemeOverride = definePreset(Material, {
         checkedHoverColor: '{disabledcolor}',
         disabledColor: '{form.field.disabled.color}'
       },
-      css: () => '.p-radiobutton-checked .p-radiobutton-box { border-width: thick }'
+      // BC keeps read-only radios and checkboxes looking enabled and only changes the cursor
+      css: () => `
+        .p-radiobutton-checked .p-radiobutton-box { border-width: thick }
+        .p-radiobutton-input[readonly] { cursor: not-allowed; }
+      `
     },
     progressspinner: {
       colorScheme: {

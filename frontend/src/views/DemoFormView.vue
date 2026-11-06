@@ -185,7 +185,7 @@ const onSubmit = handleSubmit(
 
 <template>
   <div class="flex items-center gap-4">
-    <h2>{{ t('views.demoForm.title') }}</h2>
+    <h1>{{ t('views.demoForm.title') }}</h1>
     <StatusPill
       v-if="!readOnly && meta.dirty"
       :status="t('views.demoForm.status.unsaved')"
@@ -220,7 +220,7 @@ const onSubmit = handleSubmit(
         <InputText
           class="col-span-12 md:col-span-6"
           name="firstName"
-          :disabled="readOnly"
+          :readonly="readOnly"
           :label="field('firstName')"
           :tooltip="t('views.demoForm.help.firstName')"
           required
@@ -228,14 +228,14 @@ const onSubmit = handleSubmit(
         <InputText
           class="col-span-12 md:col-span-6"
           name="email"
-          :disabled="readOnly"
+          :readonly="readOnly"
           :label="field('email')"
           required
         />
         <InputMask
           class="col-span-12 md:col-span-6"
           name="phone"
-          :disabled="readOnly"
+          :readonly="readOnly"
           :label="field('phone')"
           mask="(999) 999-9999"
           :placeholder="t('views.demoForm.placeholders.phone')"
@@ -251,7 +251,7 @@ const onSubmit = handleSubmit(
         <Select
           class="col-span-12 md:col-span-6"
           name="province"
-          :disabled="readOnly"
+          :readonly="readOnly"
           :label="field('province')"
           :options="provinces"
           option-label="label"
@@ -262,7 +262,7 @@ const onSubmit = handleSubmit(
         <RadioList
           class="col-span-12 md:col-span-6"
           name="contactMethod"
-          :disabled="readOnly"
+          :readonly="readOnly"
           :label="field('contactMethod')"
           :options="contactMethods"
           required
@@ -275,14 +275,14 @@ const onSubmit = handleSubmit(
         <DatePicker
           class="col-span-12 md:col-span-6"
           name="startDate"
-          :disabled="readOnly"
+          :readonly="readOnly"
           :label="field('startDate')"
           :max-date="new Date()"
         />
         <InputNumber
           class="col-span-12 md:col-span-6"
           name="quantity"
-          :disabled="readOnly"
+          :readonly="readOnly"
           :label="field('quantity')"
           :max-fraction-digits="0"
           :help-text="t('views.demoForm.help.quantity')"
@@ -290,7 +290,7 @@ const onSubmit = handleSubmit(
         <AutoComplete
           class="col-span-12 md:col-span-6"
           name="city"
-          :disabled="readOnly"
+          :readonly="readOnly"
           :label="field('city')"
           :placeholder="t('views.demoForm.placeholders.city')"
           :suggestions="citySuggestions"
@@ -299,7 +299,7 @@ const onSubmit = handleSubmit(
         <Select
           class="col-span-12 md:col-span-6"
           name="category"
-          :disabled="readOnly"
+          :readonly="readOnly"
           editable
           :label="field('category')"
           :options="categories"
@@ -310,7 +310,7 @@ const onSubmit = handleSubmit(
         <TextArea
           class="col-span-12"
           name="comments"
-          :disabled="readOnly"
+          :readonly="readOnly"
           :label="field('comments')"
           :tooltip="t('views.demoForm.help.comments')"
         />
@@ -322,7 +322,7 @@ const onSubmit = handleSubmit(
         <Editor
           class="col-span-12"
           name="notes"
-          :disabled="readOnly"
+          :readonly="readOnly"
           :label="field('notes')"
           :help-text="t('views.demoForm.help.notes')"
         />
@@ -330,7 +330,7 @@ const onSubmit = handleSubmit(
         <Checkbox
           class="col-span-12 mt-4"
           name="agree"
-          :disabled="readOnly"
+          :readonly="readOnly"
           :label="field('agree')"
           required
         />

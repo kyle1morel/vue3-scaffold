@@ -86,4 +86,25 @@ describe('Select', () => {
       expect(form.values[testName]).toBe('Yukon');
     });
   });
+
+  describe('read only', () => {
+    it('shows the chosen option label in a labelled read-only input', () => {
+      const { wrapper } = mountWithFormContext(Select, {
+        formProps: { initialValues: { [testName]: 'BC' } },
+        componentProps: {
+          name: testName,
+          label: 'Province',
+          options: testOptions,
+          optionLabel: 'label',
+          optionValue: 'value',
+          readonly: true
+        }
+      });
+
+      const input = wrapper.find('input');
+      expect(input.attributes('readonly')).toBeDefined();
+      expect((input.element as HTMLInputElement).value).toBe('British Columbia');
+      expect(wrapper.find(`label[for="${input.attributes('id')}"]`).text()).toBe('Province');
+    });
+  });
 });

@@ -14,6 +14,7 @@ const {
   name,
   placeholder = undefined,
   disabled = false,
+  readonly = false,
   suggestions,
   optionLabel = undefined,
   forceSelection = false,
@@ -26,6 +27,7 @@ const {
   name: string;
   placeholder?: string;
   disabled?: boolean;
+  readonly?: boolean;
   suggestions: AutoCompleteProps['suggestions'];
   optionLabel?: AutoCompleteProps['optionLabel'];
   forceSelection?: boolean;
@@ -67,7 +69,7 @@ const { errorMessage, handleBlur, value } = useField<unknown>(() => name);
       :name
       :option-label
       :placeholder
-      :pt="{ pcInputText: { root: inputAttrs } }"
+      :pt="{ pcInputText: { root: { ...inputAttrs, readonly: readonly || undefined } } }"
       :suggestions
       @blur="handleBlur"
       @change="(e: AutoCompleteChangeEvent) => emit('change', e)"

@@ -12,6 +12,7 @@ const {
   name,
   placeholder = undefined,
   disabled = false,
+  readonly = false,
   required = false
 } = defineProps<{
   helpText?: string;
@@ -19,6 +20,7 @@ const {
   name: string;
   placeholder?: string;
   disabled?: boolean;
+  readonly?: boolean;
   required?: boolean;
 }>();
 
@@ -42,7 +44,7 @@ const { errorMessage, handleBlur, value } = useField<string | undefined>(() => n
       :feedback="false"
       fluid
       :input-id="id"
-      :input-props="{ ...inputAttrs, 'aria-expanded': undefined }"
+      :input-props="{ ...inputAttrs, 'aria-expanded': undefined, readonly: readonly || undefined }"
       :invalid
       :name
       :placeholder

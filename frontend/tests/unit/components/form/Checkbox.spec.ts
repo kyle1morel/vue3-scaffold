@@ -62,5 +62,15 @@ describe('Checkbox', () => {
 
       expect(form.values[testName]).toBe(true);
     });
+
+    it('ignores clicks when read only', async () => {
+      const { form, input } = mountCheckbox({ readonly: true });
+
+      await input.trigger('click');
+
+      expect(input.attributes('aria-readonly')).toBe('true');
+      expect((input.element as HTMLInputElement).checked).toBe(false);
+      expect(form.values[testName]).toBeUndefined();
+    });
   });
 });

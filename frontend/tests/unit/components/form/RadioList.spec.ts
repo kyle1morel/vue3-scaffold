@@ -58,5 +58,15 @@ describe('RadioList', () => {
 
       expect(form.values[testName]).toBe('phone');
     });
+
+    it('ignores clicks when read only', async () => {
+      const { form, wrapper } = mountRadioList({ readonly: true });
+      const phone = wrapper.find('input[value="phone"]');
+
+      await phone.trigger('click');
+
+      expect((phone.element as HTMLInputElement).checked).toBe(false);
+      expect(form.values[testName]).toBeUndefined();
+    });
   });
 });
