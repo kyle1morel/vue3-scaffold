@@ -29,7 +29,7 @@ import { Card, Message, useToast } from '@/lib/primevue';
 import { createSubmission, getSubmission } from '@/services';
 import { RouteName } from '@/utils/enums/application';
 import { formatDateLong } from '@/utils/formatters';
-import { focusFirstError } from '@/utils/utils';
+import { focusFirstError, rethrowAs } from '@/utils/utils';
 import {
   blankOrOneOfSchema,
   notInFutureSchema,
@@ -154,25 +154,20 @@ onMounted(() => {
 
 const onSubmit = handleSubmit(
   async (values) => {
-    try {
-      // The password and terms only demonstrate their components, so they aren't saved
-      await createSubmission({
-        firstName: values.firstName,
-        email: values.email,
-        phone: values.phone,
-        province: values.province,
-        contactMethod: values.contactMethod,
-        startDate: values.startDate ? format(values.startDate, 'yyyy-MM-dd') : null,
-        quantity: values.quantity,
-        city: values.city,
-        category: values.category,
-        comments: values.comments,
-        notes: values.notes
-      });
-    } catch {
-      toast.error(t('views.demoForm.errors.save'));
-      return;
-    }
+    // The password and terms only demonstrate their components, so they aren't saved
+    await createSubmission({
+      firstName: values.firstName,
+      email: values.email,
+      phone: values.phone,
+      province: values.province,
+      contactMethod: values.contactMethod,
+      startDate: values.startDate ? format(values.startDate, 'yyyy-MM-dd') : null,
+      quantity: values.quantity,
+      city: values.city,
+      category: values.category,
+      comments: values.comments,
+      notes: values.notes
+    }).catch(rethrowAs(t('views.demoForm.errors.save')));
 
     toast.success(t('views.demoForm.submitted.title'), t('views.demoForm.submitted.detail'));
     // Clears the dirty state, so the navigation guard lets the user leave

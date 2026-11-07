@@ -1,11 +1,18 @@
 import { nextTick } from 'vue';
 
+import { i18n } from '@/i18n';
 import { useToast } from '@/lib/primevue';
 import { useConfigStore } from '@/store';
-import { IdentityProviderKind } from '@/utils/enums/application';
+import { IdentityProviderKind, ToastTimeout } from '@/utils/enums/application';
 
 import type { IdentityProvider, ValueOf } from '@/types';
-import type { ToastMessageOptions } from '@/lib/primevue';
+
+/**
+ * An error whose message is written for the user, so the global error handler shows it as is.
+ */
+export class UserError extends Error {
+  override name = 'UserError';
+}
 
 /**
  * Turns date text into a Date, with date-only strings parsed as local midnight and blank text as null, leaving
@@ -95,21 +102,26 @@ export async function focusFirstError(errors: Record<string, string>) {
 }
 
 /**
- * Shows an error as a toast message.
- * @param error - The error.
- * @param title - The toast title; the error message is used when omitted.
- * @param options - The toast message options.
- * @param toast - The toast instance, required when called outside of setup().
+ * Makes a rejection a UserError with a message for the user, keeping the original error as its cause.
+ * @param message - The message to show the user.
+ * @returns A rejection handler for `.catch()`.
  */
-export function generalErrorHandler(
-  error: unknown,
-  title?: string,
-  options?: ToastMessageOptions,
-  toast: ReturnType<typeof useToast> = useToast()
-) {
-  const message = error instanceof Error ? error.message : String(error);
+export function rethrowAs(message: string) {
+  return (cause: unknown): never => {
+    throw new UserError(message, { cause });
+  };
+}
 
-  toast.error(title ?? message, title ? message : undefined, options);
+/**
+ * Logs an error and shows it as a toast: a UserError's own message, or a generic one for anything unexpected.
+ * @param error - The error.
+ */
+export function showError(error: unknown) {
+  // eslint-disable-next-line no-console
+  console.error(error);
+
+  if (error instanceof UserError) useToast().error(error.message);
+  else useToast().error(i18n.t('ui.errors.unexpected'), '', { life: ToastTimeout.STICKY });
 }
 
 /**

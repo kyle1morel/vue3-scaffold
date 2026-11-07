@@ -27,6 +27,7 @@ import getRouter from '@/router';
 import { ThemeOverride } from '@/ThemeOverride';
 import { AuthService, refreshConfig } from '@/services';
 import { StorageKey } from '@/utils/enums/application';
+import { showError } from '@/utils/utils';
 
 import '@bcgov/bc-sans/css/BC_Sans.css';
 import '@bcgov/design-tokens/css/variables.css';
@@ -83,6 +84,14 @@ function initializeApp(): void {
   app.use(ConfirmationService);
   app.component('FontAwesomeIcon', FontAwesomeIcon);
   app.directive('tooltip', Tooltip);
+
+  // Errors nothing else handled end up as a toast: Vue sends component errors here, and the listener catches
+  // promises Vue never sees, such as library callbacks; showError logs them in place of the browser
+  app.config.errorHandler = (error) => showError(error);
+  window.addEventListener('unhandledrejection', (event) => {
+    event.preventDefault();
+    showError(event.reason);
+  });
 
   app.mount('#app');
 }

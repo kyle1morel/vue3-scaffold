@@ -45,6 +45,21 @@ still verified against the theme by hand. It only fails on violations,
 not on what axe marks as needing review, which includes duplicate IDs
 under happy-dom.
 
+## Error handling
+
+`main.ts` sends errors components let through to `showError`, which
+toasts them. Mounted components have no such handler, so a spec that
+checks an error toast passes `errorHandler: showError` to
+`mountComponent`, standing in for `main.ts`:
+
+```ts
+const { wrapper } = mountComponent(SubmissionsView, { errorHandler: showError });
+```
+
+An error from a callback Vue never sees, such as a confirm dialog's
+`accept`, reaches the app's `unhandledrejection` listener instead. Assert
+that the call rejects with the message, rather than on the toast.
+
 ## Router mocking
 
 `tests/mockRouter.ts` exports a shared `mockRouter` (`{ push, replace }`)

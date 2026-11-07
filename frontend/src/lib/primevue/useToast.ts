@@ -1,4 +1,4 @@
-import { useToast as useToastPrimevue } from 'primevue/usetoast';
+import ToastEventBus from 'primevue/toasteventbus';
 
 import { i18n } from '@/i18n';
 import { ToastTimeout } from '@/utils/enums/application';
@@ -7,10 +7,12 @@ import type { ToastMessageOptions } from 'primevue/toast';
 
 /**
  * Wraps PrimeVue's toast service with one helper per severity, each with a prefixed summary and its default lifetime.
+ * Unlike PrimeVue's own useToast, it works outside setup(), such as after an await or in a store.
  * @returns The `error`, `info`, `success` and `warn` toast helpers.
  */
 export const useToast = () => {
-  const toast = useToastPrimevue();
+  // PrimeVue's useToast injects its service, which only works during setup(); the service just posts to this bus
+  const toast = { add: (message: ToastMessageOptions) => ToastEventBus.emit('add', message) };
 
   const error = (title: string, msg = '', options: ToastMessageOptions = {}) => {
     const {

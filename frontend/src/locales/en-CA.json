@@ -58,7 +58,7 @@
     },
     "errors": {
       "startup": "Unable to load the application. Please refresh the page or try again later.",
-      "title": "Error"
+      "unexpected": "Something went wrong. Please try again."
     },
     "loading": "Loading",
     "toast": {

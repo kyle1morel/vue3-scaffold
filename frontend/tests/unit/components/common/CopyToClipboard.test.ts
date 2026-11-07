@@ -1,6 +1,7 @@
 import { flushPromises } from '@vue/test-utils';
 
 import CopyToClipboard from '@/components/common/CopyToClipboard.vue';
+import { showError } from '@/utils/utils';
 
 import { mountComponent } from '../../../mountComponent';
 
@@ -19,7 +20,10 @@ const testText = 'copy me';
 // Mount
 
 function mountCopyToClipboard(options: { iconOnly?: boolean } = {}) {
-  const { wrapper } = mountComponent(CopyToClipboard, { props: { toCopy: testText, ...options } });
+  const { wrapper } = mountComponent(CopyToClipboard, {
+    errorHandler: showError,
+    props: { toCopy: testText, ...options }
+  });
 
   return { wrapper, button: wrapper.find('button') };
 }

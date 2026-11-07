@@ -5,6 +5,7 @@ import PrimeSelect from 'primevue/select';
 
 import { createSubmission, getSubmission } from '@/services/submission';
 import { RouteName } from '@/utils/enums/application';
+import { showError } from '@/utils/utils';
 import DemoFormView from '@/views/DemoFormView.vue';
 
 import { expectNoAxeViolations } from '../../expectNoAxeViolations';
@@ -83,7 +84,7 @@ async function fillValidForm(wrapper: VueWrapper) {
 
 function mountDemoFormView() {
   // Quill doesn't run in happy-dom
-  const { wrapper } = mountComponent(DemoFormView, { stubs: { Editor: true } });
+  const { wrapper } = mountComponent(DemoFormView, { errorHandler: showError, stubs: { Editor: true } });
 
   return { wrapper };
 }

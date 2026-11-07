@@ -3,6 +3,7 @@ import PrimeDataTable from 'primevue/datatable';
 
 import { deleteSubmission, listSubmissions } from '@/services/submission';
 import { RouteName } from '@/utils/enums/application';
+import { showError } from '@/utils/utils';
 import SubmissionsView from '@/views/SubmissionsView.vue';
 
 import { expectNoAxeViolations } from '../../expectNoAxeViolations';
@@ -52,7 +53,7 @@ async function deleteAndAccept(wrapper: Awaited<ReturnType<typeof mountSubmissio
 // Mount
 
 async function mountSubmissionsView() {
-  const { wrapper } = mountComponent(SubmissionsView);
+  const { wrapper } = mountComponent(SubmissionsView, { errorHandler: showError });
   await flushPromises();
 
   return { wrapper };
@@ -60,6 +61,7 @@ async function mountSubmissionsView() {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.mocked(deleteSubmission).mockResolvedValue();
 });
 
 // Tests
@@ -173,14 +175,16 @@ describe('SubmissionsView', () => {
       expect(listSubmissions).toHaveBeenLastCalledWith({ page: 1, pageSize: 10 });
     });
 
-    it('shows an error toast and keeps the rows when the delete fails', async () => {
+    // The confirm dialog calls accept outside Vue, so the error reaches main.ts's unhandledrejection listener
+    it('rejects with a message for the user and keeps the rows when the delete fails', async () => {
       vi.mocked(listSubmissions).mockResolvedValue({ items: [testSubmission], total: 1 });
       vi.mocked(deleteSubmission).mockRejectedValue(new Error('delete failed'));
       const { wrapper } = await mountSubmissionsView();
 
-      await deleteAndAccept(wrapper);
+      await wrapper.find('button[aria-label="Delete the submission from Jane"]').trigger('click');
+      const options = mockConfirm.require.mock.calls[0]![0] as ConfirmationOptions;
 
-      expect(mockToast.error).toHaveBeenCalledWith('Unable to delete the submission. Please try again.');
+      await expect(options.accept!()).rejects.toThrow('Unable to delete the submission. Please try again.');
       expect(listSubmissions).toHaveBeenCalledOnce();
     });
   });

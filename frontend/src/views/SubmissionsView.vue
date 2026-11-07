@@ -7,6 +7,7 @@ import { Column, DataTable, useConfirm, useToast } from '@/lib/primevue';
 import { deleteSubmission, listSubmissions } from '@/services';
 import { RouteName } from '@/utils/enums/application';
 import { formatDateShort } from '@/utils/formatters';
+import { rethrowAs } from '@/utils/utils';
 
 import type { DataTablePageEvent } from '@/lib/primevue';
 import type { Submission } from '@/types';
@@ -31,11 +32,11 @@ async function loadPage() {
   loading.value = true;
   try {
     // The table tracks the first row index and the API takes a 1-based page
-    const result = await listSubmissions({ page: first.value / pageSize.value + 1, pageSize: pageSize.value });
+    const result = await listSubmissions({ page: first.value / pageSize.value + 1, pageSize: pageSize.value }).catch(
+      rethrowAs(t('views.submissions.errors.load'))
+    );
     submissions.value = result.items;
     total.value = result.total;
-  } catch {
-    toast.error(t('views.submissions.errors.load'));
   } finally {
     loading.value = false;
   }
@@ -44,16 +45,11 @@ async function loadPage() {
 function onPage(event: DataTablePageEvent) {
   first.value = event.first;
   pageSize.value = event.rows;
-  loadPage();
+  return loadPage();
 }
 
 async function removeSubmission(submission: Submission) {
-  try {
-    await deleteSubmission(submission.id);
-  } catch {
-    toast.error(t('views.submissions.errors.delete'));
-    return;
-  }
+  await deleteSubmission(submission.id).catch(rethrowAs(t('views.submissions.errors.delete')));
 
   toast.success(t('views.submissions.deleted'));
   // Deleting the last row on a page leaves it empty, so show the page before it

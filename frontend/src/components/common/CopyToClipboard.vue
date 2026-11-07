@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n';
 
 import { Button } from '@/components/bcds';
 import { useToast } from '@/lib/primevue';
+import { rethrowAs } from '@/utils/utils';
 
 // Props
 const { iconOnly = false, toCopy = undefined } = defineProps<{
@@ -20,13 +21,7 @@ const toast = useToast();
 async function copyToClipboard() {
   if (!toCopy) return;
 
-  try {
-    await navigator.clipboard.writeText(toCopy);
-  } catch {
-    toast.error(t('components.copyToClipboard.failed'));
-    return;
-  }
-
+  await navigator.clipboard.writeText(toCopy).catch(rethrowAs(t('components.copyToClipboard.failed')));
   toast.info(t('components.copyToClipboard.copied'));
 }
 </script>

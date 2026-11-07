@@ -1,6 +1,13 @@
-import { getBatches, toIsoRange } from '@/utils/utils';
+import { ToastTimeout } from '@/utils/enums/application';
+import { getBatches, rethrowAs, showError, toIsoRange, UserError } from '@/utils/utils';
 
 // Mocks
+
+const mockToast = { error: vi.fn(), info: vi.fn(), success: vi.fn(), warn: vi.fn() };
+
+vi.mock('@/lib/primevue/useToast', () => ({
+  useToast: () => mockToast
+}));
 
 // Fixtures
 
@@ -33,6 +40,44 @@ describe('utils.ts', () => {
 
     it.each([undefined, null, [new Date()], [new Date(), null]])('returns undefined for %j', (range) => {
       expect(toIsoRange(range)).toBeUndefined();
+    });
+  });
+
+  describe('rethrowAs', () => {
+    it('rejects with a UserError carrying the message and the original error', async () => {
+      const cause = new Error('network down');
+
+      const error = await Promise.reject(cause)
+        .catch(rethrowAs('Unable to save'))
+        .catch((e: unknown) => e);
+
+      expect(error).toBeInstanceOf(UserError);
+      expect(error).toMatchObject({ message: 'Unable to save', cause });
+    });
+  });
+
+  describe('showError', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('shows a UserError message as it is', () => {
+      showError(new UserError('Unable to save'));
+
+      expect(mockToast.error).toHaveBeenCalledWith('Unable to save');
+    });
+
+    it('shows a generic message that stays open for any other error', () => {
+      showError(new Error('Request failed with status code 500'));
+
+      expect(mockToast.error).toHaveBeenCalledWith('Something went wrong. Please try again.', '', {
+        life: ToastTimeout.STICKY
+      });
     });
   });
 });

@@ -54,6 +54,8 @@ export interface MountComponentOptions extends PiniaOptions {
   plugins?: Plugin[];
   /** Extra global directives beyond the always-installed Tooltip. */
   directives?: Record<string, unknown>;
+  /** Receives errors the component lets through, as main.ts's app.config.errorHandler does in the app. */
+  errorHandler?: (error: unknown) => void;
   /**
    * When set, mounts the component inside a synthetic harness that calls
    * vee-validate's `useForm()` and renders real `<Field>` elements for the
@@ -103,7 +105,7 @@ export function mountComponent(
   component: Component,
   options: MountComponentOptions = {}
 ): MountResult | MountResultWithForm {
-  const { props, stubs = {}, provide = {}, plugins = [], directives = {}, formContext } = options;
+  const { props, stubs = {}, provide = {}, plugins = [], directives = {}, errorHandler, formContext } = options;
   const { pinia, plugin } = setupPinia(options);
 
   const resolvedPlugins: Plugin[] = [
@@ -123,7 +125,8 @@ export function mountComponent(
         plugins: resolvedPlugins,
         stubs: { ...defaultStubs, ...stubs },
         provide,
-        directives: resolvedDirectives
+        directives: resolvedDirectives,
+        config: { errorHandler }
       }
     });
 
@@ -151,7 +154,13 @@ export function mountComponent(
   });
 
   const wrapper = mount(Harness, {
-    global: { plugins: resolvedPlugins, stubs: { ...defaultStubs, ...stubs }, provide, directives: resolvedDirectives }
+    global: {
+      plugins: resolvedPlugins,
+      stubs: { ...defaultStubs, ...stubs },
+      provide,
+      directives: resolvedDirectives,
+      config: { errorHandler }
+    }
   });
 
   return { wrapper, pinia, form };
