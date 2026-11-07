@@ -4,7 +4,6 @@ import tseslint from 'typescript-eslint';
 import pluginVue from 'eslint-plugin-vue';
 import { defineConfig } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import jsdoc from 'eslint-plugin-jsdoc';
 import vueI18n from '@intlify/eslint-plugin-vue-i18n';
 import vitest from '@vitest/eslint-plugin';
@@ -143,8 +142,8 @@ export default defineConfig([
       '@intlify/vue-i18n/valid-message-syntax': 'error'
     }
   },
+  // Turns off rules that fight Prettier, which formats on its own: npm run lint checks, the pre-commit hook writes
   eslintConfigPrettier,
-  eslintPluginPrettierRecommended,
   {
     rules: {
       'eol-last': ['error', 'always'],

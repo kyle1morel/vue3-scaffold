@@ -1,7 +1,6 @@
 import { defineConfig } from 'eslint/config';
 import eslint from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import jsdoc from 'eslint-plugin-jsdoc';
 import tseslint from 'typescript-eslint';
 
@@ -12,13 +11,13 @@ export default defineConfig([
   {
     files: ['**/*.{js,ts}'],
     extends: [
-      // Extensions are order dependent - always apply Prettier last
       eslint.configs.recommended,
       tseslint.configs.recommended,
       tseslint.configs.stylistic,
       jsdoc.configs['flat/recommended-typescript'],
-      eslintPluginPrettierRecommended,
-      eslintConfigPrettier // Drops conflicting rules
+      // Last, so it turns off any rule that fights Prettier, which formats on its own: npm run lint checks it, the
+      // pre-commit hook writes it
+      eslintConfigPrettier
     ],
     languageOptions: {
       parserOptions: {
