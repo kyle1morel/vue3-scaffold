@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router';
 import { Breadcrumb } from '@/lib/primevue';
 import { RouteName } from '@/utils/enums/application';
 
-import type { MenuItem } from 'primevue/menuitem';
+import type { MenuItem } from '@/lib/primevue';
 import type { RouteLocationMatched, RouteRecordNameGeneric, RouteRecordRaw } from 'vue-router';
 
 // Composables

@@ -1,46 +1,44 @@
 <script setup lang="ts">
-import { useField } from 'vee-validate';
+import RadioButton from 'primevue/radiobutton';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { RadioButton } from '@/lib/primevue';
+import FieldWrapper from './FieldWrapper.vue';
 
-import FormField from './FormField.vue';
-
-// Interfaces
-interface RadioOption {
-  label: string | number;
-  value: string | number;
-}
+defineOptions({ inheritAttrs: false });
 
 // Props
 const {
-  helpText = undefined,
-  label = undefined,
-  name,
+  description = undefined,
   disabled = false,
+  errorMessage = undefined,
+  label = undefined,
+  name = undefined,
   options,
   readonly = false,
   required = false
 } = defineProps<{
-  helpText?: string;
-  label?: string;
-  name: string;
+  description?: string;
   disabled?: boolean;
-  options: readonly (RadioOption | string)[];
+  errorMessage?: string;
+  label?: string;
+  name?: string;
+  // A plain string is both the label and the value
+  options: readonly ({ label: string | number; value: string | number } | string)[];
   readonly?: boolean;
   required?: boolean;
 }>();
 
 // Emits
-const emit = defineEmits<{ change: [value: string | number] }>();
+// Blur doesn't bubble to the fieldset, so each radio reports its own
+const emit = defineEmits<{ blur: [event: Event] }>();
+
+const value = defineModel<string | number>();
 
 // Composables
 const { t } = useI18n();
 
 // State
-const { errorMessage, handleBlur, value } = useField<string | number | undefined>(() => name);
-
 const radioOptions = computed(() =>
   options.map((option) => (typeof option === 'string' ? { label: option, value: option } : option))
 );
@@ -54,12 +52,13 @@ function preventChange(event: Event) {
 
 <template>
   <!-- The legend names the group; aria-required isn't valid on a fieldset, so each radio is marked required instead -->
-  <FormField
-    v-slot="{ id, inputAttrs, invalid, listeners }"
-    :error="errorMessage"
-    :help-text
+  <FieldWrapper
+    v-slot="{ id, inputAttrs, invalid }"
+    v-bind="$attrs"
+    :description
+    :error-message
   >
-    <fieldset v-bind="{ ...listeners, ...inputAttrs }">
+    <fieldset v-bind="inputAttrs">
       <legend
         v-if="label"
         class="app-field-label"
@@ -69,7 +68,7 @@ function preventChange(event: Event) {
           v-if="required"
           class="app-field-required"
         >
-          {{ t('components.formField.required') }}
+          {{ t('components.fieldWrapper.required') }}
         </span>
       </legend>
       <div class="flex flex-col gap-4">
@@ -87,8 +86,7 @@ function preventChange(event: Event) {
             :pt="{ input: { required: required || undefined, onClick: preventChange } }"
             :readonly
             :value="option.value"
-            @blur="handleBlur"
-            @change="emit('change', option.value)"
+            @blur="(e: Event) => emit('blur', e)"
           />
           <label
             class="ml-2 mb-0"
@@ -100,5 +98,5 @@ function preventChange(event: Event) {
         </div>
       </div>
     </fieldset>
-  </FormField>
+  </FieldWrapper>
 </template>

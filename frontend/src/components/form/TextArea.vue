@@ -1,29 +1,27 @@
 <script setup lang="ts">
 import { useField } from 'vee-validate';
 
-import { Textarea } from '@/lib/primevue';
-
-import FormField from './FormField.vue';
+import BcdsTextArea from '@/components/bcds/TextArea.vue';
 
 // Props
 const {
-  helpText = undefined,
+  description = undefined,
+  disabled = false,
   label = undefined,
   name,
   placeholder = undefined,
-  disabled = false,
   readonly = false,
-  rows = 5,
-  required = false
+  required = false,
+  rows = 5
 } = defineProps<{
-  helpText?: string;
+  description?: string;
+  disabled?: boolean;
   label?: string;
   name: string;
   placeholder?: string;
-  disabled?: boolean;
   readonly?: boolean;
-  rows?: number;
   required?: boolean;
+  rows?: number;
 }>();
 
 // State
@@ -31,25 +29,17 @@ const { errorMessage, handleBlur, value } = useField<string | undefined>(() => n
 </script>
 
 <template>
-  <FormField
-    v-slot="{ id, inputAttrs, invalid, listeners }"
-    :error="errorMessage"
-    :help-text
+  <BcdsTextArea
+    v-model="value"
+    :description
+    :disabled
+    :error-message="errorMessage"
     :label
+    :name
+    :placeholder
+    :readonly
     :required
-  >
-    <Textarea
-      :id
-      v-model="value"
-      v-bind="{ ...listeners, ...inputAttrs }"
-      class="w-full"
-      :disabled
-      :readonly
-      :invalid
-      :name
-      :placeholder
-      :rows
-      @blur="handleBlur"
-    />
-  </FormField>
+    :rows
+    @blur="handleBlur"
+  />
 </template>

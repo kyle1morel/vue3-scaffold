@@ -1,4 +1,4 @@
-import RadioList from '@/components/form/RadioList.vue';
+import RadioGroup from '@/components/form/RadioGroup.vue';
 
 import { mountWithFormContext } from '../../../mountWithFormContext';
 
@@ -14,8 +14,8 @@ const testOptions = [
 
 // Mount
 
-function mountRadioList(componentProps: Record<string, unknown> = {}) {
-  const { wrapper, form } = mountWithFormContext(RadioList, {
+function mountRadioGroup(componentProps: Record<string, unknown> = {}) {
+  const { wrapper, form } = mountWithFormContext(RadioGroup, {
     componentProps: { name: testName, label: 'Contact method', options: testOptions, ...componentProps }
   });
 
@@ -24,10 +24,10 @@ function mountRadioList(componentProps: Record<string, unknown> = {}) {
 
 // Tests
 
-describe('RadioList', () => {
+describe('RadioGroup', () => {
   describe('rendering', () => {
     it('links each option label to its radio', () => {
-      const { wrapper, radios } = mountRadioList();
+      const { wrapper, radios } = mountRadioGroup();
 
       expect(radios.map((radio) => wrapper.find(`label[for="${radio.attributes('id')}"]`).text())).toEqual([
         'Email',
@@ -36,7 +36,7 @@ describe('RadioList', () => {
     });
 
     it('names the group with its legend and marks every radio as required', () => {
-      const { group, radios } = mountRadioList({ required: true });
+      const { group, radios } = mountRadioGroup({ required: true });
 
       expect(group.find('legend').text()).toContain('Contact method');
       expect(group.find('legend').text()).toContain('(required)');
@@ -44,7 +44,7 @@ describe('RadioList', () => {
     });
 
     it('disables every radio', () => {
-      const { radios } = mountRadioList({ disabled: true });
+      const { radios } = mountRadioGroup({ disabled: true });
 
       expect(radios.every((radio) => radio.attributes('disabled') !== undefined)).toBe(true);
     });
@@ -52,7 +52,7 @@ describe('RadioList', () => {
 
   describe('user interaction', () => {
     it('sets the field to the chosen option value', async () => {
-      const { form, wrapper } = mountRadioList();
+      const { form, wrapper } = mountRadioGroup();
 
       await wrapper.find('input[value="phone"]').setValue(true);
 
@@ -60,7 +60,7 @@ describe('RadioList', () => {
     });
 
     it('ignores clicks when read only', async () => {
-      const { form, wrapper } = mountRadioList({ readonly: true });
+      const { form, wrapper } = mountRadioGroup({ readonly: true });
       const phone = wrapper.find('input[value="phone"]');
 
       await phone.trigger('click');

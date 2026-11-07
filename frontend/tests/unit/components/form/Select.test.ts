@@ -70,23 +70,6 @@ describe('Select', () => {
     });
   });
 
-  describe('editable', () => {
-    it('links the label to the input', () => {
-      const { wrapper } = mountSelect({ editable: true });
-
-      const input = wrapper.find('input[type="text"]');
-      expect(wrapper.find(`label[for="${input.attributes('id')}"]`).text()).toBe('Province');
-    });
-
-    it('sets the field to typed text that matches no option', async () => {
-      const { form, wrapper } = mountSelect({ editable: true });
-
-      await wrapper.find('input[type="text"]').setValue('Yukon');
-
-      expect(form.values[testName]).toBe('Yukon');
-    });
-  });
-
   describe('read only', () => {
     it('shows the chosen option label in a labelled read-only input', () => {
       const { wrapper } = mountWithFormContext(Select, {

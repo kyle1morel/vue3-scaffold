@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import { Button } from '@/lib/primevue';
+import { Button } from '@/components/bcds';
 import { useAuthNStore } from '@/store';
 import { RouteName } from '@/utils/enums/application';
 
@@ -37,18 +37,14 @@ function logout() {
 <template>
   <Button
     v-if="isLoginEnabled()"
-    outlined
-    severity="primary"
+    :label="t('ui.actions.logIn')"
+    variant="secondary"
     @click="login()"
-  >
-    {{ t('ui.actions.logIn') }}
-  </Button>
+  />
   <Button
     v-else-if="getIsAuthenticated"
-    outlined
-    severity="primary"
+    :label="t('ui.actions.logOut')"
+    variant="secondary"
     @click="logout()"
-  >
-    {{ t('ui.actions.logOut') }}
-  </Button>
+  />
 </template>

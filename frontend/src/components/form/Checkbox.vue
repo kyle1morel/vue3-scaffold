@@ -1,75 +1,39 @@
 <script setup lang="ts">
 import { useField } from 'vee-validate';
-import { useI18n } from 'vue-i18n';
 
-import { Checkbox } from '@/lib/primevue';
-
-import FormField from './FormField.vue';
+import BcdsCheckbox from '@/components/bcds/Checkbox.vue';
 
 // Props
 const {
-  helpText = undefined,
+  description = undefined,
+  disabled = false,
   label = undefined,
   name,
-  disabled = false,
   readonly = false,
   required = false
 } = defineProps<{
-  helpText?: string;
+  description?: string;
+  disabled?: boolean;
   label?: string;
   name: string;
-  disabled?: boolean;
   readonly?: boolean;
   required?: boolean;
 }>();
 
-// Composables
-const { t } = useI18n();
-
 // State
 const { errorMessage, handleBlur, value } = useField<boolean | undefined>(() => name);
-
-// Actions
-// PrimeVue's readonly only skips the update, so the click is cancelled to stop the native checkbox toggling
-function preventToggle(event: Event) {
-  if (readonly) event.preventDefault();
-}
 </script>
 
 <template>
-  <FormField
-    v-slot="{ id, inputAttrs, invalid, listeners }"
-    :error="errorMessage"
-    :help-text
+  <BcdsCheckbox
+    v-model="value"
+    :description
+    :disabled
+    :error-message="errorMessage"
+    :label
+    :name
+    :readonly
     :required
-  >
-    <div class="flex items-center">
-      <Checkbox
-        v-model="value"
-        v-bind="listeners"
-        binary
-        :disabled
-        :input-id="id"
-        :invalid
-        :name
-        :pt="{ input: { ...inputAttrs, 'aria-readonly': readonly || undefined, onClick: preventToggle } }"
-        :readonly
-        @blur="handleBlur"
-      />
-      <label
-        v-if="label"
-        class="app-field-label pl-2 mb-0"
-        :class="{ 'cursor-not-allowed': readonly }"
-        :for="id"
-      >
-        {{ label }}
-        <span
-          v-if="required"
-          class="app-field-required"
-        >
-          {{ t('components.formField.required') }}
-        </span>
-      </label>
-    </div>
-  </FormField>
+    @blur="handleBlur"
+  />
 </template>

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 
-import { Button, Card, Divider } from '@/lib/primevue';
+import { Button } from '@/components/bcds';
+import { Card, Divider } from '@/lib/primevue';
 import { useAuthNStore } from '@/store';
 import { IdentityProviderKind } from '@/utils/enums/application';
 import { findIdpConfig } from '@/utils/utils';
@@ -55,7 +56,7 @@ function login(kind: IdentityProviderKind) {
           <h2 class="my-3">{{ t('views.oidcLogin.headings.internalUsers') }}</h2>
 
           <Button
-            outlined
+            variant="secondary"
             class="mt-3"
             data-test="idir-mfa-login-button"
             :aria-label="t('views.oidcLogin.providers.idir.login')"

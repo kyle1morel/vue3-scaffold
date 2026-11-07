@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import StyleClass from 'primevue/styleclass';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import developer from '@/assets/images/developer.svg';
 import form from '@/assets/images/form.svg';
 import home from '@/assets/images/home.svg';
-import { Button, Drawer } from '@/lib/primevue';
+import { Button } from '@/components/bcds';
+import { Drawer, StyleClass } from '@/lib/primevue';
 import { useAuthNStore } from '@/store';
 import { RouteName } from '@/utils/enums/application';
 
@@ -65,7 +65,7 @@ const permittedItems = computed(() =>
 <template>
   <Button
     :label="t('components.appDrawer.menu')"
-    outlined
+    variant="secondary"
     @click="visible = true"
   >
     <span class="hidden md:inline">{{ t('components.appDrawer.menu') }}</span>
@@ -80,19 +80,11 @@ const permittedItems = computed(() =>
         <div class="flex items-center justify-between px-4 pt-4 shrink-0 mb-3">
           <span>
             <Button
-              type="button"
+              icon="fa-solid fa-xmark"
               :label="t('ui.actions.close')"
-              rectangle
-              variant="outlined"
+              variant="secondary"
               @click="closeCallback"
-            >
-              <template #icon="{ class: iconClass }">
-                <font-awesome-icon
-                  :class="iconClass"
-                  icon="fa-solid fa-xmark"
-                />
-              </template>
-            </Button>
+            />
           </span>
         </div>
         <div class="overflow-y-auto">
@@ -115,7 +107,7 @@ const permittedItems = computed(() =>
                     leaveToClass: 'hidden',
                     leaveActiveClass: 'animate-slideup'
                   }"
-                  text
+                  variant="tertiary"
                   class="no-underline inline-flex items-center mt-2 cursor-pointer w-full justify-start"
                   tabindex="0"
                   :aria-expanded="item.items ? 'false' : undefined"
@@ -164,7 +156,7 @@ const permittedItems = computed(() =>
                     <Button
                       class="no-underline w-full justify-start"
                       :href="href"
-                      text
+                      variant="tertiary"
                       @click="
                         () => {
                           if (subItem.route) navigate();

@@ -5,7 +5,7 @@ import { useConfigStore } from '@/store';
 import { IdentityProviderKind } from '@/utils/enums/application';
 
 import type { DateTimeStrings, IdentityProvider } from '@/types';
-import type { ToastMessageOptions } from 'primevue/toast';
+import type { ToastMessageOptions } from '@/lib/primevue';
 
 /**
  * Turns date text into a Date, with date-only strings parsed as local midnight, leaving anything else unchanged.

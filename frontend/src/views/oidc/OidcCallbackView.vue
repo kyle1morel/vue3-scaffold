@@ -4,8 +4,9 @@ import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
+import { Button } from '@/components/bcds';
 import { Spinner } from '@/components/layout';
-import { Button, Message } from '@/lib/primevue';
+import { Message } from '@/lib/primevue';
 import { getCurrentUser } from '@/services';
 import { useAuthNStore } from '@/store';
 import { RouteName, StorageKey } from '@/utils/enums/application';

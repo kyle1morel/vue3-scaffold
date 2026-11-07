@@ -1,45 +1,46 @@
 <script setup lang="ts">
-import { useField } from 'vee-validate';
+import Password from 'primevue/password';
 
-import { Password } from '@/lib/primevue';
+import FieldWrapper from './FieldWrapper.vue';
 
-import FormField from './FormField.vue';
+defineOptions({ inheritAttrs: false });
 
 // Props
 const {
-  helpText = undefined,
-  label = undefined,
-  name,
-  placeholder = undefined,
+  description = undefined,
   disabled = false,
+  errorMessage = undefined,
+  label = undefined,
+  name = undefined,
+  placeholder = undefined,
   readonly = false,
   required = false
 } = defineProps<{
-  helpText?: string;
-  label?: string;
-  name: string;
-  placeholder?: string;
+  description?: string;
   disabled?: boolean;
+  errorMessage?: string;
+  label?: string;
+  name?: string;
+  placeholder?: string;
   readonly?: boolean;
   required?: boolean;
 }>();
 
-// State
-const { errorMessage, handleBlur, value } = useField<string | undefined>(() => name);
+const value = defineModel<string>();
 </script>
 
 <template>
-  <FormField
-    v-slot="{ id, inputAttrs, invalid, listeners }"
-    :error="errorMessage"
-    :help-text
+  <FieldWrapper
+    v-slot="{ id, inputAttrs, invalid }"
+    v-bind="$attrs"
+    :description
+    :error-message
     :label
     :required
   >
     <!-- Feedback is off, so there's no popup for aria-expanded to describe -->
     <Password
       v-model="value"
-      v-bind="listeners"
       :disabled
       :feedback="false"
       fluid
@@ -49,7 +50,6 @@ const { errorMessage, handleBlur, value } = useField<string | undefined>(() => n
       :name
       :placeholder
       toggle-mask
-      @blur="handleBlur"
     />
-  </FormField>
+  </FieldWrapper>
 </template>

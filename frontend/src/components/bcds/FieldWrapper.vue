@@ -2,20 +2,21 @@
 import { computed, useAttrs, useId } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-// class and style stay on the wrapper; the field's other attributes go to its control through the slot
+// The field passes its attributes on with v-bind="$attrs": class and style stay on this wrapper, and the rest go to
+// the control through inputAttrs, so PrimeVue's own props can't be set from outside
 defineOptions({ inheritAttrs: false });
 
 // Props
 const {
-  error = undefined,
-  helpText = undefined,
+  description = undefined,
+  errorMessage = undefined,
   label = undefined,
   nonLabelable = false,
   required = false
 } = defineProps<{
-  error?: string;
   // Several lines show one per row, as one description
-  helpText?: string | string[];
+  description?: string | string[];
+  errorMessage?: string;
   label?: string;
   // The control isn't an input a label can point at, so it's named with aria-labelledby instead
   nonLabelable?: boolean;
@@ -28,7 +29,6 @@ defineSlots<{
     inputAttrs: Record<string, unknown>;
     invalid: boolean;
     labelId: string | undefined;
-    listeners: Record<string, unknown>;
   }): unknown;
 }>();
 
@@ -38,32 +38,27 @@ const { t } = useI18n();
 // State
 const attrs = useAttrs();
 const id = useId();
-const ids = { error: `${id}-error`, help: `${id}-help`, label: `${id}-label` };
-const helpLines = computed(() => [helpText ?? []].flat().filter(Boolean));
+const ids = { description: `${id}-description`, error: `${id}-error`, label: `${id}-label` };
+const descriptionLines = computed(() => [description ?? []].flat().filter(Boolean));
 
 // Only rendered ids, so nothing points at a missing element
 const aria = computed(() => ({
-  'aria-describedby': [helpLines.value.length && ids.help, error && ids.error].filter(Boolean).join(' ') || undefined,
+  'aria-describedby':
+    [descriptionLines.value.length && ids.description, errorMessage && ids.error].filter(Boolean).join(' ') ||
+    undefined,
   'aria-required': required || undefined
 }));
 
 // Actions
-// Listeners stay on the PrimeVue component so its emits still fire; other attributes belong on the input
-function splitAttrs() {
-  const listeners: Record<string, unknown> = {};
-  const inputAttrs: Record<string, unknown> = {};
+function inputAttrs() {
+  const rest = Object.entries(attrs).filter(([key]) => key !== 'class' && key !== 'style');
 
-  for (const [key, value] of Object.entries(attrs)) {
-    if (key === 'class' || key === 'style') continue;
-    if (/^on[A-Z]/.test(key)) listeners[key] = value;
-    else inputAttrs[key] = value;
-  }
-
-  return { inputAttrs: { ...inputAttrs, ...aria.value }, listeners };
+  return { ...Object.fromEntries(rest), ...aria.value };
 }
 </script>
 
 <template>
+  <!-- The label, description and error every field shares, linked to the control through the slot -->
   <div
     :class="$attrs.class"
     :style="$attrs.style"
@@ -79,32 +74,32 @@ function splitAttrs() {
         v-if="required"
         class="app-field-required"
       >
-        {{ t('components.formField.required') }}
+        {{ t('components.fieldWrapper.required') }}
       </span>
     </label>
     <slot
       v-bind="{
-        ...splitAttrs(),
         id,
-        invalid: !!error,
+        inputAttrs: inputAttrs(),
+        invalid: !!errorMessage,
         labelId: label ? ids.label : undefined
       }"
     />
     <!-- One text with line breaks, so screen readers still hear a space between lines -->
     <small
-      v-if="helpLines.length"
-      :id="ids.help"
-      class="app-help-text block whitespace-pre-line"
+      v-if="descriptionLines.length"
+      :id="ids.description"
+      class="app-description block whitespace-pre-line"
     >
-      {{ helpLines.join('\n') }}
+      {{ descriptionLines.join('\n') }}
     </small>
     <div
-      v-if="error"
+      v-if="errorMessage"
       :id="ids.error"
       class="app-error-message mt-2"
     >
       <font-awesome-icon icon="fa-solid fa-circle-exclamation" />
-      {{ error }}
+      {{ errorMessage }}
     </div>
   </div>
 </template>

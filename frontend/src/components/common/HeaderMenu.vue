@@ -4,7 +4,8 @@ import { computed, ref, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import { Button, Menu } from '@/lib/primevue';
+import { Button } from '@/components/bcds';
+import { Menu } from '@/lib/primevue';
 import { useAuthNStore } from '@/store';
 import { RouteName } from '@/utils/enums/application';
 
@@ -40,8 +41,7 @@ const toggle = (event: Event) => {
   >
     <Button
       id="menu-toggle"
-      type="button"
-      text
+      variant="tertiary"
       class="font-bold text-lg"
       :aria-label="displayName"
       aria-haspopup="true"

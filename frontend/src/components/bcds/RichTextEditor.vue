@@ -1,44 +1,53 @@
 <script setup lang="ts">
-import { useField } from 'vee-validate';
+import Editor from 'primevue/editor';
 import { ref } from 'vue';
 
-import { Editor } from '@/lib/primevue';
-
-import FormField from './FormField.vue';
+import FieldWrapper from './FieldWrapper.vue';
 
 import type { EditorSelectionChangeEvent } from 'primevue/editor';
 import type { DirectiveBinding } from 'vue';
 
+defineOptions({ inheritAttrs: false });
+
 // Props
 const {
+  description = undefined,
   disabled = false,
-  helpText = undefined,
-  label = undefined,
-  name,
+  errorMessage = undefined,
   height = '160px',
+  label = undefined,
+  name = undefined,
   readonly = false,
   required = false
 } = defineProps<{
+  description?: string;
   disabled?: boolean;
-  helpText?: string;
-  label?: string;
-  name: string;
+  errorMessage?: string;
   height?: string;
+  label?: string;
+  name?: string;
   readonly?: boolean;
   required?: boolean;
 }>();
 
+// Emits
+// Quill has no blur event, so a cleared selection stands in for one
+const emit = defineEmits<{ blur: [] }>();
+
+const value = defineModel<string>();
+
 // State
-const { errorMessage, handleBlur, value } = useField<string | undefined>(() => name);
 const loaded = ref(false);
 
 // Actions
-// Quill builds its editable element itself, out of reach of pt, so the field's attributes are copied onto it
+// Quill builds its editable element itself, out of reach of pt, so the field's attributes are copied onto it;
+// listeners can't be set as attributes, so they're skipped
 function setEditableAttrs(el: HTMLElement, { value }: DirectiveBinding<Record<string, unknown> | false>) {
   const editable = el.querySelector('.ql-editor');
   if (!editable || !value) return;
 
   for (const [key, val] of Object.entries(value)) {
+    if (typeof val === 'function') continue;
     if (val === undefined) editable.removeAttribute(key);
     else editable.setAttribute(key, String(val));
   }
@@ -48,10 +57,11 @@ const vEditableAttrs = { mounted: setEditableAttrs, updated: setEditableAttrs };
 </script>
 
 <template>
-  <FormField
-    v-slot="{ inputAttrs, invalid, labelId, listeners }"
-    :error="errorMessage"
-    :help-text
+  <FieldWrapper
+    v-slot="{ inputAttrs, invalid, labelId }"
+    v-bind="$attrs"
+    :description
+    :error-message
     :label
     non-labelable
     :required
@@ -72,16 +82,14 @@ const vEditableAttrs = { mounted: setEditableAttrs, updated: setEditableAttrs };
         }
       "
     >
-      <!-- Editor emits no blur, so a cleared selection marks it touched -->
       <Editor
         v-model="value"
-        v-bind="listeners"
         :editor-style="`height: ${height}`"
         :pt="{ toolbar: { class: { hidden: disabled || readonly } } }"
         :readonly="disabled || readonly"
         @load="loaded = true"
-        @selection-change="(e: EditorSelectionChangeEvent) => !e.range && handleBlur()"
+        @selection-change="(e: EditorSelectionChangeEvent) => !e.range && emit('blur')"
       />
     </div>
-  </FormField>
+  </FieldWrapper>
 </template>

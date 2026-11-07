@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import { Button } from '@/lib/primevue';
+import { Button } from '@/components/bcds';
 import { useAuthNStore } from '@/store';
 import { RouteName } from '@/utils/enums/application';
 

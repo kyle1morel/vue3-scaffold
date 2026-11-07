@@ -2,12 +2,13 @@
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { Button, Column, DataTable, useConfirm, useToast } from '@/lib/primevue';
+import { Button } from '@/components/bcds';
+import { Column, DataTable, useConfirm, useToast } from '@/lib/primevue';
 import { deleteSubmission, listSubmissions } from '@/services';
 import { RouteName } from '@/utils/enums/application';
 import { formatDateShort } from '@/utils/formatters';
 
-import type { DataTablePageEvent } from 'primevue/datatable';
+import type { DataTablePageEvent } from '@/lib/primevue';
 import type { Submission } from '@/types';
 
 // Constants
@@ -119,32 +120,21 @@ onMounted(() => loadPage());
         <div class="flex gap-2">
           <Button
             v-tooltip.bottom="t('ui.actions.view')"
-            as="router-link"
+            icon="fa-solid fa-eye"
+            icon-only
+            :label="t('views.submissions.actions.view', { name: data.firstName })"
             :to="{ name: RouteName.SUBMISSION, params: { submissionId: data.id } }"
-            text
-            :aria-label="t('views.submissions.actions.view', { name: data.firstName })"
-          >
-            <template #icon="{ class: iconClass }">
-              <font-awesome-icon
-                :class="iconClass"
-                icon="fa-solid fa-eye"
-              />
-            </template>
-          </Button>
+            variant="tertiary"
+          />
           <Button
             v-tooltip.bottom="t('ui.actions.delete')"
-            severity="danger"
-            text
-            :aria-label="t('views.submissions.actions.delete', { name: data.firstName })"
+            danger
+            icon="fa-solid fa-trash"
+            icon-only
+            :label="t('views.submissions.actions.delete', { name: data.firstName })"
+            variant="tertiary"
             @click="confirmDelete(data)"
-          >
-            <template #icon="{ class: iconClass }">
-              <font-awesome-icon
-                :class="iconClass"
-                icon="fa-solid fa-trash"
-              />
-            </template>
-          </Button>
+          />
         </div>
       </template>
     </Column>

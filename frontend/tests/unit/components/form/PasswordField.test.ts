@@ -1,4 +1,4 @@
-import Password from '@/components/form/Password.vue';
+import PasswordField from '@/components/form/PasswordField.vue';
 
 import { mountComponent } from '../../../mountComponent';
 
@@ -8,18 +8,12 @@ import { mountComponent } from '../../../mountComponent';
 
 // Mount
 
-// Neither `findComponent(PvPassword)` (the imported component reference)
-// nor the singular `findComponent({ name: 'Password' })` reliably resolves
-// to the real nested PrimeVue component here -- both match our own
-// Password.vue wrapper instead, since its inferred SFC name (from the
-// filename) is also 'Password'. `findAllComponents({ name: 'Password' })`
-// does not have this problem and returns exactly the one real match.
-function findPvPassword(wrapper: ReturnType<typeof mountPassword>['wrapper']) {
-  return wrapper.findAllComponents({ name: 'Password' })[0]!;
+function findPvPassword(wrapper: ReturnType<typeof mountPasswordField>['wrapper']) {
+  return wrapper.findComponent({ name: 'Password' });
 }
 
-function mountPassword(options: { props?: Record<string, unknown> } = {}) {
-  const { wrapper } = mountComponent(Password, { props: { name: 'account.password', ...options.props } });
+function mountPasswordField(options: { props?: Record<string, unknown> } = {}) {
+  const { wrapper } = mountComponent(PasswordField, { props: { name: 'account.password', ...options.props } });
 
   return { wrapper };
 }
@@ -30,10 +24,10 @@ beforeEach(() => {
 
 // Tests
 
-describe('Password', () => {
+describe('PasswordField', () => {
   describe('rendering', () => {
     it('renders a PrimeVue Password bound to the given name', () => {
-      const { wrapper } = mountPassword();
+      const { wrapper } = mountPasswordField();
 
       const pvPassword = findPvPassword(wrapper);
       expect(pvPassword.exists()).toBe(true);
@@ -41,7 +35,7 @@ describe('Password', () => {
     });
 
     it('disables the feedback panel and enables the mask toggle', () => {
-      const { wrapper } = mountPassword();
+      const { wrapper } = mountPasswordField();
 
       const pvPassword = findPvPassword(wrapper);
       expect(pvPassword.props('feedback')).toBe(false);
@@ -49,7 +43,7 @@ describe('Password', () => {
     });
 
     it('passes placeholder through as a prop', () => {
-      const { wrapper } = mountPassword({ props: { placeholder: 'Enter password' } });
+      const { wrapper } = mountPasswordField({ props: { placeholder: 'Enter password' } });
 
       expect(findPvPassword(wrapper).props('placeholder')).toBe('Enter password');
     });
@@ -57,19 +51,19 @@ describe('Password', () => {
     // PrimeVue's Password has no `type` prop of its own -- `type` falls
     // through as a plain HTML attribute onto the underlying input.
     it('passes type through as a fallthrough attribute on the input', () => {
-      const { wrapper } = mountPassword({ props: { type: 'password' } });
+      const { wrapper } = mountPasswordField({ props: { type: 'password' } });
 
       expect(wrapper.find('input').attributes('type')).toBe('password');
     });
 
     it('renders the label text', () => {
-      const { wrapper } = mountPassword({ props: { label: 'Password' } });
+      const { wrapper } = mountPasswordField({ props: { label: 'Password' } });
 
       expect(wrapper.find('label').text()).toBe('Password');
     });
 
-    it('links the help text to the input', () => {
-      const { wrapper } = mountPassword({ props: { helpText: 'Must be at least 8 characters' } });
+    it('links the description to the input', () => {
+      const { wrapper } = mountPasswordField({ props: { description: 'Must be at least 8 characters' } });
 
       const describedBy = wrapper.find('input').attributes('aria-describedby');
       expect(wrapper.find(`[id="${describedBy}"]`).text()).toBe('Must be at least 8 characters');

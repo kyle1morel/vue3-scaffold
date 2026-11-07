@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 
-import { Button, useToast } from '@/lib/primevue';
+import { Button } from '@/components/bcds';
+import { useToast } from '@/lib/primevue';
 
 // Props
 const { iconOnly = false, toCopy = undefined } = defineProps<{
@@ -32,18 +33,10 @@ async function copyToClipboard() {
 
 <template>
   <Button
-    :aria-label="iconOnly ? t('components.copyToClipboard.button') : undefined"
-    :label="iconOnly ? undefined : t('components.copyToClipboard.button')"
-    outlined
-    :rounded="iconOnly"
-    severity="secondary"
+    icon="fa-solid fa-clipboard"
+    :icon-only
+    :label="t('components.copyToClipboard.button')"
+    variant="secondary"
     @click="copyToClipboard"
-  >
-    <template #icon="{ class: iconClass }">
-      <font-awesome-icon
-        :class="iconClass"
-        icon="fa-solid fa-clipboard"
-      />
-    </template>
-  </Button>
+  />
 </template>

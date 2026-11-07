@@ -10,7 +10,7 @@ const testName = 'startDate';
 
 // Mount
 
-function mountDatePicker(options: { helpText?: string; label?: string; required?: boolean } = {}) {
+function mountDatePicker(options: { description?: string; label?: string; required?: boolean } = {}) {
   const { wrapper } = mountWithFormContext(DatePicker, { componentProps: { name: testName, ...options } });
 
   return { wrapper };
@@ -20,8 +20,8 @@ function mountDatePicker(options: { helpText?: string; label?: string; required?
 
 describe('DatePicker', () => {
   describe('rendering', () => {
-    it('links the label, format hint and help text to the input', () => {
-      const { wrapper } = mountDatePicker({ label: 'Start date', helpText: 'Pick a day' });
+    it('links the label, format hint and description to the input', () => {
+      const { wrapper } = mountDatePicker({ label: 'Start date', description: 'Pick a day' });
 
       const input = wrapper.find('input');
       const description = wrapper.find(`[id="${input.attributes('aria-describedby')}"]`).text();

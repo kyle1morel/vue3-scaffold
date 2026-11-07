@@ -7,25 +7,25 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { z } from 'zod';
 
+import { Button } from '@/components/bcds';
 import Tag from '@/components/common/Tag.vue';
 import {
-  AutoComplete,
   CancelButton,
   Checkbox,
+  ComboBox,
   DatePicker,
-  Editor,
-  InputMask,
-  InputNumber,
-  InputText,
-  Password,
-  RadioList,
+  NumberField,
+  PasswordField,
+  RadioGroup,
+  RichTextEditor,
   SectionHeader,
   Select,
-  TextArea
+  TextArea,
+  TextField
 } from '@/components/form';
 import { Spinner } from '@/components/layout';
 import { useFormNavigationGuard } from '@/composables/useFormNavigationGuard';
-import { Button, Card, Message, useToast } from '@/lib/primevue';
+import { Card, Message, useToast } from '@/lib/primevue';
 import { createSubmission, getSubmission } from '@/services';
 import { RouteName } from '@/utils/enums/application';
 import { formatDateLong } from '@/utils/formatters';
@@ -40,7 +40,6 @@ import {
   toTypedSchema
 } from '@/utils/zodSchema';
 
-import type { AutoCompleteCompleteEvent } from 'primevue/autocomplete';
 import type { MessageSchema } from '@/i18n';
 import type { Submission } from '@/types';
 
@@ -95,7 +94,6 @@ const loadError = ref<string>();
 const readOnly = !!submissionId;
 const submission = ref<Submission>();
 
-// Picked categories save their value; typed-in categories save the text as entered
 const categories = [
   { label: t('views.demoForm.options.categories.feedback'), value: 'feedback' },
   { label: t('views.demoForm.options.categories.question'), value: 'question' },
@@ -112,8 +110,8 @@ const provinces = [
 ];
 
 // Actions
-function filterCities(event: AutoCompleteCompleteEvent) {
-  citySuggestions.value = CITIES.filter((city) => city.toLowerCase().includes(event.query.toLowerCase()));
+function filterCities(query: string) {
+  citySuggestions.value = CITIES.filter((city) => city.toLowerCase().includes(query.toLowerCase()));
 }
 
 async function loadSubmission(id: string) {
@@ -224,22 +222,22 @@ const onSubmit = handleSubmit(
           class="col-span-12"
           :title="t('views.demoForm.sections.contact')"
         />
-        <InputText
+        <TextField
           class="col-span-12 md:col-span-6"
           name="firstName"
           :readonly="readOnly"
           :label="field('firstName')"
-          :help-text="t('views.demoForm.help.firstName')"
+          :description="t('views.demoForm.help.firstName')"
           required
         />
-        <InputText
+        <TextField
           class="col-span-12 md:col-span-6"
           name="email"
           :readonly="readOnly"
           :label="field('email')"
           required
         />
-        <InputMask
+        <TextField
           class="col-span-12 md:col-span-6"
           name="phone"
           :readonly="readOnly"
@@ -247,12 +245,12 @@ const onSubmit = handleSubmit(
           mask="(999) 999-9999"
           :placeholder="t('views.demoForm.placeholders.phone')"
         />
-        <Password
+        <PasswordField
           v-if="!readOnly"
           class="col-span-12 md:col-span-6"
           name="password"
           :label="field('password')"
-          :help-text="t('views.demoForm.help.password')"
+          :description="t('views.demoForm.help.password')"
           required
         />
         <Select
@@ -266,7 +264,7 @@ const onSubmit = handleSubmit(
           :placeholder="t('views.demoForm.placeholders.province')"
           required
         />
-        <RadioList
+        <RadioGroup
           class="col-span-12 md:col-span-6"
           name="contactMethod"
           :readonly="readOnly"
@@ -286,16 +284,17 @@ const onSubmit = handleSubmit(
           :label="field('startDate')"
           :max-date="new Date()"
         />
-        <InputNumber
+        <NumberField
           class="col-span-12 md:col-span-6"
           name="quantity"
           :readonly="readOnly"
           :label="field('quantity')"
           :max-fraction-digits="0"
-          :help-text="t('views.demoForm.help.quantity')"
+          :description="t('views.demoForm.help.quantity')"
         />
-        <AutoComplete
+        <ComboBox
           class="col-span-12 md:col-span-6"
+          allows-custom-value
           name="city"
           :readonly="readOnly"
           :label="field('city')"
@@ -307,7 +306,6 @@ const onSubmit = handleSubmit(
           class="col-span-12 md:col-span-6"
           name="category"
           :readonly="readOnly"
-          editable
           :label="field('category')"
           :options="categories"
           option-label="label"
@@ -319,19 +317,19 @@ const onSubmit = handleSubmit(
           name="comments"
           :readonly="readOnly"
           :label="field('comments')"
-          :help-text="t('views.demoForm.help.comments')"
+          :description="t('views.demoForm.help.comments')"
         />
 
         <SectionHeader
           class="col-span-12"
           :title="t('views.demoForm.sections.notes')"
         />
-        <Editor
+        <RichTextEditor
           class="col-span-12"
           name="notes"
           :readonly="readOnly"
           :label="field('notes')"
-          :help-text="t('views.demoForm.help.notes')"
+          :description="t('views.demoForm.help.notes')"
         />
 
         <Checkbox
@@ -346,16 +344,10 @@ const onSubmit = handleSubmit(
           class="col-span-12 flex gap-2 mt-4"
         >
           <Button
-            type="submit"
+            icon="fa-solid fa-check"
             :label="t('ui.actions.submit')"
-          >
-            <template #icon="{ class: iconClass }">
-              <font-awesome-icon
-                :class="iconClass"
-                icon="fa-solid fa-check"
-              />
-            </template>
-          </Button>
+            type="submit"
+          />
           <CancelButton @click="resetForm()" />
         </div>
       </form>
@@ -365,16 +357,9 @@ const onSubmit = handleSubmit(
   <Button
     v-if="readOnly"
     class="mt-6"
-    as="router-link"
-    :to="{ name: RouteName.SUBMISSIONS }"
+    icon="fa-solid fa-arrow-left"
     :label="t('views.demoForm.back')"
-    outlined
-  >
-    <template #icon="{ class: iconClass }">
-      <font-awesome-icon
-        :class="iconClass"
-        icon="fa-solid fa-arrow-left"
-      />
-    </template>
-  </Button>
+    :to="{ name: RouteName.SUBMISSIONS }"
+    variant="secondary"
+  />
 </template>

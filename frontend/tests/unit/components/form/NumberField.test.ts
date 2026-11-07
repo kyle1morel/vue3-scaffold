@@ -1,6 +1,6 @@
 import PrimeInputNumber from 'primevue/inputnumber';
 
-import InputNumber from '@/components/form/InputNumber.vue';
+import NumberField from '@/components/form/NumberField.vue';
 
 import { mountWithFormContext } from '../../../mountWithFormContext';
 
@@ -12,36 +12,32 @@ const testName = 'quantity';
 
 // Mount
 
-function mountInputNumber(componentProps: Record<string, unknown> = {}) {
-  const { wrapper, form } = mountWithFormContext(InputNumber, {
+function mountNumberField(componentProps: Record<string, unknown> = {}) {
+  const { wrapper, form } = mountWithFormContext(NumberField, {
     componentProps: { name: testName, label: 'Quantity', ...componentProps }
   });
 
-  // Our wrapper shares PrimeVue's component name, so filtering by PrimeVue's root class picks the real one
-  const inputNumber = wrapper.findAllComponents(PrimeInputNumber).find((match) => match.classes('p-inputnumber'));
-  if (!inputNumber) throw new Error('PrimeVue InputNumber was not rendered');
-
-  return { wrapper, form, inputNumber, input: wrapper.find('input') };
+  return { wrapper, form, inputNumber: wrapper.findComponent(PrimeInputNumber), input: wrapper.find('input') };
 }
 
 // Tests
 
-describe('InputNumber', () => {
+describe('NumberField', () => {
   describe('rendering', () => {
     it('links the label to the input', () => {
-      const { wrapper, input } = mountInputNumber();
+      const { wrapper, input } = mountNumberField();
 
       expect(wrapper.find(`label[for="${input.attributes('id')}"]`).text()).toBe('Quantity');
     });
 
-    it('describes the input with its help text', () => {
-      const { wrapper, input } = mountInputNumber({ helpText: 'Between 1 and 100' });
+    it('describes the input with its description', () => {
+      const { wrapper, input } = mountNumberField({ description: 'Between 1 and 100' });
 
       expect(wrapper.find(`[id="${input.attributes('aria-describedby')}"]`).text()).toBe('Between 1 and 100');
     });
 
     it('disables the input', () => {
-      const { input } = mountInputNumber({ disabled: true });
+      const { input } = mountNumberField({ disabled: true });
 
       expect(input.attributes('disabled')).toBeDefined();
     });
@@ -49,7 +45,7 @@ describe('InputNumber', () => {
 
   describe('user interaction', () => {
     it('sets the field to the entered number', async () => {
-      const { form, inputNumber } = mountInputNumber();
+      const { form, inputNumber } = mountNumberField();
 
       await inputNumber.vm.$emit('update:modelValue', 3);
 

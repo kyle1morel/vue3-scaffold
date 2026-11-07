@@ -2,7 +2,7 @@
 import { useIsFormDirty } from 'vee-validate';
 import { useI18n } from 'vue-i18n';
 
-import { Button } from '@/lib/primevue';
+import { Button } from '@/components/bcds';
 
 // Composables
 const { t } = useI18n();
@@ -14,15 +14,9 @@ const isDirty = useIsFormDirty();
 <template>
   <!-- A clean form has nothing to cancel; @click and :disabled fall through to the Button -->
   <Button
-    severity="secondary"
     :disabled="!isDirty"
+    icon="fa-solid fa-xmark"
     :label="t('ui.actions.cancel')"
-  >
-    <template #icon="{ class: iconClass }">
-      <font-awesome-icon
-        :class="iconClass"
-        icon="fa-solid fa-xmark"
-      />
-    </template>
-  </Button>
+    variant="secondary"
+  />
 </template>

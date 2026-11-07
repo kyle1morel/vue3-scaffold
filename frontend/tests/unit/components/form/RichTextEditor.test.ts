@@ -1,4 +1,4 @@
-import Editor from '@/components/form/Editor.vue';
+import RichTextEditor from '@/components/form/RichTextEditor.vue';
 
 import { mountComponent } from '../../../mountComponent';
 
@@ -8,16 +8,12 @@ import { mountComponent } from '../../../mountComponent';
 
 // Mount
 
-// PrimeVue's Editor wraps Quill, which starts an async init loop that never
-// settles under happy-dom and hangs the test -- stub it out. The stub is
-// given a name distinct from 'Editor' because our own wrapper component's
-// inferred SFC name is *also* 'Editor' (same filename), and VTU's
-// findComponent(name) matching would otherwise resolve to the wrong node
-// (our wrapper root) once the real child is replaced by a same-named stub.
+// PrimeVue's Editor wraps Quill, which starts an async init loop that never settles under happy-dom and hangs the
+// test, so it's stubbed out
 const PvEditorStub = { name: 'PvEditorStub', props: ['editorStyle', 'readonly', 'pt'], template: '<div />' };
 
-function mountEditor(options: { props?: Record<string, unknown> } = {}) {
-  const { wrapper } = mountComponent(Editor, {
+function mountRichTextEditor(options: { props?: Record<string, unknown> } = {}) {
+  const { wrapper } = mountComponent(RichTextEditor, {
     props: { name: 'basic.description', ...options.props },
     stubs: { Editor: PvEditorStub }
   });
@@ -31,10 +27,10 @@ beforeEach(() => {
 
 // Tests
 
-describe('Editor', () => {
+describe('RichTextEditor', () => {
   describe('rendering', () => {
     it('renders a PrimeVue Editor with the default height', () => {
-      const { wrapper } = mountEditor();
+      const { wrapper } = mountRichTextEditor();
 
       const pvEditor = wrapper.findComponent(PvEditorStub);
       expect(pvEditor.exists()).toBe(true);
@@ -42,19 +38,19 @@ describe('Editor', () => {
     });
 
     it('passes a custom height through to editor-style', () => {
-      const { wrapper } = mountEditor({ props: { height: '300px' } });
+      const { wrapper } = mountRichTextEditor({ props: { height: '300px' } });
 
       expect(wrapper.findComponent(PvEditorStub).props('editorStyle')).toBe('height: 300px');
     });
 
-    it('renders the help text', () => {
-      const { wrapper } = mountEditor({ props: { helpText: 'Describe the project' } });
+    it('renders the description', () => {
+      const { wrapper } = mountRichTextEditor({ props: { description: 'Describe the project' } });
 
       expect(wrapper.find('small').text()).toBe('Describe the project');
     });
 
     it('is editable with a toolbar by default', () => {
-      const { wrapper } = mountEditor();
+      const { wrapper } = mountRichTextEditor();
 
       const pvEditor = wrapper.findComponent(PvEditorStub);
       expect(pvEditor.props('readonly')).toBe(false);
@@ -62,7 +58,7 @@ describe('Editor', () => {
     });
 
     it('is read only with the toolbar hidden when disabled', () => {
-      const { wrapper } = mountEditor({ props: { disabled: true } });
+      const { wrapper } = mountRichTextEditor({ props: { disabled: true } });
 
       const pvEditor = wrapper.findComponent(PvEditorStub);
       expect(pvEditor.props('readonly')).toBe(true);

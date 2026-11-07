@@ -21,6 +21,9 @@
       "format": "Format: year - month - day",
       "formatWithTime": "Format: year - month - day, hour : minute (24-hour)"
     },
+    "fieldWrapper": {
+      "required": "(required)"
+    },
     "footer": {
       "about": "About gov.bc.ca",
       "accessibility": "Accessibility",
@@ -37,9 +40,6 @@
       "home": "Home",
       "moreInfo": "More info",
       "privacy": "Privacy"
-    },
-    "formField": {
-      "required": "(required)"
     },
     "header": {
       "skipToMain": "Skip to main content"
@@ -135,7 +135,7 @@
         }
       },
       "placeholders": {
-        "category": "Pick one or type your own",
+        "category": "Select a category",
         "city": "Start typing a B.C. city",
         "phone": "(250) 555-0100",
         "province": "Select a province"

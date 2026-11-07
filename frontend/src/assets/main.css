@@ -101,7 +101,7 @@
 @layer utilities {
   /* Field text as in the BC Design System form components */
   .app-field-label,
-  .app-help-text,
+  .app-description,
   .app-error-message {
     font-size: var(--typography-font-size-small-body);
     font-weight: var(--typography-font-weights-regular);
@@ -113,7 +113,7 @@
   }
 
   .app-field-required,
-  .app-help-text {
+  .app-description {
     color: var(--typography-color-secondary);
   }
 

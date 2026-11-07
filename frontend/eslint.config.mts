@@ -121,18 +121,7 @@ export default defineConfig([
         'error',
         {
           attributes: {
-            '/.+/': [
-              'alt',
-              'aria-label',
-              'header',
-              'help-text',
-              'label',
-              'message',
-              'placeholder',
-              'status',
-              'title',
-              'tooltip'
-            ]
+            '/.+/': ['alt', 'aria-label', 'description', 'header', 'label', 'message', 'placeholder', 'title']
           },
           // Punctuation-only or empty text, such as separators, the copyright sign and a decorative alt=""
           ignorePattern: '^[\\s#:()&©*/|.,-]*$'
@@ -140,6 +129,24 @@ export default defineConfig([
       ],
       '@intlify/vue-i18n/no-v-html': 'error',
       '@intlify/vue-i18n/valid-message-syntax': 'error'
+    }
+  },
+  // PrimeVue stays behind components/bcds, and lib/primevue lists what is deliberately used directly
+  {
+    files: ['src/**/*.{ts,vue}'],
+    ignores: ['src/components/bcds/**', 'src/lib/primevue/**', 'src/main.ts', 'src/ThemeOverride.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '^@?primevue(/|$)',
+              message: 'Use a components/bcds component, or @/lib/primevue for PrimeVue we deliberately use directly.'
+            }
+          ]
+        }
+      ]
     }
   },
   // Turns off rules that fight Prettier, which formats on its own: npm run lint checks, the pre-commit hook writes
