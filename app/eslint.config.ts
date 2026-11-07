@@ -30,6 +30,9 @@ export default defineConfig([
       jsdoc: { tagNamePreference: { template: 'typeParam' } }
     },
     rules: {
+      // Node crashes on an unhandled rejection, and Express only catches the promise a handler returns
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/no-require-imports': 'error',
       'eol-last': ['error', 'always'],
       'jsdoc/check-param-names': ['warn', { checkDestructured: false }],
