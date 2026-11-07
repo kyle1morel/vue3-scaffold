@@ -183,7 +183,7 @@ function mountCancelButton(options: { editable?: boolean } = {}) {
 }
 ```
 
-(from `CancelButton.spec.ts`.)
+(from `CancelButton.test.ts`.)
 
 Rules for the local mount factory:
 
@@ -257,7 +257,7 @@ Notes:
   except the last one before its parent block's own closing brace (no
   blank line right before a `}` / `});`). Run `npm run format:tests`
   (`frontend/format-test-blank-lines.mjs`) to auto-fix this across all
-  `tests/unit/**/*.spec.ts` files.
+  `tests/unit/**/*.test.ts` files.
 
 ## Known gotchas
 

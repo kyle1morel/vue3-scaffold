@@ -8,7 +8,7 @@ const testDir = './tests/unit';
 function specFiles(dir) {
   return fs
     .readdirSync(dir, { recursive: true })
-    .filter((f) => f.endsWith('.spec.ts'))
+    .filter((f) => f.endsWith('.test.ts'))
     .map((f) => path.join(dir, f));
 }
 

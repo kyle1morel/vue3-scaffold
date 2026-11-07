@@ -25,7 +25,7 @@ pre-commit:
       stage_fixed: true
     - name: frontend-test-blank-lines
       root: frontend/
-      glob: "*.spec.ts"
+      glob: "*.test.ts"
       run: node format-test-blank-lines.mjs
       stage_fixed: true
     - name: frontend-lint
