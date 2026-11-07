@@ -97,22 +97,18 @@ export const ThemeOverride = definePreset(Material, {
       },
       info: {
         border: tokens.supportBorderColorInfo,
-        icon: tokens.iconsColorInfo,
         surface: tokens.supportSurfaceColorInfo
       },
       danger: {
         border: tokens.supportBorderColorDanger,
-        icon: tokens.iconsColorDanger,
         surface: tokens.supportSurfaceColorDanger
       },
       success: {
         border: tokens.supportBorderColorSuccess,
-        icon: tokens.iconsColorSuccess,
         surface: tokens.supportSurfaceColorSuccess
       },
       warning: {
         border: tokens.supportBorderColorWarning,
-        icon: tokens.iconsColorWarning,
         surface: tokens.supportSurfaceColorWarning
       }
     },
@@ -238,92 +234,6 @@ export const ThemeOverride = definePreset(Material, {
         }
       `
     },
-    // Matches the BC design system buttons: BC focus outline on every variant, BC disabled colours, not opacity
-    button: {
-      root: {
-        paddingY: tokens.layoutPaddingSmall,
-        focusRing: {
-          width: tokens.layoutBorderWidthMedium,
-          style: 'solid',
-          offset: '2px'
-        }
-      },
-      colorScheme: {
-        light: {
-          root: {
-            primary: {
-              focusRing: {
-                color: '{borderactive}'
-              }
-            },
-            secondary: {
-              background: '{surface.0}',
-              hoverBackground: '{surfacehover}',
-              activeBackground: '{surfacepressed}',
-              borderColor: '{borderdark}',
-              hoverBorderColor: '{borderdark}',
-              activeBorderColor: '{borderdark}',
-              color: '{textprimary}',
-              hoverColor: '{textprimary}',
-              activeColor: '{textprimary}',
-              focusRing: {
-                color: '{borderactive}'
-              }
-            },
-            danger: {
-              hoverBackground: '{red.800}',
-              hoverBorderColor: '{red.800}',
-              activeBackground: '{support.danger.surface}',
-              activeBorderColor: '{support.danger.surface}',
-              activeColor: '{support.danger.border}',
-              focusRing: {
-                color: '{borderactive}'
-              }
-            }
-          },
-          outlined: {
-            primary: {
-              hoverBackground: '{surfacehover}'
-            },
-            // Material's grey reads as disabled and fails contrast, so match the BC secondary button
-            secondary: {
-              hoverBackground: '{surfacehover}',
-              activeBackground: '{surfacepressed}',
-              borderColor: '{borderdark}',
-              color: '{textprimary}'
-            }
-          },
-          text: {
-            primary: {
-              color: '{textprimary}',
-              hoverBackground: '{greyscale.200}',
-              activeBackground: '{surfacepressed}'
-            }
-          },
-          link: {
-            color: '{textlink}',
-            hoverColor: '{textlink}',
-            activeColor: '{textlink}'
-          }
-        }
-      },
-      // Replaces Material's focus styles, which swap in the pressed colour instead of showing the outline
-      css: () => `
-        .p-button:disabled {
-          opacity: 1;
-          background: var(--p-disabledcolor);
-          border-color: var(--p-disabledcolor);
-          color: var(--p-surface-600);
-        }
-        .p-button-secondary:disabled { border-color: var(--p-borderlight); }
-        .p-button-text:disabled,
-        .p-button-link:disabled {
-          background: transparent;
-          border-color: transparent;
-        }
-        .p-button:not(:disabled):hover .p-button-label { text-decoration: underline; }
-      `
-    },
     datatable: {
       paginatorBottom: {
         borderWidth: '0'
@@ -334,19 +244,6 @@ export const ThemeOverride = definePreset(Material, {
         .p-datatable .p-paginator { justify-content: flex-end; }
       `
     },
-    dialog: {
-      title: {
-        fontSize: tokens.typographyFontSizeH5,
-        fontWeight: String(tokens.typographyFontWeightsBold)
-      },
-      // Footer buttons are written primary-first; reverse them so the primary action sits on the right
-      css: () => `
-        .p-dialog-footer {
-          flex-direction: row-reverse;
-          justify-content: flex-start;
-        }
-      `
-    },
     // PrimeVue leaves read-only fields looking editable; BC greys them but keeps the text at full contrast
     editor: {
       css: () => `
@@ -355,22 +252,11 @@ export const ThemeOverride = definePreset(Material, {
         }
       `
     },
-    checkbox: {
-      css: () => '.p-checkbox-input[readonly] { cursor: not-allowed; }'
-    },
     inputtext: {
       css: () => `.p-inputtext[readonly] { background: ${tokens.surfaceColorFormsDisabled}; }`
     },
     textarea: {
       css: () => `.p-textarea[readonly] { background: ${tokens.surfaceColorFormsDisabled}; }`
-    },
-    menu: {
-      item: {
-        color: '{text.color}',
-        icon: {
-          color: '{text.color}'
-        }
-      }
     },
     menubar: {
       root: {
@@ -404,45 +290,6 @@ export const ThemeOverride = definePreset(Material, {
         }
       }
     },
-    message: {
-      colorScheme: {
-        light: {
-          error: {
-            background: '{support.danger.surface}',
-            color: '{textsecondary}'
-          },
-          info: {
-            background: '{support.info.surface}',
-            color: '{textsecondary}'
-          },
-          success: {
-            background: '{support.success.surface}',
-            color: '{textsecondary}'
-          },
-          warn: {
-            background: '{support.warning.surface}',
-            color: '{textsecondary}'
-          }
-        }
-      },
-      // Setting the message.root.borderWidth token causes the border to overflow the parent, causing alignment issues.
-      // This workaround uses outline with an offset to render a border within bounds of parent.
-      // Message has no icon colour token, so the BC icon colours are set here too.
-      css: () => `
-        .p-message {
-          outline-width: var(--p-support-border-width);
-          outline-offset: calc(-1 * var(--p-support-border-width));
-        }
-        .p-message-error { outline-color: var(--p-support-danger-border); }
-        .p-message-info { outline-color: var(--p-support-info-border); }
-        .p-message-success { outline-color: var(--p-support-success-border); }
-        .p-message-warn { outline-color: var(--p-support-warning-border); }
-        .p-message-error .p-message-icon { color: var(--p-support-danger-icon); }
-        .p-message-info .p-message-icon { color: var(--p-support-info-icon); }
-        .p-message-success .p-message-icon { color: var(--p-support-success-icon); }
-        .p-message-warn .p-message-icon { color: var(--p-support-warning-icon); }
-      `
-    },
     panel: {
       header: { padding: '1.5rem 2.25rem 1.5rem 2.25rem' },
       toggleableHeader: { padding: '1.5rem 2.25rem 1.5rem 2.25rem' },
@@ -453,31 +300,6 @@ export const ThemeOverride = definePreset(Material, {
           border: none;
         }`
     },
-    radiobutton: {
-      icon: {
-        size: '10px',
-        checkedColor: '{disabledcolor}',
-        checkedHoverColor: '{disabledcolor}',
-        disabledColor: '{form.field.disabled.color}'
-      },
-      // BC keeps read-only radios and checkboxes looking enabled and only changes the cursor
-      css: () => `
-        .p-radiobutton-checked .p-radiobutton-box { border-width: thick }
-        .p-radiobutton-input[readonly] { cursor: not-allowed; }
-      `
-    },
-    progressspinner: {
-      colorScheme: {
-        light: {
-          root: {
-            colorOne: '{primary.color}',
-            colorTwo: '{primary.color}',
-            colorThree: '{primary.color}',
-            colorFour: '{primary.color}'
-          }
-        }
-      }
-    },
     tabs: {
       tab: {
         color: '{primary.color}'
@@ -486,61 +308,6 @@ export const ThemeOverride = definePreset(Material, {
         padding: '1.2rem 1.2rem 1.2rem 1.2rem'
       },
       css: (options) => `${materialCss('tabs', options)} .p-tab { text-decoration: underline; }`
-    },
-    tooltip: {
-      root: {
-        background: '{surface.800}',
-        color: '{surface.0}'
-      }
-    },
-    toast: {
-      root: {
-        borderWidth: '{support.border.width}'
-      },
-      colorScheme: {
-        light: {
-          error: {
-            background: '{support.danger.surface}',
-            borderColor: '{support.danger.border}',
-            color: '{textsecondary}',
-            detailColor: '{textsecondary}',
-            closeButton: {
-              hoverBackground: '{red.200}',
-              focusRing: { color: '{red.600}', shadow: 'none' }
-            }
-          },
-          info: {
-            background: '{support.info.surface}',
-            borderColor: '{support.info.border}',
-            color: '{textsecondary}',
-            detailColor: '{textsecondary}',
-            closeButton: {
-              hoverBackground: '{bcblue.200}',
-              focusRing: { color: '{bcblue.600}', shadow: 'none' }
-            }
-          },
-          success: {
-            background: '{support.success.surface}',
-            borderColor: '{support.success.border}',
-            color: '{textsecondary}',
-            detailColor: '{textsecondary}',
-            closeButton: {
-              hoverBackground: '{green.200}',
-              focusRing: { color: '{green.600}', shadow: 'none' }
-            }
-          },
-          warn: {
-            background: '{support.warning.surface}',
-            borderColor: '{support.warning.border}',
-            color: '{textsecondary}',
-            detailColor: '{textsecondary}',
-            closeButton: {
-              hoverBackground: '{gold.300}',
-              focusRing: { color: '{gold.600}', shadow: 'none' }
-            }
-          }
-        }
-      }
     }
   }
 });

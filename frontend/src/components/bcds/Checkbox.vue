@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import PrimeCheckbox from 'primevue/checkbox';
-import { mergeProps } from 'vue';
+import { CheckboxIndicator, CheckboxRoot } from 'reka-ui';
 import { useI18n } from 'vue-i18n';
 
 import FieldWrapper from './FieldWrapper.vue';
@@ -12,6 +11,7 @@ const {
   description = undefined,
   disabled = false,
   errorMessage = undefined,
+  indeterminate = false,
   label = undefined,
   name = undefined,
   readonly = false,
@@ -20,6 +20,8 @@ const {
   description?: string;
   disabled?: boolean;
   errorMessage?: string;
+  // Neither checked nor unchecked, such as a select-all box when only some are selected
+  indeterminate?: boolean;
   label?: string;
   name?: string;
   readonly?: boolean;
@@ -32,9 +34,9 @@ const value = defineModel<boolean>();
 const { t } = useI18n();
 
 // Actions
-// PrimeVue's readonly only skips the update, so the click is cancelled to stop the native checkbox toggling
-function preventToggle(event: Event) {
-  if (readonly) event.preventDefault();
+// Reka has no read-only state, so a read-only box ignores the change
+function update(checked: boolean | 'indeterminate') {
+  if (!readonly) value.value = checked === true;
 }
 </script>
 
@@ -44,23 +46,31 @@ function preventToggle(event: Event) {
     v-slot="{ id, inputAttrs, invalid }"
     v-bind="$attrs"
     :description
+    error-icon
     :error-message
     :required
   >
     <div class="flex items-center">
-      <PrimeCheckbox
-        v-model="value"
-        binary
+      <CheckboxRoot
+        :id
+        v-bind="inputAttrs"
+        :aria-invalid="invalid || undefined"
+        :aria-readonly="readonly || undefined"
+        class="box"
+        :class="{ invalid, readonly }"
         :disabled
-        :input-id="id"
-        :invalid
+        :model-value="indeterminate ? 'indeterminate' : (value ?? false)"
         :name
-        :pt="{ input: mergeProps(inputAttrs, { 'aria-readonly': readonly || undefined, onClick: preventToggle }) }"
-        :readonly
-      />
+        :required
+        @update:model-value="update"
+      >
+        <CheckboxIndicator class="flex">
+          <font-awesome-icon :icon="indeterminate ? 'fa-solid fa-minus' : 'fa-solid fa-check'" />
+        </CheckboxIndicator>
+      </CheckboxRoot>
       <label
         v-if="label"
-        class="app-field-label pl-2 mb-0"
+        class="label"
         :class="{ 'cursor-not-allowed': readonly }"
         :for="id"
       >
@@ -75,3 +85,69 @@ function preventToggle(event: Event) {
     </div>
   </FieldWrapper>
 </template>
+
+<style scoped>
+.label {
+  margin-bottom: 0;
+  padding-left: 10px;
+  color: var(--typography-color-secondary);
+  font: var(--typography-regular-small-body);
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: content-box;
+  width: var(--icons-size-small);
+  height: var(--icons-size-small);
+  padding: 0;
+  border: var(--layout-border-width-small) solid var(--surface-color-border-medium);
+  border-radius: var(--layout-border-radius-small);
+  background: var(--surface-color-secondary-default);
+  color: var(--icons-color-primary-invert);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.box:hover {
+  border-color: var(--surface-color-border-dark);
+}
+
+.box:focus-visible {
+  outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
+  outline-offset: var(--layout-margin-hair);
+}
+
+.box[data-state='checked'],
+.box[data-state='indeterminate'] {
+  border-color: var(--surface-color-primary-default);
+  background: var(--surface-color-primary-default);
+}
+
+.box[data-state='checked']:hover {
+  border-color: var(--surface-color-primary-hover);
+  background: var(--surface-color-primary-hover);
+}
+
+.box.invalid {
+  border-color: var(--support-border-color-danger);
+}
+
+.box.invalid[data-state='checked'],
+.box.invalid[data-state='indeterminate'] {
+  background: var(--surface-color-primary-danger-button-default);
+}
+
+.box.readonly {
+  cursor: not-allowed;
+}
+
+.box[data-disabled] {
+  border-color: var(--surface-color-border-medium);
+  background: var(--surface-color-primary-disabled);
+  color: var(--icons-color-disabled);
+  cursor: not-allowed;
+}
+</style>

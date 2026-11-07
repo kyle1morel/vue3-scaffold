@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import RadioButton from 'primevue/radiobutton';
+import { RadioGroupItem, RadioGroupRoot } from 'reka-ui';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 import FieldWrapper from './FieldWrapper.vue';
+
+import type { AcceptableValue } from 'reka-ui';
 
 defineOptions({ inheritAttrs: false });
 
@@ -12,91 +13,180 @@ const {
   description = undefined,
   disabled = false,
   errorMessage = undefined,
+  flexWrap = 'nowrap',
   label = undefined,
   name = undefined,
   options,
+  orientation = 'vertical',
   readonly = false,
   required = false
 } = defineProps<{
   description?: string;
   disabled?: boolean;
   errorMessage?: string;
+  // Whether horizontal options wrap onto more lines
+  flexWrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
   label?: string;
   name?: string;
   // A plain string is both the label and the value
-  options: readonly ({ label: string | number; value: string | number } | string)[];
+  options: readonly ({ description?: string; label: string | number; value: string | number } | string)[];
+  orientation?: 'horizontal' | 'vertical';
   readonly?: boolean;
   required?: boolean;
 }>();
 
 // Emits
-// Blur doesn't bubble to the fieldset, so each radio reports its own
+// Blur doesn't bubble to the group, so each radio reports its own
 const emit = defineEmits<{ blur: [event: Event] }>();
 
 const value = defineModel<string | number>();
 
-// Composables
-const { t } = useI18n();
-
 // State
 const radioOptions = computed(() =>
-  options.map((option) => (typeof option === 'string' ? { label: option, value: option } : option))
+  options.map((option) =>
+    typeof option === 'string' ? { description: undefined, label: option, value: option } : option
+  )
 );
 
 // Actions
-// PrimeVue's readonly only skips the update, so the click is cancelled to stop the native radio changing
-function preventChange(event: Event) {
-  if (readonly) event.preventDefault();
+// Reka has no read-only state, so a read-only group ignores the change
+function update(selected: AcceptableValue) {
+  if (!readonly) value.value = selected as string | number;
 }
 </script>
 
 <template>
-  <!-- The legend names the group; aria-required isn't valid on a fieldset, so each radio is marked required instead -->
+  <!-- The radiogroup role takes aria-required and the label names it, so the group gets the field's attributes -->
   <FieldWrapper
-    v-slot="{ id, inputAttrs, invalid }"
+    v-slot="{ id, inputAttrs, invalid, labelId }"
     v-bind="$attrs"
     :description
+    error-icon
     :error-message
+    :label
+    non-labelable
+    :required
   >
-    <fieldset v-bind="inputAttrs">
-      <legend
-        v-if="label"
-        class="app-field-label"
+    <RadioGroupRoot
+      v-bind="inputAttrs"
+      :aria-labelledby="labelId"
+      :aria-readonly="readonly || undefined"
+      class="options"
+      :class="orientation"
+      :disabled
+      :model-value="value ?? null"
+      :name
+      :orientation
+      :required
+      :style="{ flexWrap: orientation === 'horizontal' ? flexWrap : undefined }"
+      @update:model-value="update"
+    >
+      <div
+        v-for="(option, index) in radioOptions"
+        :key="option.value"
+        class="flex flex-col gap-1"
       >
-        {{ label }}
-        <span
-          v-if="required"
-          class="app-field-required"
-        >
-          {{ t('components.fieldWrapper.required') }}
-        </span>
-      </legend>
-      <div class="flex flex-col gap-4">
-        <div
-          v-for="(option, index) in radioOptions"
-          :key="option.value"
-          class="flex items-center"
-        >
-          <RadioButton
-            v-model="value"
-            :disabled
-            :input-id="`${id}-${index}`"
-            :invalid
-            :name
-            :pt="{ input: { required: required || undefined, onClick: preventChange } }"
-            :readonly
+        <div class="flex items-center">
+          <RadioGroupItem
+            :id="`${id}-${index}`"
+            :aria-describedby="option.description ? `${id}-${index}-description` : undefined"
+            class="radio"
+            :class="{ invalid, readonly }"
             :value="option.value"
             @blur="(e: Event) => emit('blur', e)"
           />
           <label
-            class="ml-2 mb-0"
+            class="label"
             :class="{ 'cursor-not-allowed': readonly }"
             :for="`${id}-${index}`"
           >
             {{ option.label }}
           </label>
         </div>
+        <span
+          v-if="option.description"
+          :id="`${id}-${index}-description`"
+          class="description"
+        >
+          {{ option.description }}
+        </span>
       </div>
-    </fieldset>
+    </RadioGroupRoot>
   </FieldWrapper>
 </template>
+
+<style scoped>
+.options {
+  display: flex;
+}
+
+.vertical {
+  flex-direction: column;
+  gap: var(--layout-margin-small);
+}
+
+.horizontal {
+  flex-direction: row;
+  gap: var(--layout-margin-medium);
+}
+
+/* Lines up under the label, past the radio and its gap */
+.description {
+  margin-left: calc(var(--icons-size-xsmall) + var(--layout-margin-small));
+  color: var(--typography-color-secondary);
+  font: var(--typography-regular-label);
+}
+
+.label {
+  margin: 0 0 0 var(--layout-margin-small);
+  color: var(--typography-color-secondary);
+  font: var(--typography-regular-small-body);
+}
+
+.radio {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: var(--icons-size-xsmall);
+  height: var(--icons-size-xsmall);
+  border: var(--layout-border-width-small) solid var(--surface-color-border-medium);
+  border-radius: var(--layout-border-radius-circular);
+  background: var(--surface-color-secondary-default);
+  cursor: pointer;
+  transition: border 200ms;
+}
+
+@media (prefers-reduced-motion) {
+  .radio {
+    transition: none;
+  }
+}
+
+.radio:hover {
+  border-color: var(--surface-color-border-dark);
+}
+
+.radio:focus-visible {
+  outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
+  outline-offset: var(--layout-margin-hair);
+}
+
+.radio[data-state='checked'] {
+  border: 5px solid var(--surface-color-primary-default);
+}
+
+.radio.invalid {
+  border-color: var(--support-border-color-danger);
+}
+
+.radio.readonly {
+  cursor: not-allowed;
+}
+
+.radio[data-disabled] {
+  cursor: not-allowed;
+}
+
+.radio[data-disabled][data-state='checked'] {
+  border-color: var(--surface-color-border-default);
+}
+</style>

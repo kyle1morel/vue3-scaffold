@@ -19,7 +19,7 @@ function mountRadioGroup(componentProps: Record<string, unknown> = {}) {
     componentProps: { name: testName, label: 'Contact method', options: testOptions, ...componentProps }
   });
 
-  return { wrapper, form, group: wrapper.find('fieldset'), radios: wrapper.findAll('input[type="radio"]') };
+  return { wrapper, form, group: wrapper.find('[role="radiogroup"]'), radios: wrapper.findAll('[role="radio"]') };
 }
 
 // Tests
@@ -35,12 +35,13 @@ describe('RadioGroup', () => {
       ]);
     });
 
-    it('names the group with its legend and marks every radio as required', () => {
-      const { group, radios } = mountRadioGroup({ required: true });
+    it('names the group with its label and marks it as required', () => {
+      const { wrapper, group } = mountRadioGroup({ required: true });
+      const label = wrapper.find(`[id="${group.attributes('aria-labelledby')}"]`);
 
-      expect(group.find('legend').text()).toContain('Contact method');
-      expect(group.find('legend').text()).toContain('(required)');
-      expect(radios.every((radio) => radio.attributes('required') !== undefined)).toBe(true);
+      expect(label.text()).toContain('Contact method');
+      expect(label.text()).toContain('(required)');
+      expect(group.attributes('aria-required')).toBe('true');
     });
 
     it('disables every radio', () => {
@@ -52,20 +53,20 @@ describe('RadioGroup', () => {
 
   describe('user interaction', () => {
     it('sets the field to the chosen option value', async () => {
-      const { form, wrapper } = mountRadioGroup();
+      const { form, radios } = mountRadioGroup();
 
-      await wrapper.find('input[value="phone"]').setValue(true);
+      await radios[1]!.trigger('click');
 
       expect(form.values[testName]).toBe('phone');
     });
 
     it('ignores clicks when read only', async () => {
-      const { form, wrapper } = mountRadioGroup({ readonly: true });
-      const phone = wrapper.find('input[value="phone"]');
+      const { form, radios } = mountRadioGroup({ readonly: true });
+      const phone = radios[1]!;
 
       await phone.trigger('click');
 
-      expect((phone.element as HTMLInputElement).checked).toBe(false);
+      expect(phone.attributes('aria-checked')).toBe('false');
       expect(form.values[testName]).toBeUndefined();
     });
   });

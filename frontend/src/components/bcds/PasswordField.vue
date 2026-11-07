@@ -34,6 +34,7 @@ const value = defineModel<string>();
     v-slot="{ id, inputAttrs, invalid }"
     v-bind="$attrs"
     :description
+    error-icon
     :error-message
     :label
     :required

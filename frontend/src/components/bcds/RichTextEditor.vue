@@ -61,6 +61,7 @@ const vEditableAttrs = { mounted: setEditableAttrs, updated: setEditableAttrs };
     v-slot="{ inputAttrs, invalid, labelId }"
     v-bind="$attrs"
     :description
+    error-icon
     :error-message
     :label
     non-labelable

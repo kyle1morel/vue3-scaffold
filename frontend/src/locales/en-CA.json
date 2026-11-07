@@ -18,8 +18,18 @@
       "failed": "Unable to copy to the clipboard"
     },
     "datePicker": {
-      "format": "Format: year - month - day",
-      "formatWithTime": "Format: year - month - day, hour : minute (24-hour)"
+      "chooseMonth": "{month}, choose a month",
+      "chooseYear": "{year}, choose a year",
+      "format": "Format: {format}",
+      "open": "Choose a date",
+      "parts": {
+        "day": "day",
+        "dayPeriod": "AM/PM",
+        "hour": "hour",
+        "minute": "minute",
+        "month": "month",
+        "year": "year"
+      }
     },
     "fieldWrapper": {
       "required": "(required)"

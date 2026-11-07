@@ -1,5 +1,3 @@
-import PrimeInputNumber from 'primevue/inputnumber';
-
 import NumberField from '@/components/form/NumberField.vue';
 
 import { mountWithFormContext } from '../../../mountWithFormContext';
@@ -17,7 +15,7 @@ function mountNumberField(componentProps: Record<string, unknown> = {}) {
     componentProps: { name: testName, label: 'Quantity', ...componentProps }
   });
 
-  return { wrapper, form, inputNumber: wrapper.findComponent(PrimeInputNumber), input: wrapper.find('input') };
+  return { wrapper, form, input: wrapper.find('input') };
 }
 
 // Tests
@@ -45,9 +43,10 @@ describe('NumberField', () => {
 
   describe('user interaction', () => {
     it('sets the field to the entered number', async () => {
-      const { form, inputNumber } = mountNumberField();
+      const { form, input } = mountNumberField();
 
-      await inputNumber.vm.$emit('update:modelValue', 3);
+      await input.setValue('3');
+      await input.trigger('blur');
 
       expect(form.values[testName]).toBe(3);
     });

@@ -20,12 +20,13 @@ function mountDatePicker(options: { description?: string; label?: string; requir
 
 describe('DatePicker', () => {
   describe('rendering', () => {
-    it('links the label, format hint and description to the input', () => {
+    it('names the date segments with the label, and describes them with the format hint and description', () => {
       const { wrapper } = mountDatePicker({ label: 'Start date', description: 'Pick a day' });
 
-      const input = wrapper.find('input');
-      const description = wrapper.find(`[id="${input.attributes('aria-describedby')}"]`).text();
-      expect(wrapper.find(`label[for="${input.attributes('id')}"]`).text()).toContain('Start date');
+      // The date is typed in separate segments, so their group is named rather than one input
+      const field = wrapper.find('[aria-labelledby]');
+      const description = wrapper.find(`[id="${field.attributes('aria-describedby')}"]`).text();
+      expect(wrapper.find(`[id="${field.attributes('aria-labelledby')}"]`).text()).toContain('Start date');
       expect(description).toContain('Format: year - month - day');
       expect(description).toContain('Pick a day');
     });

@@ -1,7 +1,19 @@
 <script setup lang="ts">
-import AutoComplete from 'primevue/autocomplete';
+import {
+  ComboboxAnchor,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxPortal,
+  ComboboxRoot,
+  ComboboxViewport
+} from 'reka-ui';
+import { onBeforeUnmount, ref, watch } from 'vue';
 
 import FieldWrapper from './FieldWrapper.vue';
+import ProgressCircle from './ProgressCircle.vue';
+
+import type { AcceptableValue } from 'reka-ui';
 
 defineOptions({ inheritAttrs: false });
 
@@ -47,6 +59,40 @@ const emit = defineEmits<{
 }>();
 
 const value = defineModel<unknown>();
+
+// State
+const open = ref(false);
+const searchTerm = ref(labelOf(value.value));
+let completeTimer: ReturnType<typeof setTimeout> | undefined;
+
+watch(value, (current) => (searchTerm.value = labelOf(current)));
+
+// Actions
+function labelOf(option: unknown) {
+  if (option === undefined || option === null) return '';
+  return String(optionLabel ? (option as Record<string, unknown>)[optionLabel] : option);
+}
+
+function onOpenChange(isOpen: boolean) {
+  open.value = isOpen && !readonly;
+}
+
+// Reka also writes the chosen label back into the input, which is no new search
+function onSearch(term: string) {
+  searchTerm.value = term;
+  if (readonly || term === labelOf(value.value)) return;
+
+  if (allowsCustomValue) value.value = term;
+  clearTimeout(completeTimer);
+  completeTimer = setTimeout(() => emit('complete', term), delay);
+}
+
+function onSelect(selected: AcceptableValue) {
+  value.value = selected;
+  emit('select', selected);
+}
+
+onBeforeUnmount(() => clearTimeout(completeTimer));
 </script>
 
 <template>
@@ -58,23 +104,70 @@ const value = defineModel<unknown>();
     :label
     :required
   >
-    <AutoComplete
-      v-model="value"
-      class="w-full"
-      :delay
+    <ComboboxRoot
       :disabled
-      :force-selection="!allowsCustomValue"
-      input-class="w-full"
-      :input-id="id"
-      :invalid
-      :loading
-      :name
-      :option-label
-      :placeholder
-      :pt="{ pcInputText: { root: { ...inputAttrs, readonly: readonly || undefined } } }"
-      :suggestions
-      @complete="(e) => emit('complete', e.query)"
-      @option-select="(e) => emit('select', e.value)"
-    />
+      ignore-filter
+      :model-value="(value ?? null) as AcceptableValue"
+      :open
+      :reset-search-term-on-blur="!allowsCustomValue"
+      @update:model-value="onSelect"
+      @update:open="onOpenChange"
+    >
+      <ComboboxAnchor
+        class="app-input"
+        :class="{ invalid, readonly }"
+        :data-disabled="disabled || undefined"
+      >
+        <ComboboxInput
+          :id
+          v-bind="inputAttrs"
+          :aria-invalid="invalid || undefined"
+          :display-value="labelOf"
+          :model-value="searchTerm"
+          :name
+          :placeholder
+          :readonly
+          @update:model-value="onSearch"
+        />
+        <ProgressCircle
+          v-if="loading"
+          is-indeterminate
+          size="small"
+        />
+        <font-awesome-icon
+          v-if="invalid"
+          class="text-[var(--icons-color-danger)]"
+          icon="fa-solid fa-triangle-exclamation"
+        />
+      </ComboboxAnchor>
+      <ComboboxPortal>
+        <ComboboxContent
+          v-if="suggestions.length"
+          align="start"
+          class="app-popover bcds-combobox-options"
+          position="popper"
+          :side-offset="4"
+        >
+          <ComboboxViewport>
+            <ComboboxItem
+              v-for="(suggestion, index) in suggestions"
+              :key="index"
+              class="app-option"
+              :value="suggestion as AcceptableValue"
+            >
+              {{ labelOf(suggestion) }}
+            </ComboboxItem>
+          </ComboboxViewport>
+        </ComboboxContent>
+      </ComboboxPortal>
+    </ComboboxRoot>
   </FieldWrapper>
 </template>
+
+<!-- Reka renders the list inside its own wrapper, which a scoped style can't reach -->
+<style>
+.bcds-combobox-options {
+  width: var(--reka-combobox-trigger-width);
+  max-height: var(--reka-combobox-content-available-height);
+}
+</style>

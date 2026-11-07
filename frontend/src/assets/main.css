@@ -109,6 +109,9 @@
   }
 
   .app-field-label {
+    display: block;
+    margin-bottom: 0;
+    padding: var(--layout-padding-xsmall) var(--layout-padding-none);
     color: var(--typography-color-primary);
   }
 
@@ -117,10 +120,111 @@
     color: var(--typography-color-secondary);
   }
 
+  .app-description {
+    padding: var(--layout-padding-xsmall) var(--layout-padding-none);
+  }
+
   .app-error-message {
     display: flex;
     align-items: center;
     gap: var(--layout-margin-xsmall);
     color: var(--typography-color-danger);
+  }
+}
+
+/* Below utilities, so a Tailwind class can still size or space a field */
+@layer components {
+  /* The box around a text control the bcds fields share; the control inside fills it */
+  .app-input {
+    display: flex;
+    align-items: center;
+    gap: var(--layout-margin-small);
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--layout-margin-xxlarge);
+    padding: var(--layout-padding-small) 0.75rem;
+    /* BC uses the light border here, which falls short of the 3:1 contrast WCAG requires for control edges */
+    border: var(--layout-border-width-small) solid var(--surface-color-border-medium);
+    border-radius: var(--layout-border-radius-medium);
+    background: var(--surface-color-forms-default);
+    color: var(--typography-color-primary);
+    font: var(--typography-regular-body);
+    text-align: left;
+  }
+
+  .app-input.small {
+    height: var(--layout-margin-xlarge);
+    padding-block: var(--layout-padding-hair);
+    font: var(--typography-regular-small-body);
+  }
+
+  .app-input:hover {
+    border-color: var(--surface-color-border-dark);
+  }
+
+  .app-input:focus-visible,
+  .app-input:has(:focus-visible) {
+    border-color: var(--surface-color-border-active);
+    border-radius: var(--layout-border-radius-large);
+    outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
+    outline-offset: var(--layout-margin-hair);
+  }
+
+  .app-input.invalid {
+    border-color: var(--support-border-color-danger);
+  }
+
+  .app-input.readonly {
+    background: var(--surface-color-forms-disabled);
+  }
+
+  .app-input:disabled,
+  .app-input[data-disabled] {
+    background: var(--surface-color-forms-disabled);
+    color: var(--typography-color-placeholder);
+    cursor: not-allowed;
+  }
+
+  .app-input input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+  }
+
+  .app-input input::placeholder {
+    color: var(--typography-color-placeholder);
+  }
+
+  /* The floating list a select, combo box or date picker opens */
+  .app-popover {
+    z-index: 1000;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: var(--layout-padding-hair) var(--layout-padding-xsmall);
+    border: var(--layout-border-width-small) solid var(--surface-color-border-default);
+    border-radius: var(--layout-border-radius-medium);
+    background: var(--surface-color-forms-default);
+    box-shadow: var(--surface-shadow-medium);
+  }
+
+  .app-option {
+    display: flex;
+    align-items: center;
+    gap: var(--layout-margin-small);
+    padding: var(--layout-padding-small);
+    border-radius: var(--layout-border-radius-medium);
+    color: var(--typography-color-primary);
+    font: var(--typography-regular-body);
+    cursor: pointer;
+    outline: none;
+  }
+
+  .app-option[data-highlighted] {
+    background: var(--surface-color-secondary-button-hover);
   }
 }

@@ -9,6 +9,7 @@ defineOptions({ inheritAttrs: false });
 // Props
 const {
   description = undefined,
+  errorIcon = false,
   errorMessage = undefined,
   label = undefined,
   nonLabelable = false,
@@ -16,6 +17,8 @@ const {
 } = defineProps<{
   // Several lines show one per row, as one description
   description?: string | string[];
+  // Puts the error icon beside the message, for controls with no box to show it in
+  errorIcon?: boolean;
   errorMessage?: string;
   label?: string;
   // The control isn't an input a label can point at, so it's named with aria-labelledby instead
@@ -96,9 +99,12 @@ function inputAttrs() {
     <div
       v-if="errorMessage"
       :id="ids.error"
-      class="app-error-message mt-2"
+      class="app-error-message"
     >
-      <font-awesome-icon icon="fa-solid fa-circle-exclamation" />
+      <font-awesome-icon
+        v-if="errorIcon"
+        icon="fa-solid fa-triangle-exclamation"
+      />
       {{ errorMessage }}
     </div>
   </div>

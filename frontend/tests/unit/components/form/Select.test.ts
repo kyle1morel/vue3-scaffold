@@ -1,5 +1,4 @@
-import PrimeSelect from 'primevue/select';
-
+import BcdsSelect from '@/components/bcds/Select.vue';
 import Select from '@/components/form/Select.vue';
 
 import { mountWithFormContext } from '../../../mountWithFormContext';
@@ -28,11 +27,7 @@ function mountSelect(componentProps: Record<string, unknown> = {}) {
     }
   });
 
-  // Our wrapper shares PrimeVue's component name, so filtering by PrimeVue's root class picks the real one
-  const select = wrapper.findAllComponents(PrimeSelect).find((match) => match.classes('p-select'));
-  if (!select) throw new Error('PrimeVue Select was not rendered');
-
-  return { wrapper, form, select, combobox: wrapper.find('[role="combobox"]') };
+  return { wrapper, form, select: wrapper.findComponent(BcdsSelect), combobox: wrapper.find('[role="combobox"]') };
 }
 
 // Tests
@@ -42,7 +37,7 @@ describe('Select', () => {
     it('labels the combobox', () => {
       const { wrapper, combobox } = mountSelect();
 
-      expect(wrapper.find(`[id="${combobox.attributes('aria-labelledby')}"]`).text()).toBe('Province');
+      expect(wrapper.find(`label[for="${combobox.attributes('id')}"]`).text()).toBe('Province');
     });
 
     it('marks the field as required', () => {
@@ -52,11 +47,11 @@ describe('Select', () => {
       expect(combobox.attributes('aria-required')).toBe('true');
     });
 
-    it('passes the options and disabled state to the select', () => {
-      const { select } = mountSelect({ disabled: true });
+    it('passes the options to the select and disables it', () => {
+      const { combobox, select } = mountSelect({ disabled: true });
 
       expect(select.props('options')).toEqual(testOptions);
-      expect(select.props('disabled')).toBe(true);
+      expect(combobox.attributes('disabled')).toBeDefined();
     });
   });
 

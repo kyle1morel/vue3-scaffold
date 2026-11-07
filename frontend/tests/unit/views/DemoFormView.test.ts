@@ -1,8 +1,8 @@
 import { flushPromises } from '@vue/test-utils';
 import { AxiosError } from 'axios';
-import PrimeDatePicker from 'primevue/datepicker';
-import PrimeSelect from 'primevue/select';
 
+import BcdsDatePicker from '@/components/bcds/DatePicker.vue';
+import BcdsSelect from '@/components/bcds/Select.vue';
 import { createSubmission, getSubmission } from '@/services/submission';
 import { RouteName } from '@/utils/enums';
 import { showError } from '@/utils/utils';
@@ -69,15 +69,22 @@ async function fillValidForm(wrapper: VueWrapper) {
   await wrapper.find('input[name="email"]').setValue('jane.doe@example.com');
   await wrapper.find('input[type="password"]').setValue('secret-password');
   wrapper
-    .findAllComponents(PrimeSelect)
-    .find((c) => c.classes('p-select'))!
+    .findAllComponents(BcdsSelect)
+    .find((c) => c.props('name') === 'province')!
     .vm.$emit('update:modelValue', 'BC');
-  await wrapper.find('input[type="radio"][value="email"]').setValue(true);
-  wrapper
-    .findAllComponents(PrimeDatePicker)
-    .find((c) => c.classes('p-datepicker'))!
-    .vm.$emit('update:modelValue', new Date(2026, 0, 15));
-  await wrapper.find('input[type="checkbox"]').setValue(true);
+  await radio(wrapper, 'Email').trigger('click');
+  wrapper.findComponent(BcdsDatePicker).vm.$emit('update:modelValue', new Date(2026, 0, 15));
+  await wrapper.find('[role="checkbox"]').trigger('click');
+}
+
+// The radio a label names, found the way a user would, through its label
+function radio(wrapper: VueWrapper, label: string) {
+  const id = wrapper
+    .findAll('label')
+    .find((el) => el.text() === label)!
+    .attributes('for');
+
+  return wrapper.find(`[role="radio"][id="${id}"]`);
 }
 
 // Mount
@@ -179,11 +186,10 @@ describe('DemoFormView', () => {
       expect(getSubmission).toHaveBeenCalledWith(testSubmission.id);
       expect((wrapper.find('input[name="firstName"]').element as HTMLInputElement).value).toBe('Jane');
       expect((wrapper.find('input[name="email"]').element as HTMLInputElement).value).toBe('jane.doe@example.com');
-      expect(wrapper.find('input[type="radio"][value="email"]').element).toHaveProperty('checked', true);
-      expect(wrapper.find('input[type="checkbox"]').element).toHaveProperty('checked', true);
+      expect(radio(wrapper, 'Email').attributes('aria-checked')).toBe('true');
+      expect(wrapper.find('[role="checkbox"]').attributes('aria-checked')).toBe('true');
       expect((wrapper.find('input[name="province"]').element as HTMLInputElement).value).toBe('British Columbia');
-      const datePicker = wrapper.findAllComponents(PrimeDatePicker).find((c) => c.classes('p-datepicker'))!;
-      const startDate = datePicker.props('modelValue') as Date;
+      const startDate = wrapper.findComponent(BcdsDatePicker).props('modelValue') as Date;
       expect([startDate.getFullYear(), startDate.getMonth(), startDate.getDate()]).toEqual([2026, 0, 15]);
     });
 
@@ -192,11 +198,16 @@ describe('DemoFormView', () => {
 
       const { wrapper } = await mountReadOnlyDemoFormView();
 
-      const fields = wrapper.findAll('input, textarea');
+      // Reka's hidden inputs only carry values for a native form submit, out of the user's reach
+      const fields = wrapper.findAll('input:not([aria-hidden="true"]), textarea');
       const editable = fields.filter((el) => el.attributes('readonly') === undefined);
       const disabled = fields.filter((el) => el.attributes('disabled') !== undefined);
       expect(editable.map((el) => el.attributes('name'))).toEqual([]);
       expect(disabled.map((el) => el.attributes('name'))).toEqual([]);
+      // Controls that aren't inputs say they're read only to assistive tech instead
+      const controls = wrapper.findAll('[role="radiogroup"], [role="checkbox"], [role="spinbutton"]:not(input)');
+      const unmarked = controls.filter((el) => el.attributes('aria-readonly') !== 'true');
+      expect(unmarked.map((el) => el.attributes('aria-label') ?? el.attributes('role'))).toEqual([]);
     });
 
     it('hides the password, submit and cancel, and links back to the submissions', async () => {

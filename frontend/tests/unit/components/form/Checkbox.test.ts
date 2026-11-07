@@ -17,7 +17,7 @@ function mountCheckbox(componentProps: Record<string, unknown> = {}) {
     componentProps: { name: testName, label: 'I accept the terms', ...componentProps }
   });
 
-  return { wrapper, form, input: wrapper.find('input[type="checkbox"]') };
+  return { wrapper, form, input: wrapper.find('[role="checkbox"]') };
 }
 
 // Tests
@@ -58,7 +58,7 @@ describe('Checkbox', () => {
     it('sets the field to true when ticked', async () => {
       const { form, input } = mountCheckbox();
 
-      await input.setValue(true);
+      await input.trigger('click');
 
       expect(form.values[testName]).toBe(true);
     });
@@ -69,7 +69,7 @@ describe('Checkbox', () => {
       await input.trigger('click');
 
       expect(input.attributes('aria-readonly')).toBe('true');
-      expect((input.element as HTMLInputElement).checked).toBe(false);
+      expect(input.attributes('aria-checked')).toBe('false');
       expect(form.values[testName]).toBeUndefined();
     });
   });

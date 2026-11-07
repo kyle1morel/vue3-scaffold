@@ -1,10 +1,24 @@
 <script setup lang="ts">
-import InputText from 'primevue/inputtext';
-import PrimeSelect from 'primevue/select';
+import {
+  SelectContent,
+  SelectItem,
+  SelectItemIndicator,
+  SelectItemText,
+  SelectPortal,
+  SelectRoot,
+  SelectTrigger,
+  SelectValue,
+  SelectViewport
+} from 'reka-ui';
 import { computed } from 'vue';
 
 import FieldWrapper from './FieldWrapper.vue';
+import ProgressCircle from './ProgressCircle.vue';
 
+import type { AcceptableValue } from 'reka-ui';
+
+// TODO: Move to BC's Select API: items or sections with headers, item descriptions, icons, isDestructive and tag
+// colours, multiple selection and overflow, in place of options, optionLabel and optionValue
 defineOptions({ inheritAttrs: false });
 
 // Props
@@ -20,7 +34,8 @@ const {
   optionValue = undefined,
   placeholder = undefined,
   readonly = false,
-  required = false
+  required = false,
+  size = 'medium'
 } = defineProps<{
   description?: string;
   disabled?: boolean;
@@ -34,19 +49,22 @@ const {
   // The property saved for object options; without it the option itself is saved
   optionValue?: string;
   placeholder?: string;
-  // PrimeVue's Select has no read-only state, so this shows the chosen label in a read-only input
+  // A select can't be read-only, so this shows the chosen label in a read-only input
   readonly?: boolean;
   required?: boolean;
+  size?: 'medium' | 'small';
 }>();
 
 const value = defineModel<unknown>();
 
 // State
-const selectedLabel = computed(() => {
-  const option = options.find((o) => resolve(o, optionValue) === value.value);
-  const shown = option === undefined ? undefined : resolve(option, optionLabel);
-  return shown === undefined || shown === null ? undefined : String(shown);
-});
+const items = computed(() =>
+  options.map((option) => ({
+    label: String(resolve(option, optionLabel) ?? ''),
+    value: resolve(option, optionValue) as AcceptableValue
+  }))
+);
+const selectedLabel = computed(() => items.value.find((item) => item.value === value.value)?.label);
 
 // Actions
 function resolve(option: unknown, field?: string) {
@@ -56,40 +74,111 @@ function resolve(option: unknown, field?: string) {
 
 <template>
   <FieldWrapper
-    v-slot="{ id, inputAttrs, invalid, labelId }"
+    v-slot="{ id, inputAttrs, invalid }"
     v-bind="$attrs"
+    class="select-field"
     :description
     :error-message
     :label
-    :non-labelable="!readonly"
     :required
   >
-    <InputText
+    <div
       v-if="readonly"
-      :id
-      class="w-full"
-      :invalid
-      :model-value="selectedLabel"
-      :name
-      :placeholder
-      :pt="{ root: inputAttrs }"
-      readonly
-    />
-    <PrimeSelect
+      class="app-input readonly"
+      :class="size"
+    >
+      <input
+        :id
+        v-bind="inputAttrs"
+        :name
+        :placeholder
+        readonly
+        :value="selectedLabel"
+      />
+    </div>
+    <SelectRoot
       v-else
-      v-model="value"
-      :aria-labelledby="labelId"
-      class="w-full"
       :disabled
-      :input-id="id"
-      :invalid
-      :loading
+      :model-value="(value ?? null) as AcceptableValue"
       :name
-      :options
-      :option-label
-      :option-value
-      :placeholder
-      :pt="{ label: inputAttrs }"
-    />
+      :required
+      @update:model-value="(selected) => (value = selected)"
+    >
+      <SelectTrigger
+        :id
+        v-bind="inputAttrs"
+        :aria-invalid="invalid || undefined"
+        class="app-input trigger"
+        :class="[size, { invalid }]"
+      >
+        <SelectValue
+          class="grow"
+          :placeholder
+        />
+        <ProgressCircle
+          v-if="loading"
+          is-indeterminate
+          size="small"
+        />
+        <font-awesome-icon
+          v-if="invalid"
+          class="text-[var(--icons-color-danger)]"
+          icon="fa-solid fa-triangle-exclamation"
+        />
+        <font-awesome-icon icon="fa-solid fa-chevron-down" />
+      </SelectTrigger>
+      <SelectPortal>
+        <SelectContent
+          align="start"
+          class="app-popover bcds-select-options"
+          :class="size"
+          position="popper"
+          :side-offset="4"
+        >
+          <SelectViewport>
+            <SelectItem
+              v-for="(item, index) in items"
+              :key="index"
+              class="app-option"
+              :value="item.value"
+            >
+              <SelectItemText class="grow">{{ item.label }}</SelectItemText>
+              <SelectItemIndicator>
+                <font-awesome-icon icon="fa-solid fa-check" />
+              </SelectItemIndicator>
+            </SelectItem>
+          </SelectViewport>
+        </SelectContent>
+      </SelectPortal>
+    </SelectRoot>
   </FieldWrapper>
 </template>
+
+<!-- Reka renders the list inside its own wrapper, which a scoped style can't reach -->
+<style>
+.bcds-select-options {
+  min-width: var(--reka-select-trigger-width);
+  max-height: var(--reka-select-content-available-height);
+}
+
+.bcds-select-options.small .app-option {
+  padding: var(--layout-padding-xsmall);
+  font: var(--typography-regular-small-body);
+}
+</style>
+
+<style scoped>
+.select-field :deep(.app-field-label) {
+  color: var(--typography-color-secondary);
+}
+
+.trigger {
+  height: auto;
+  min-height: var(--layout-margin-xxlarge);
+  padding: var(--layout-padding-small);
+}
+
+.trigger.small {
+  min-height: var(--layout-margin-xlarge);
+}
+</style>

@@ -1,5 +1,4 @@
-import PrimeAutoComplete from 'primevue/autocomplete';
-
+import BcdsComboBox from '@/components/bcds/ComboBox.vue';
 import ComboBox from '@/components/form/ComboBox.vue';
 
 import { mountWithFormContext } from '../../../mountWithFormContext';
@@ -18,7 +17,7 @@ function mountComboBox(options: { label?: string; required?: boolean } = {}) {
     componentProps: { name: testName, suggestions: testSuggestions, ...options }
   });
 
-  return { wrapper, comboBox: wrapper.findComponent(ComboBox), input: wrapper.findComponent(PrimeAutoComplete) };
+  return { wrapper, comboBox: wrapper.findComponent(ComboBox), input: wrapper.find('input') };
 }
 
 // Tests
@@ -38,26 +37,29 @@ describe('ComboBox', () => {
     });
 
     it('passes the suggestions to the input', () => {
-      const { input } = mountComboBox();
+      const { wrapper } = mountComboBox();
 
-      expect(input.props('suggestions')).toEqual(testSuggestions);
+      expect(wrapper.findComponent(BcdsComboBox).props('suggestions')).toEqual(testSuggestions);
     });
   });
 
   describe('user interaction', () => {
-    it('emits complete with the typed text', async () => {
+    it('emits complete with the typed text once typing stops', async () => {
+      vi.useFakeTimers();
       const { comboBox, input } = mountComboBox();
-      const event = { originalEvent: new Event('input'), query: 'K' };
 
-      await input.vm.$emit('complete', event);
+      await input.setValue('K');
+      expect(comboBox.emitted('complete')).toBeUndefined();
+      vi.advanceTimersByTime(300);
 
       expect(comboBox.emitted('complete')).toEqual([['K']]);
+      vi.useRealTimers();
     });
 
     it('emits the chosen value when a suggestion is selected', async () => {
-      const { comboBox, input } = mountComboBox();
+      const { comboBox, wrapper } = mountComboBox();
 
-      await input.vm.$emit('option-select', { value: 'Kelowna' });
+      await wrapper.findComponent({ name: 'ComboboxRoot' }).vm.$emit('update:modelValue', 'Kelowna');
 
       expect(comboBox.emitted('select')).toEqual([['Kelowna']]);
     });
