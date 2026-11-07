@@ -32,7 +32,7 @@ frontend/                  - Frontend Root
 ├── src/                   - Vue web application
 │   ├── assets/            - Static File Assets
 │   ├── components/        - Components Layer
-│   │   ├── bcds/          - PrimeVue-backed BC Design System components
+│   │   ├── bcds/          - BC Design System components, backed by PrimeVue or Reka
 │   │   ├── common/        - Shared app components
 │   │   ├── form/          - vee-validate form fields built on bcds
 │   │   └── layout/        - Page shell: header, footer, drawer
