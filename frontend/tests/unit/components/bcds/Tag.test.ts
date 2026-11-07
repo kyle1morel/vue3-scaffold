@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 
-import Tag from '@/components/common/Tag.vue';
+import Tag from '@/components/bcds/Tag.vue';
 
 // Mocks
 

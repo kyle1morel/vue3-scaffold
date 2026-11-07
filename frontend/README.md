@@ -37,17 +37,17 @@ Install the extensions recommended in [.vscode/extensions.json](../.vscode/exten
 
 ## Components
 
-| Folder                  | Holds                                                                                                              |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `src/components/bcds`   | PrimeVue-backed components named and shaped after the BC Design System, such as `Button`, `TextField` and `Select` |
-| `src/components/form`   | vee-validate fields: each binds one `bcds` component to a form field with `useField(name)`                         |
-| `src/components/common` | Shared app components, such as `Breadcrumb`, `Tag` and `CopyToClipboard`                                           |
-| `src/components/layout` | The page shell: header, footer, drawer and loading indicators                                                      |
+| Folder                  | Holds                                                                                                                    |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `src/components/bcds`   | Components named and shaped after the BC Design System, such as `Button`, `TextField` and `Tag`, most backed by PrimeVue |
+| `src/components/form`   | vee-validate fields: each binds one `bcds` component to a form field with `useField(name)`                               |
+| `src/components/common` | Shared app components, such as `CopyToClipboard`                                                                         |
+| `src/components/layout` | The page shell: header and its menu, breadcrumb, footer, drawer and loading indicators                                   |
 
 PrimeVue stays behind `components/bcds`, so it can be replaced later without touching the rest of the app. ESLint fails
-any other file that imports `primevue`, except `main.ts`, `ThemeOverride.ts` and `src/lib/primevue`. That barrel lists
-the PrimeVue components used directly on purpose, such as `DataTable` and `Card`, and the ones still waiting for a
-`bcds` component.
+any other file that imports `primevue`, except `main.ts` and `src/lib/primevue`, which also holds the theme preset. Its
+barrel lists the PrimeVue components used directly on purpose, such as `DataTable` and `Toast`, and the ones still
+waiting for a `bcds` component.
 
 `bcds/FieldWrapper.vue` renders the label, description and error message every field shares, and links them to the
 control with `aria-describedby`, `aria-required` and `for`. New `bcds` fields should build on it.

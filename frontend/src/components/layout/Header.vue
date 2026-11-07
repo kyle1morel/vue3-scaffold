@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
-import HeaderMenu from '@/components/common/HeaderMenu.vue';
+import HeaderMenu from './HeaderMenu.vue';
 import { AppDrawer } from '@/components/layout';
 import { RouteName } from '@/utils/enums';
 

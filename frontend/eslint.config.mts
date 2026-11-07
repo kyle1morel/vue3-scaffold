@@ -134,7 +134,7 @@ export default defineConfig([
   // PrimeVue stays behind components/bcds, and lib/primevue lists what is deliberately used directly
   {
     files: ['src/**/*.{ts,vue}'],
-    ignores: ['src/components/bcds/**', 'src/lib/primevue/**', 'src/main.ts', 'src/ThemeOverride.ts'],
+    ignores: ['src/components/bcds/**', 'src/lib/primevue/**', 'src/main.ts'],
     rules: {
       'no-restricted-imports': [
         'error',

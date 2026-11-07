@@ -2,8 +2,7 @@
 import { storeToRefs } from 'pinia';
 import { RouterView } from 'vue-router';
 
-import Breadcrumb from './components/common/Breadcrumb.vue';
-import { AppLayout, ProgressLoader } from '@/components/layout';
+import { AppLayout, Breadcrumb, ProgressLoader } from '@/components/layout';
 import { ConfirmDialog, Message, Toast } from '@/lib/primevue';
 import { useAppStore, useConfigStore } from '@/store';
 

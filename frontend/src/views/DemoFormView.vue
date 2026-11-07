@@ -7,8 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { z } from 'zod';
 
-import { Button } from '@/components/bcds';
-import Tag from '@/components/common/Tag.vue';
+import { Button, Tag } from '@/components/bcds';
 import {
   CancelButton,
   Checkbox,

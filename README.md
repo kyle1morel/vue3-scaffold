@@ -37,7 +37,7 @@ frontend/                  - Frontend Root
 │   │   ├── form/          - vee-validate form fields built on bcds
 │   │   └── layout/        - Page shell: header, footer, drawer
 │   ├── composables/       - Common composition elements
-│   ├── lib/               - PrimeVue used directly, outside bcds
+│   ├── lib/               - PrimeVue used directly, outside bcds, and its theme
 │   ├── locales/           - i18n messages
 │   ├── router/            - Router Layer
 │   ├── services/          - Services Layer

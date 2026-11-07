@@ -1,4 +1,4 @@
-import HeaderMenu from '@/components/common/HeaderMenu.vue';
+import HeaderMenu from '@/components/layout/HeaderMenu.vue';
 import { RouteName } from '@/utils/enums';
 
 import { mockAuthNStore, resetMockAuthNStore } from '../../../mockAuthNStore';

@@ -24,7 +24,7 @@ import { createApp } from 'vue';
 import App from '@/App.vue';
 import i18n from '@/i18n';
 import getRouter from '@/router';
-import { ThemeOverride } from '@/ThemeOverride';
+import { ThemeOverride } from '@/lib/primevue/theme';
 import { AuthService, refreshConfig } from '@/services';
 import { StorageKey } from '@/utils/enums';
 import { showError } from '@/utils/utils';
