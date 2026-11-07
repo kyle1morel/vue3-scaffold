@@ -41,7 +41,8 @@ const items = computed<DrawerItem[]>(() => [
     label: t('components.appDrawer.demo'),
     items: [
       { label: t('components.appDrawer.demoForm'), route: RouteName.DEMO_FORM },
-      { label: t('components.appDrawer.submissions'), route: RouteName.SUBMISSIONS }
+      { label: t('components.appDrawer.submissions'), route: RouteName.SUBMISSIONS },
+      { label: t('components.appDrawer.components'), route: RouteName.COMPONENTS }
     ]
   },
   {

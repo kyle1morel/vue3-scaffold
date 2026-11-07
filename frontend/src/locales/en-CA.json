@@ -5,6 +5,7 @@
   },
   "components": {
     "appDrawer": {
+      "components": "Components",
       "demo": "Demo",
       "demoForm": "Demo form",
       "developer": "Developer",
@@ -95,6 +96,240 @@
     "required": "{label} is a required field"
   },
   "views": {
+    "components": {
+      "alerts": {
+        "actions": {
+          "later": "Later",
+          "review": "Review"
+        },
+        "closeable": {
+          "description": "Its close button hides it.",
+          "title": "Closeable alert"
+        },
+        "reset": "Show the alert again",
+        "variants": {
+          "danger": {
+            "description": "Something went wrong and needs attention.",
+            "title": "Danger"
+          },
+          "info": {
+            "description": "Information the user should know.",
+            "title": "Info"
+          },
+          "success": {
+            "description": "Something finished as expected.",
+            "title": "Success"
+          },
+          "warning": {
+            "description": "Something might need attention.",
+            "title": "Warning"
+          }
+        },
+        "withButtons": {
+          "description": "An alert can offer actions.",
+          "title": "Alert with actions"
+        }
+      },
+      "banners": {
+        "closeable": "This banner can be closed.",
+        "reset": "Show the banner again",
+        "small": "A small banner.",
+        "variants": {
+          "black": "A black banner.",
+          "danger": "A danger banner.",
+          "info": "An info banner.",
+          "success": "A success banner.",
+          "warning": "A warning banner."
+        }
+      },
+      "buttons": {
+        "danger": "Danger",
+        "disabled": "Disabled",
+        "iconOnly": "Confirm",
+        "link": "Link",
+        "primary": "Primary",
+        "secondary": "Secondary",
+        "secondaryDanger": "Secondary danger",
+        "tertiary": "Tertiary",
+        "withIcon": "With an icon"
+      },
+      "card": {
+        "action": "Action",
+        "content": "Cards group related content. The header, title, subtitle and footer are optional.",
+        "subtitle": "A subtitle",
+        "title": "A card"
+      },
+      "dialogs": {
+        "alert": {
+          "message": "A dialog asks for attention before the user carries on.",
+          "open": "Open a dialog",
+          "title": "A dialog"
+        },
+        "confirm": {
+          "accept": "Confirm",
+          "accepted": "You confirmed.",
+          "message": "Confirm dialogs come from useConfirm, which resolves with the answer.",
+          "open": "Ask to confirm",
+          "rejected": "You cancelled.",
+          "title": "Confirm this?"
+        }
+      },
+      "drawer": {
+        "content": "A drawer slides in from the side. Esc or a click outside closes it.",
+        "open": "Open a drawer",
+        "title": "A drawer"
+      },
+      "fields": {
+        "allChoices": "Select all",
+        "contact": {
+          "label": "Contact method, side by side",
+          "options": {
+            "email": {
+              "description": "Usually within a day",
+              "label": "Email"
+            },
+            "mail": {
+              "description": "Takes a week or more",
+              "label": "Mail"
+            },
+            "phone": {
+              "description": "Weekdays only",
+              "label": "Phone"
+            }
+          }
+        },
+        "dateSmall": "A small date",
+        "dateTypedOnly": "A date typed only, with no calendar",
+        "firstChoice": "First choice",
+        "number": "A number from 0 to 10, in steps of 2",
+        "search": {
+          "label": "A small text field with icons",
+          "placeholder": "Search"
+        },
+        "secondChoice": "Second choice"
+      },
+      "intro": "The shared components and the variants each one offers. The demo form shows the form fields in use.",
+      "menu": {
+        "items": {
+          "copy": {
+            "description": "Copy it to the clipboard",
+            "label": "Copy"
+          },
+          "delete": {
+            "description": "Turned off for this example",
+            "label": "Delete"
+          },
+          "designSystem": {
+            "description": "A link to another site",
+            "label": "BC Design System"
+          },
+          "home": {
+            "description": "A link to a page in the app",
+            "label": "Home"
+          },
+          "view": {
+            "description": "Open it to read",
+            "label": "View"
+          }
+        },
+        "open": "Open the menu",
+        "openSections": "Open a menu with sections",
+        "sections": {
+          "actions": "Actions",
+          "links": "Links"
+        },
+        "selected": "You chose {item}."
+      },
+      "progress": {
+        "decrease": "Decrease",
+        "increase": "Increase",
+        "label": "Upload progress"
+      },
+      "sections": {
+        "alerts": "Inline alerts",
+        "banners": "Alert banners",
+        "buttons": "Buttons",
+        "card": "Card",
+        "dialogs": "Dialogs",
+        "drawer": "Drawer",
+        "fields": "Field options",
+        "menu": "Menu",
+        "progress": "Progress",
+        "separators": "Separators",
+        "tags": "Tags",
+        "toasts": "Toasts",
+        "tooltips": "Tooltips"
+      },
+      "separators": {
+        "first": "First",
+        "second": "Second",
+        "third": "Third",
+        "vertical": "Vertical"
+      },
+      "sizes": {
+        "large": "Large",
+        "medium": "Medium",
+        "small": "Small",
+        "xsmall": "Extra small"
+      },
+      "tags": {
+        "bcBlue": "BC blue",
+        "bcGold": "BC gold",
+        "blue": "Blue",
+        "circular": "Circular",
+        "dark": "Dark",
+        "gray": "Gray",
+        "green": "Green",
+        "red": "Red",
+        "withIcon": "With an icon",
+        "yellow": "Yellow"
+      },
+      "title": "Components",
+      "toasts": {
+        "error": {
+          "button": "Error",
+          "detail": "Something failed.",
+          "title": "Example"
+        },
+        "info": {
+          "button": "Info",
+          "detail": "Something to know.",
+          "title": "Example"
+        },
+        "success": {
+          "button": "Success",
+          "detail": "Something worked.",
+          "title": "Example"
+        },
+        "warn": {
+          "button": "Warning",
+          "detail": "Something to watch.",
+          "title": "Example"
+        }
+      },
+      "tooltips": {
+        "bottom": {
+          "button": "Bottom",
+          "text": "Shown below"
+        },
+        "left": {
+          "button": "Left",
+          "text": "Shown to the left"
+        },
+        "noDelay": {
+          "button": "No delay",
+          "text": "Opens straight away"
+        },
+        "right": {
+          "button": "Right",
+          "text": "Shown to the right"
+        },
+        "top": {
+          "button": "Top",
+          "text": "Shown above"
+        }
+      }
+    },
     "demoForm": {
       "back": "Back to submissions",
       "errors": {

@@ -61,6 +61,12 @@ const routes: RouteRecordRaw[] = [
         meta: { hideBreadcrumb: true }
       },
       {
+        path: '/components',
+        name: RouteName.COMPONENTS,
+        component: () => import('@/views/ComponentsView.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: '/demo-form',
         name: RouteName.DEMO_FORM,
         component: () => import('@/views/DemoFormView.vue'),

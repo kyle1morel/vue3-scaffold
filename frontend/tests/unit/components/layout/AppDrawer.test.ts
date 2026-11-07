@@ -60,13 +60,13 @@ describe('AppDrawer', () => {
       expect(vm.permittedItems.map((item) => item.label)).toEqual(['Home', 'Demo', 'Developer']);
     });
 
-    it('nests the demo form and submissions under Demo', () => {
+    it('nests the demo form, submissions and components under Demo', () => {
       mockAuthNStore.getIsAuthenticated.value = true;
 
       const { vm } = mountAppDrawer();
       const demo = vm.permittedItems.find((item) => item.label === 'Demo');
 
-      expect(demo?.items?.map((item) => item.label)).toEqual(['Demo form', 'Submissions']);
+      expect(demo?.items?.map((item) => item.label)).toEqual(['Demo form', 'Submissions', 'Components']);
     });
   });
 
@@ -89,7 +89,7 @@ describe('AppDrawer', () => {
 
       // The drawer teleports to the body, outside the wrapper
       const nested = [...document.body.querySelectorAll('ul ul li')].map((li) => li.textContent?.trim());
-      expect(nested).toEqual(['Demo form', 'Submissions']);
+      expect(nested).toEqual(['Demo form', 'Submissions', 'Components']);
     });
   });
 });

@@ -1,6 +1,7 @@
 import type { ValueOf } from '@/types';
 
 export const RouteName = {
+  COMPONENTS: 'components',
   DEMO_FORM: 'demo_form',
   DEVELOPER: 'developer',
   FORBIDDEN: 'forbidden',
