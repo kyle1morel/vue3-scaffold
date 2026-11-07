@@ -174,51 +174,6 @@ describe('utils', () => {
     });
   });
 
-  describe('getCurrentSubject', () => {
-    it('returns sub from token', () => {
-      expect(utils.getCurrentSubject(CURRENT_CONTEXT)).toBe('12345678-90ab-cdef-1234-567890abcdef');
-    });
-    it('returns default when missing', () => {
-      expect(utils.getCurrentSubject(undefined, 'default')).toBe('default');
-    });
-  });
-
-  describe('getCurrentUsername', () => {
-    beforeEach(() => {
-      (existsSync as Mock).mockReset();
-      (readFileSync as Mock).mockReset();
-    });
-
-    it('extracts username based on idp mapping', () => {
-      (existsSync as Mock).mockImplementation((p: string) => String(p).endsWith('idplist-local.json'));
-      (readFileSync as Mock).mockImplementation((p: string, enc: string) => {
-        expect(enc).toBe('utf8');
-        return JSON.stringify(IDP_LIST);
-      });
-
-      expect(utils.getCurrentUsername(CURRENT_CONTEXT)).toBe('alice.smith');
-    });
-
-    it('returns undefined when idp mapping not found', () => {
-      (existsSync as Mock).mockImplementation((p: string) => String(p).endsWith('idplist-local.json'));
-      (readFileSync as Mock).mockImplementation((p: string, enc: string) => {
-        expect(enc).toBe('utf8');
-        return JSON.stringify([
-          {
-            idp: IdentityProviderKind.BCEID,
-            kind: 'bceidbasic',
-            username: 'bceid_username'
-          }
-        ]);
-      });
-      expect(utils.getCurrentUsername(CURRENT_CONTEXT)).toBeUndefined();
-    });
-
-    it('returns undefined when no current context', () => {
-      expect(utils.getCurrentUsername(undefined)).toBeUndefined();
-    });
-  });
-
   describe('getIdpAttributesByKind', () => {
     beforeEach(() => {
       (existsSync as Mock).mockReset();
@@ -272,58 +227,6 @@ describe('utils', () => {
 
     it('returns false when the identity kind is not found in the IDP list', () => {
       expect(utils.hasIdentity('non-existent-kind' as unknown as IdentityProviderKind, CURRENT_CONTEXT)).toBe(false);
-    });
-  });
-
-  describe('isTruthy', () => {
-    it('passes through undefined', () => {
-      expect(utils.isTruthy(undefined as unknown)).toBeUndefined();
-    });
-    it('recognizes true and 1', () => {
-      expect(utils.isTruthy(true)).toBe(true);
-      expect(utils.isTruthy(1)).toBe(true);
-    });
-    it('recognizes common true strings (case-insensitive)', () => {
-      expect(utils.isTruthy('true')).toBe(true);
-      expect(utils.isTruthy('T')).toBe(true);
-      expect(utils.isTruthy('Yes')).toBe(true);
-      expect(utils.isTruthy('y')).toBe(true);
-      expect(utils.isTruthy('1')).toBe(true);
-    });
-    it('returns false otherwise', () => {
-      expect(utils.isTruthy(false)).toBe(false);
-      expect(utils.isTruthy(0)).toBe(false);
-      expect(utils.isTruthy('no')).toBe(false);
-      expect(utils.isTruthy('0')).toBe(false);
-      expect(utils.isTruthy(null)).toBe(false);
-    });
-  });
-
-  describe('mixedQueryToArray', () => {
-    it('returns undefined for falsy', () => {
-      expect(utils.mixedQueryToArray(undefined)).toBeUndefined();
-      expect(utils.mixedQueryToArray('')).toBeUndefined();
-    });
-    it('parses comma strings and dedupes', () => {
-      expect(utils.mixedQueryToArray('a, b, a ,c')).toEqual(['a', 'b', 'c']);
-    });
-    it('handles string[] and empties -> undefined when all empty', () => {
-      expect(utils.mixedQueryToArray(['a,b', 'b , c'])).toEqual(['a', 'b', 'c']);
-    });
-    it('handles a comma-separated string with duplicates and extra spaces', () => {
-      expect(utils.mixedQueryToArray('apple, banana,apple ,  cherry')).toEqual(['apple', 'banana', 'cherry']);
-    });
-  });
-
-  describe('parseCSV', () => {
-    it('splits and trims', () => {
-      expect(utils.parseCSV('a, b ,  c  ')).toEqual(['a', 'b', 'c']);
-    });
-    it('handles single token', () => {
-      expect(utils.parseCSV('abc')).toEqual(['abc']);
-    });
-    it('keeps empties if present (mixedQueryToArray filters later)', () => {
-      expect(utils.parseCSV('a,,b')).toEqual(['a', '', 'b']);
     });
   });
 

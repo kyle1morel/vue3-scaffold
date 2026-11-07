@@ -5,7 +5,7 @@ import { cwd } from 'node:process';
 import { getLogger } from '#src/utils/log';
 
 import type { IdentityProviderKind } from './enums/application.ts';
-import type { CurrentContext, IdpAttributes } from '#types';
+import type { CurrentContext, IdpAttributes, ValueOf } from '#types';
 
 const log = getLogger(import.meta.filename);
 
@@ -17,7 +17,7 @@ const log = getLogger(import.meta.filename);
  */
 export function differential<T extends object>(source: T, comparer: Partial<T>): Partial<T> {
   return Object.fromEntries(
-    (Object.entries(source) as [keyof T, T[keyof T]][]).filter(([key, value]) => comparer[key] !== value)
+    (Object.entries(source) as [keyof T, ValueOf<T>][]).filter(([key, value]) => comparer[key] !== value)
   ) as Partial<T>;
 }
 
@@ -96,34 +96,6 @@ export function getGitRevision(): string | undefined {
 }
 
 /**
- * Attempts to acquire a specific current token sub. Yields `defaultValue` otherwise.
- * @param currentContext - The express request currentContext object.
- * @param defaultValue - An optional default return value.
- * @returns The requested current token sub if applicable, or `defaultValue`.
- */
-export function getCurrentSubject(currentContext: CurrentContext | undefined, defaultValue = ''): string {
-  return currentContext?.tokenPayload?.sub ?? defaultValue;
-}
-
-/**
- * Parses currentContext object's identity provider to return their username.
- * @param currentContext - The express request CurrentContext object.
- * @returns The username in currentUser or undefined.
- */
-export function getCurrentUsername(currentContext: CurrentContext | undefined): string | undefined {
-  if (currentContext?.tokenPayload) {
-    const idpList = readIdpList();
-    const payload = currentContext.tokenPayload;
-
-    const usernameKey = idpList.find((x) => x.idp === payload.identity_provider)?.username;
-
-    if (usernameKey && usernameKey in payload) return payload[usernameKey] as string;
-  }
-
-  return undefined;
-}
-
-/**
  * Determines if given identity kind is equal to current user identity.
  * @param identityKind - The kind of identity provider.
  * @param currentContext - The context of the current authorized user.
@@ -134,43 +106,6 @@ export const hasIdentity = (identityKind: IdentityProviderKind, currentContext: 
   const userIdp = currentContext.tokenPayload?.identity_provider;
   return idp?.idp === userIdp;
 };
-
-/**
- * Checks whether the given object is empty, no properties.
- * @param obj - The object to check.
- * @returns True if the object is empty, false otherwise.
- */
-export function isEmptyObject(obj: object): boolean {
-  return Object.keys(obj).length === 0;
-}
-
-/**
- * Returns true if the element name in the object contains a truthy value.
- * @param value - The object to evaluate.
- * @returns True if truthy, false if not, and undefined if undefined.
- */
-export function isTruthy(value: unknown): boolean | undefined {
-  if (value === undefined) return value;
-
-  const isStr = typeof value === 'string' || value instanceof String;
-  const trueStrings = ['true', 't', 'yes', 'y', '1'];
-  return value === true || value === 1 || (isStr && trueStrings.includes(value.toLowerCase()));
-}
-
-/**
- * Standardizes query params to yield an array of unique string values.
- * @param param - The query param to process.
- * @returns A unique, non-empty array of string values, or undefined if empty.
- */
-export function mixedQueryToArray(param: string | string[] | undefined): string[] | undefined {
-  // Short circuit undefined if param is falsy
-  if (!param) return undefined;
-
-  const parsed = Array.isArray(param) ? param.flatMap((p) => parseCSV(p)) : parseCSV(param);
-  const unique = Array.from(new Set(parsed));
-
-  return unique.length ? unique : undefined;
-}
 
 /**
  * Omits the given set of keys from the given object.
@@ -186,15 +121,6 @@ export function omit<Data extends object, Keys extends keyof Data>(data: Data, k
   }
 
   return result as Omit<Data, Keys>;
-}
-
-/**
- * Converts a comma separated value string into an array of string values.
- * @param value - The CSV string to parse.
- * @returns An array of string values, or `value` if it is not a string.
- */
-export function parseCSV(value: string): string[] {
-  return value.split(',').map((s) => s.trim());
 }
 
 /**

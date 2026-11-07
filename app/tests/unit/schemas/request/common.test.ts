@@ -1,4 +1,4 @@
-import { dateOnlyString, email, phoneNumber, timeTzString, uuidv4 } from '#src/schemas/request/common';
+import { dateOnlyString, email, phoneNumber, uuidv4 } from '#src/schemas/request/common';
 
 describe('common validators', () => {
   describe('dateOnlyString', () => {
@@ -50,34 +50,6 @@ describe('common validators', () => {
     it('rejects an invalid phone number', () => {
       const { success } = phoneNumber.safeParse('not-a-phone');
       expect(success).toBe(false);
-    });
-  });
-
-  describe('timeTzString', () => {
-    it.each(['00:00:00Z', '7:05:09Z', '07:00:00Z', '23:59:59Z', '09:30:15.1Z', '09:30:15.123Z', '09:30:15.1234567Z'])(
-      'accepts valid timetz: %s',
-      (value) => {
-        const { success } = timeTzString.safeParse(value);
-        expect(success).toBe(true);
-      }
-    );
-
-    it.each([
-      '07:00Z',
-      '07:00',
-      '07:00:00',
-      '24:00:00Z',
-      '23:60:00Z',
-      '23:59:60Z',
-      '07:00:00.12345678Z',
-      '07:00:00+01:00',
-      '07:00:00-07:30',
-      '07:00 UTC',
-      'abc'
-    ])('rejects invalid timetz: %s', (value) => {
-      const result = timeTzString.safeParse(value);
-      expect(result.success).toBe(false);
-      expect(!result.success && result.error.issues[0].message).toContain('Must be a valid UTC time string');
     });
   });
 

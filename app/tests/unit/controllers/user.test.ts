@@ -64,7 +64,7 @@ describe('searchUsersController', () => {
     expect(res.json).toHaveBeenCalledWith(mockUsers);
   });
 
-  it('should call service with partial params (isTruthy coercion)', async () => {
+  it('should call service with partial params', async () => {
     const mockUsers: User[] = [];
     vi.spyOn(userService, 'searchUsersService').mockResolvedValueOnce(mockUsers);
 
