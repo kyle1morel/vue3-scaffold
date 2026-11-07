@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Divider from '@/components/common/Divider.vue';
+import { Separator } from '@/components/bcds';
 
 // Props
 const { level = 2, title } = defineProps<{
@@ -16,6 +16,9 @@ const { level = 2, title } = defineProps<{
     >
       {{ title }}
     </component>
-    <Divider />
+    <!-- The separator stretches across its parent, so this box takes the row's space and the row centres it -->
+    <div class="flex-1">
+      <Separator />
+    </div>
   </div>
 </template>

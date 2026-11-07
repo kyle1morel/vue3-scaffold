@@ -8,6 +8,7 @@ import { useRouter } from 'vue-router';
 import { z } from 'zod';
 
 import { Button, Tag } from '@/components/bcds';
+import Card from '@/components/common/Card.vue';
 import {
   CancelButton,
   Checkbox,
@@ -24,7 +25,7 @@ import {
 } from '@/components/form';
 import { Spinner } from '@/components/layout';
 import { useFormNavigationGuard } from '@/composables/useFormNavigationGuard';
-import { Card, Message, useToast } from '@/lib/primevue';
+import { Message, useToast } from '@/lib/primevue';
 import { createSubmission, getSubmission } from '@/services';
 import { RouteName } from '@/utils/enums';
 import { formatDateLong } from '@/utils/formatters';

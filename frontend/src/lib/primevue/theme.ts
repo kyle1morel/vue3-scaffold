@@ -324,24 +324,6 @@ export const ThemeOverride = definePreset(Material, {
         .p-button:not(:disabled):hover .p-button-label { text-decoration: underline; }
       `
     },
-    card: {
-      body: {
-        padding: tokens.layoutPaddingMedium
-      },
-      root: {
-        borderRadius: tokens.layoutBorderRadiusLarge
-      },
-      title: {
-        fontSize: tokens.typographyFontSizeBody
-      },
-      css: () => `
-        .p-card {
-          border: 1px solid var(--p-borderlight);
-          margin-bottom: 1rem;
-        }
-        .p-card .p-divider { margin-bottom: 0; }
-      `
-    },
     datatable: {
       paginatorBottom: {
         borderWidth: '0'

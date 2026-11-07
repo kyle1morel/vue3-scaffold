@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 
-import { Button } from '@/components/bcds';
-import { Card, Divider } from '@/lib/primevue';
+import { Button, Separator } from '@/components/bcds';
+import Card from '@/components/common/Card.vue';
 import { useAuthNStore } from '@/store';
 import { IdentityProviderKind } from '@/utils/enums';
 import { findIdpConfig } from '@/utils/utils';
@@ -18,11 +18,9 @@ function login(kind: IdentityProviderKind) {
 
 <template>
   <div class="flex justify-center mt-7">
-    <Card class="w-full max-w-[28.75rem]">
+    <Card class="w-full max-w-[32rem]">
       <template #title>
-        <div>
-          <h1 class="mb-0 mx-2">{{ t('views.oidcLogin.title') }}</h1>
-        </div>
+        <h1 class="mx-2 my-0">{{ t('views.oidcLogin.title') }}</h1>
       </template>
       <template #content>
         <div class="flex flex-col justify-center mx-2">
@@ -51,24 +49,22 @@ function login(kind: IdentityProviderKind) {
             {{ t('views.oidcLogin.providers.businessBceid.login') }}
           </Button>
 
-          <Divider />
+          <Separator size="small" />
 
-          <h2 class="my-3">{{ t('views.oidcLogin.headings.internalUsers') }}</h2>
+          <h2 class="mt-0 mb-3">{{ t('views.oidcLogin.headings.internalUsers') }}</h2>
 
           <Button
             variant="secondary"
-            class="mt-3"
+            class="mb-3"
             data-test="idir-mfa-login-button"
             :aria-label="t('views.oidcLogin.providers.idir.login')"
             @click="login(IdentityProviderKind.AZUREIDIR)"
           >
             {{ t('views.oidcLogin.providers.idir.login') }}
           </Button>
-          <div class="my-3">
-            <Divider />
-          </div>
+          <Separator size="small" />
 
-          <h2 class="mb-3">{{ t('views.oidcLogin.headings.register') }}</h2>
+          <h2 class="mt-0 mb-3">{{ t('views.oidcLogin.headings.register') }}</h2>
           <div class="outline outline-[var(--p-borderlight)] rounded-lg p-2 mb-3">
             <a
               class="mb-3 mr-1"
