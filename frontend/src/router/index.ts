@@ -3,7 +3,7 @@ import { createRouter, createWebHistory, START_LOCATION } from 'vue-router';
 import oidcRoutes from '@/router/oidc';
 import { AuthService } from '@/services';
 import { useAppStore, useAuthNStore, useConfigStore } from '@/store';
-import { RouteName, StorageKey } from '@/utils/enums/application';
+import { RouteName, StorageKey } from '@/utils/enums';
 
 import type { LocationQuery, RouteParamsGeneric, RouteRecordRaw } from 'vue-router';
 

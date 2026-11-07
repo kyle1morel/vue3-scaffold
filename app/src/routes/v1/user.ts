@@ -5,7 +5,7 @@ import { openapiRoute } from './openapiRoute.ts';
 import { getCurrentUserController, searchUsersController } from '#src/controllers/user';
 import { hasIdentity } from '#src/middleware/identity';
 import { requireSomeAuth } from '#src/middleware/requireSomeAuth';
-import { IdentityProviderKind } from '#src/utils/enums/application';
+import { IdentityProviderKind } from '#src/utils/enums';
 import { userSchema } from '#src/schemas/response/user';
 import { FORBIDDEN_RESPONSE, UNAUTHORIZED_RESPONSE, VALIDATION_ERROR_RESPONSE } from '#src/schemas/response/problem';
 import { schema } from '#src/schemas/request/user';

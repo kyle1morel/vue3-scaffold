@@ -1,7 +1,7 @@
 import ToastEventBus from 'primevue/toasteventbus';
 
 import { i18n } from '@/i18n';
-import { ToastTimeout } from '@/utils/enums/application';
+import { ToastTimeout } from '@/utils/enums';
 
 import type { ToastMessageOptions } from 'primevue/toast';
 

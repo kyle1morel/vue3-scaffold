@@ -2,7 +2,7 @@ import { flushPromises } from '@vue/test-utils';
 import PrimeDataTable from 'primevue/datatable';
 
 import { deleteSubmission, listSubmissions } from '@/services/submission';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 import { showError } from '@/utils/utils';
 import SubmissionsView from '@/views/SubmissionsView.vue';
 

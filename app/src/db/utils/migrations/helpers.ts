@@ -1,6 +1,6 @@
 import { sql } from 'kysely';
 
-import { SYSTEM_ID } from '#src/utils/constants/application';
+import { SYSTEM_ID } from '#src/utils/constants';
 
 import type { CreateTableBuilder, Kysely, QueryResult } from 'kysely';
 

@@ -1,5 +1,5 @@
 import HeaderMenu from '@/components/common/HeaderMenu.vue';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 
 import { mockAuthNStore, resetMockAuthNStore } from '../../../mockAuthNStore';
 import { mockRouter, resetMockRouter } from '../../../mockRouter';

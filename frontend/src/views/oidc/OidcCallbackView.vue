@@ -9,7 +9,7 @@ import { Spinner } from '@/components/layout';
 import { Message } from '@/lib/primevue';
 import { getCurrentUser } from '@/services';
 import { useAuthNStore } from '@/store';
-import { RouteName, StorageKey } from '@/utils/enums/application';
+import { RouteName, StorageKey } from '@/utils/enums';
 
 // Composables
 const router = useRouter();

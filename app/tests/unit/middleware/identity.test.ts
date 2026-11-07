@@ -4,7 +4,7 @@ import request from 'supertest';
 
 import { TEST_CURRENT_CONTEXT } from '#tests/unit/data/index';
 import { hasIdentity } from '#src/middleware/identity';
-import { AuthType, IdentityProviderKind } from '#src/utils/enums/application';
+import { AuthType, IdentityProviderKind } from '#src/utils/enums';
 
 import type { NextFunction, Request, Response } from 'express';
 import type { Mock } from 'vitest';

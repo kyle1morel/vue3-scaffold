@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 
 import HeaderMenu from '@/components/common/HeaderMenu.vue';
 import { AppDrawer } from '@/components/layout';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 
 // Actions
 const { t } = useI18n();

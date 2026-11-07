@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 
-import { AuthType, IdentityProviderKind } from '#src/utils/enums/application';
+import { AuthType, IdentityProviderKind } from '#src/utils/enums';
 import * as utils from '#src/utils/utils';
 
 import type { JwtPayload } from 'jsonwebtoken';

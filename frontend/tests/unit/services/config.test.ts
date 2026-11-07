@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { getConfig, refreshConfig, getCachedConfig } from '@/services/config';
-import { StorageKey } from '@/utils/enums/application';
+import { StorageKey } from '@/utils/enums';
 
 // Mocks
 

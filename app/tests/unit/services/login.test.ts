@@ -3,7 +3,7 @@ import { mockReset } from 'vitest-mock-extended';
 import { mockRepos } from '#tests/__mocks__/unitOfWorkMock';
 import * as userDomain from '#src/domains/user';
 import * as loginService from '#src/services/login';
-import { IdentityProviderKind } from '#src/utils/enums/application';
+import { IdentityProviderKind } from '#src/utils/enums';
 
 import type { JwtPayload } from 'jsonwebtoken';
 

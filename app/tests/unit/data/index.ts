@@ -3,7 +3,7 @@
  * DO NOT change the existing objects in this file unless a schema change is required.
  * If you need something wildly different than the existing ones then add new ones.
  */
-import { AuthType, IdentityProviderKind } from '#src/utils/enums/application';
+import { AuthType, IdentityProviderKind } from '#src/utils/enums';
 
 import type { CurrentContext, Submission, User } from '#types';
 

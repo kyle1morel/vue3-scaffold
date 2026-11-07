@@ -4,7 +4,7 @@ import PrimeDatePicker from 'primevue/datepicker';
 import PrimeSelect from 'primevue/select';
 
 import { createSubmission, getSubmission } from '@/services/submission';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 import { showError } from '@/utils/utils';
 import DemoFormView from '@/views/DemoFormView.vue';
 

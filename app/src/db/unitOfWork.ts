@@ -3,7 +3,7 @@ import { Prisma } from '#prismaClient';
 import prisma from '#src/db/database';
 import { IdentityProviderRepository, SubmissionRepository, UserRepository } from '#src/repositories/index';
 import { requestContext } from '#src/types/context';
-import { SYSTEM_ID } from '#src/utils/constants/application';
+import { SYSTEM_ID } from '#src/utils/constants';
 
 import type { PrismaClientType, PrismaTransactionClient } from '#src/db/database';
 

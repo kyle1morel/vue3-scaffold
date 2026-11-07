@@ -1,5 +1,5 @@
 import { setAuthHeader } from './providers/oidc.ts';
-import { AuthType } from '#src/utils/enums/application';
+import { AuthType } from '#src/utils/enums';
 import { Problem } from '#src/utils/index';
 
 import type { NextFunction, Request, Response } from 'express';

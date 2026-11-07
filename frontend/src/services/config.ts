@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { StorageKey } from '@/utils/enums/application';
+import { StorageKey } from '@/utils/enums';
 
 import type { Config } from '@/types';
 

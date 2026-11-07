@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { Regex } from '#src/utils/enums/application';
+import { Regex } from '#src/utils/constants';
 
 /** Date-only string (YYYY-MM-DD), canonical and not in the future. */
 export const dateOnlyString = z.iso

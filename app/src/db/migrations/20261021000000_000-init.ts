@@ -9,7 +9,7 @@ import {
   dropUpdatedAtTrigger,
   withTimestamps
 } from '#src/db/utils/migrations/helpers';
-import { SYSTEM_ID } from '#src/utils/constants/application';
+import { SYSTEM_ID } from '#src/utils/constants';
 
 import type { Kysely } from 'kysely';
 

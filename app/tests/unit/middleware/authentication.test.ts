@@ -9,7 +9,7 @@ import {
 } from '#src/middleware/authentication';
 import * as oidcProviders from '#src/middleware/providers/oidc';
 import { loginService } from '#src/services/login';
-import { AuthType, IdentityProviderKind } from '#src/utils/enums/application';
+import { AuthType, IdentityProviderKind } from '#src/utils/enums';
 import { Problem } from '#src/utils/index';
 
 import type { NextFunction, Request, Response } from 'express';

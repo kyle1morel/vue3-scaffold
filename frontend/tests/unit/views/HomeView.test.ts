@@ -1,4 +1,4 @@
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 import HomeView from '@/views/HomeView.vue';
 
 import { expectNoAxeViolations } from '../../expectNoAxeViolations';

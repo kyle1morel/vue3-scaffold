@@ -27,7 +27,7 @@ import { Spinner } from '@/components/layout';
 import { useFormNavigationGuard } from '@/composables/useFormNavigationGuard';
 import { Card, Message, useToast } from '@/lib/primevue';
 import { createSubmission, getSubmission } from '@/services';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 import { formatDateLong } from '@/utils/formatters';
 import { focusFirstError, rethrowAs } from '@/utils/utils';
 import {

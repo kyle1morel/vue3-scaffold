@@ -9,7 +9,7 @@ import { rateLimit } from 'express-rate-limit';
 import { requestSanitizer } from '#src/middleware/requestSanitizer';
 import router from '#src/routes/index';
 import { Problem } from '#src/utils/index';
-import { DEFAULTCORS } from '#src/utils/constants/application';
+import { DEFAULTCORS } from '#src/utils/constants';
 import { getLogger, httpLogger } from '#src/utils/log';
 import { readIdpList } from '#src/utils/utils';
 import { state } from './state.ts';

@@ -3,7 +3,7 @@ import { LRUCache } from 'lru-cache';
 
 import { getAuthHeader, getBearerToken, getJwksClient, setAuthHeader } from './providers/oidc.ts';
 import { loginService } from '#src/services/login';
-import { AuthType } from '#src/utils/enums/application';
+import { AuthType } from '#src/utils/enums';
 import { Problem } from '#src/utils/index';
 import { getLogger } from '#src/utils/log';
 

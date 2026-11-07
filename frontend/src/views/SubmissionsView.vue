@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/bcds';
 import { Column, DataTable, useConfirm, useToast } from '@/lib/primevue';
 import { deleteSubmission, listSubmissions } from '@/services';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 import { formatDateShort } from '@/utils/formatters';
 import { rethrowAs } from '@/utils/utils';
 

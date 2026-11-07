@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 
 import LoginButton from '@/components/layout/LoginButton.vue';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 
 import { mockAuthNStore, resetMockAuthNStore } from '../../../mockAuthNStore';
 import { mockRouter, resetMockRouter } from '../../../mockRouter';

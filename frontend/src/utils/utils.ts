@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import { i18n } from '@/i18n';
 import { useToast } from '@/lib/primevue';
 import { useConfigStore } from '@/store';
-import { IdentityProviderKind, ToastTimeout } from '@/utils/enums/application';
+import { IdentityProviderKind, ToastTimeout } from '@/utils/enums';
 
 import type { IdentityProvider, ValueOf } from '@/types';
 

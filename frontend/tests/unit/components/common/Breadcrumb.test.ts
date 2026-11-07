@@ -1,7 +1,7 @@
 import { RouterLinkStub } from '@vue/test-utils';
 
 import Breadcrumb from '@/components/common/Breadcrumb.vue';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 
 import { mountComponent } from '../../../mountComponent';
 

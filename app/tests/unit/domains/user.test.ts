@@ -3,7 +3,7 @@ import { mockReset } from 'vitest-mock-extended';
 import { TEST_IDIR_USER_1 } from '#tests/unit/data/index';
 import { mockRepos } from '#tests/__mocks__/unitOfWorkMock';
 import { createUser, updateUser } from '#src/domains/user';
-import { IdentityProviderKind } from '#src/utils/enums/application';
+import { IdentityProviderKind } from '#src/utils/enums';
 
 import type { JwtUser } from '#src/services/login';
 

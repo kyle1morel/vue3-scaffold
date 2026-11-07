@@ -4,7 +4,7 @@ import { cwd } from 'node:process';
 
 import { getLogger } from '#src/utils/log';
 
-import type { IdentityProviderKind } from './enums/application.ts';
+import type { IdentityProviderKind } from './enums.ts';
 import type { CurrentContext, IdpAttributes, ValueOf } from '#types';
 
 const log = getLogger(import.meta.filename);

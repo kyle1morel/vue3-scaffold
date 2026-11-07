@@ -1,5 +1,5 @@
 import { WritableRepository } from './writable.ts';
-import { SYSTEM_ID } from '#src/utils/constants/application';
+import { SYSTEM_ID } from '#src/utils/constants';
 
 import type { PrismaTransactionClient } from '#src/db/database';
 import type { UserSearchParameters } from '#types';

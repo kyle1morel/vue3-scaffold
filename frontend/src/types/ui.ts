@@ -1,4 +1,4 @@
-import type { IdentityProviderKind } from '@/utils/enums/application';
+import type { IdentityProviderKind } from '@/utils/enums';
 
 export interface Config {
   // Additional data passed from backend

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { i18n } from '@/i18n';
-import { Regex } from '@/utils/enums/application';
+import { Regex } from '@/utils/constants';
 import { coerceDate, coerceNumber, delimitEmails, isBlank } from '@/utils/utils';
 
 import type { TypedSchema, TypedSchemaError } from 'vee-validate';

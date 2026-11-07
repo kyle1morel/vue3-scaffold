@@ -26,7 +26,7 @@ import i18n from '@/i18n';
 import getRouter from '@/router';
 import { ThemeOverride } from '@/ThemeOverride';
 import { AuthService, refreshConfig } from '@/services';
-import { StorageKey } from '@/utils/enums/application';
+import { StorageKey } from '@/utils/enums';
 import { showError } from '@/utils/utils';
 
 import '@bcgov/bc-sans/css/BC_Sans.css';

@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/bcds';
 import { Card, Divider } from '@/lib/primevue';
 import { useAuthNStore } from '@/store';
-import { IdentityProviderKind } from '@/utils/enums/application';
+import { IdentityProviderKind } from '@/utils/enums';
 import { findIdpConfig } from '@/utils/utils';
 
 // Actions

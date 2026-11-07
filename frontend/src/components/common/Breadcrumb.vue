@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { Breadcrumb } from '@/lib/primevue';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 
 import type { MenuItem } from '@/lib/primevue';
 import type { RouteLocationMatched, RouteRecordNameGeneric, RouteRecordRaw } from 'vue-router';

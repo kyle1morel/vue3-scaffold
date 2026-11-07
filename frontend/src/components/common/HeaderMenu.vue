@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 import { Button } from '@/components/bcds';
 import { Menu } from '@/lib/primevue';
 import { useAuthNStore } from '@/store';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 
 // Store
 const { getIsAuthenticated, getProfile } = storeToRefs(useAuthNStore());

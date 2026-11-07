@@ -2,7 +2,7 @@ import express from 'express';
 import request from 'supertest';
 
 import { requireSomeAuth } from '#src/middleware/requireSomeAuth';
-import { AuthType } from '#src/utils/enums/application';
+import { AuthType } from '#src/utils/enums';
 
 import type { NextFunction, Request, Response } from 'express';
 import type Problem from '#src/utils/problem';

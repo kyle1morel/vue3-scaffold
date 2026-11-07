@@ -1,4 +1,4 @@
-import { ToastTimeout } from '@/utils/enums/application';
+import { ToastTimeout } from '@/utils/enums';
 import { getBatches, rethrowAs, showError, toIsoRange, UserError } from '@/utils/utils';
 
 // Mocks

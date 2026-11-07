@@ -1,4 +1,4 @@
-import { IdentityProviderKind } from '@/utils/enums/application';
+import { IdentityProviderKind } from '@/utils/enums';
 import OidcLoginView from '@/views/oidc/OidcLoginView.vue';
 
 import { mockAuthNStore, resetMockAuthNStore } from '../../../mockAuthNStore';

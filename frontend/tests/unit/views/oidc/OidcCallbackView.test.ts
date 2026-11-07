@@ -2,7 +2,7 @@ import { flushPromises } from '@vue/test-utils';
 import { AxiosError } from 'axios';
 
 import { getCurrentUser } from '@/services/user';
-import { RouteName, StorageKey } from '@/utils/enums/application';
+import { RouteName, StorageKey } from '@/utils/enums';
 import OidcCallbackView from '@/views/oidc/OidcCallbackView.vue';
 
 import { mockAuthNStore, resetMockAuthNStore } from '../../../mockAuthNStore';

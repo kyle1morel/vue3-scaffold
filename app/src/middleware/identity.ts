@@ -1,7 +1,7 @@
 import { hasIdentity as hasIdentityUtil, Problem } from '#src/utils/index';
 
 import type { NextFunction, Request, Response } from 'express';
-import type { IdentityProviderKind } from '#src/utils/enums/application';
+import type { IdentityProviderKind } from '#src/utils/enums';
 
 /**
  * Verify requesting user has necessary identity.

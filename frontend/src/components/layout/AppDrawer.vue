@@ -9,7 +9,7 @@ import home from '@/assets/images/home.svg';
 import { Button } from '@/components/bcds';
 import { Drawer, StyleClass } from '@/lib/primevue';
 import { useAuthNStore } from '@/store';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 
 // Types
 interface DrawerItem {

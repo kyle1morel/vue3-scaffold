@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 
 import { Button } from '@/components/bcds';
 import { useAuthNStore } from '@/store';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 
 // Composables
 const { t } = useI18n();

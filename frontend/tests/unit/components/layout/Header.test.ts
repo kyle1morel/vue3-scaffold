@@ -2,7 +2,7 @@ import { RouterLinkStub } from '@vue/test-utils';
 
 import { AppDrawer } from '@/components/layout';
 import Header from '@/components/layout/Header.vue';
-import { RouteName } from '@/utils/enums/application';
+import { RouteName } from '@/utils/enums';
 
 import { mountComponent } from '../../../mountComponent';
 
