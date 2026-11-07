@@ -14,6 +14,7 @@ db/                       - Database Root
 database.ts               - Defines the Prisma database and database health checks
 errors.ts                 - Prisma error helpers
 unitOfWork.ts             - Transaction scoped repository provider
+url.ts                    - Builds the Postgres connection string from the SERVER_DB_* variables
 ```
 
 ## Schemas
@@ -31,7 +32,9 @@ New tables go in `app`: use `db.schema.withSchema('app')` in migrations and `@@s
 1. Create a migration with `npm run migrate:make -- <name>`
 2. Apply it with `npm run migrate:latest`
 
-`migrate:latest`, `migrate:up` and `migrate:down` then sync Prisma: `prisma db pull`, `prisma-case-format` and
-`prisma generate`. `migrate:up` / `migrate:down` step one migration, `migrate:rollback` reverts all of them (without a
-sync, as there is nothing left to pull), and `migrate:list` shows what has run. Each run executes in a single transaction, so a failing migration leaves the database
-unchanged.
+`migrate:latest`, `migrate:up` and `migrate:down` then run `npm run prisma:sync`, which updates the Prisma schema and
+client to match the database. `migrate:up` / `migrate:down` step one migration, `migrate:rollback` reverts all of them
+(without a sync, as there is nothing left to pull), and `migrate:list` shows what has run. Each run executes in a
+single transaction, so a failing migration leaves the database unchanged.
+
+`npm run seed` loads demo submissions. Their ids are fixed, so it's safe to run again.

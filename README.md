@@ -5,7 +5,7 @@
 
 [![Tests](https://github.com/kyle1morel/vue3-scaffold/actions/workflows/unit-tests.yaml/badge.svg)](https://github.com/kyle1morel/vue3-scaffold/actions/workflows/unit-tests.yaml)
 
-A Vue 3 and Express application scaffold with OIDC authentication, a Prisma/Kysely backed `user` and `identity_provider` model, audit logging, and generated OpenAPI types.
+A Vue 3 and Express application scaffold with OIDC authentication, a Prisma/Kysely backed `user` and `identity_provider` model, audit logging, generated OpenAPI types, and a demo form and submissions list built on components styled to the BC Design System.
 
 ## Directory Structure
 
@@ -32,14 +32,18 @@ frontend/                  - Frontend Root
 ├── src/                   - Vue web application
 │   ├── assets/            - Static File Assets
 │   ├── components/        - Components Layer
+│   │   ├── bcds/          - PrimeVue-backed BC Design System components
+│   │   ├── common/        - Shared app components
+│   │   ├── form/          - vee-validate form fields built on bcds
+│   │   └── layout/        - Page shell: header, footer, drawer
 │   ├── composables/       - Common composition elements
-│   ├── lib/               - Repackaged external libraries
+│   ├── lib/               - PrimeVue used directly, outside bcds
 │   ├── locales/           - i18n messages
 │   ├── router/            - Router Layer
 │   ├── services/          - Services Layer
 │   ├── store/             - Store Layer
 │   ├── types/             - Typescript type definitions
-│   ├── utils/             - Utility components
+│   ├── utils/             - Utility functions
 │   └── views/             - View Layer
 └── tests/                 - Vitest web application tests
 infra/                     - CrunchyDB Helm chart
@@ -55,6 +59,9 @@ SECURITY.md                - Security Policy and Reporting
 
 - [Database Readme](app/src/db/README.md)
 - [Frontend Readme](frontend/README.md)
+- [Frontend Localization Standards](frontend/src/locales/I18N-STANDARDS.md)
+- [Frontend Testing Standards](frontend/tests/TESTING-STANDARDS.md)
+- [Helm Chart Readme](charts/vue3-scaffold/README.md)
 - [Security Reporting](SECURITY.md)
 
 ## Quick Start Dev Guide
