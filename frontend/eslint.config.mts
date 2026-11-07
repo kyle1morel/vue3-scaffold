@@ -131,7 +131,7 @@ export default defineConfig([
       '@intlify/vue-i18n/valid-message-syntax': 'error'
     }
   },
-  // PrimeVue stays behind components/bcds, and lib/primevue lists what is deliberately used directly
+  // PrimeVue and Reka stay behind components/bcds, and lib/primevue lists the PrimeVue deliberately used directly
   {
     files: ['src/**/*.{ts,vue}'],
     ignores: ['src/components/bcds/**', 'src/lib/primevue/**', 'src/main.ts'],
@@ -143,6 +143,10 @@ export default defineConfig([
             {
               regex: '^@?primevue(/|$)',
               message: 'Use a components/bcds component, or @/lib/primevue for PrimeVue we deliberately use directly.'
+            },
+            {
+              regex: '^reka-ui(/|$)',
+              message: 'Use a components/bcds component.'
             }
           ]
         }
