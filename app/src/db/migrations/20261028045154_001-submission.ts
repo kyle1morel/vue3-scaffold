@@ -12,6 +12,7 @@ import {
 import type { Kysely } from 'kysely';
 
 export async function up(db: Kysely<unknown>): Promise<void> {
+  await db.schema.withSchema('app').createType('category').asEnum(['feedback', 'question', 'request']).execute();
   await db.schema.withSchema('app').createType('contact_method').asEnum(['email', 'phone']).execute();
   await db.schema.withSchema('app').createType('province').asEnum(['AB', 'BC', 'SK']).execute();
 
@@ -27,7 +28,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn('start_date', 'date')
     .addColumn('quantity', 'integer')
     .addColumn('city', 'text')
-    .addColumn('category', 'text')
+    .addColumn('category', sql`app.category`)
     .addColumn('comments', 'text')
     .addColumn('notes', 'text')
     .$call(withTimestamps)
@@ -48,4 +49,5 @@ export async function down(db: Kysely<unknown>): Promise<void> {
 
   await db.schema.withSchema('app').dropType('province').ifExists().execute();
   await db.schema.withSchema('app').dropType('contact_method').ifExists().execute();
+  await db.schema.withSchema('app').dropType('category').ifExists().execute();
 }

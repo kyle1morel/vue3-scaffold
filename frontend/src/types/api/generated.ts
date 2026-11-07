@@ -101,7 +101,8 @@ export interface components {
       startDate: string | null;
       quantity: number | null;
       city: string | null;
-      category: string | null;
+      /** @enum {string|null} */
+      category: 'feedback' | 'question' | 'request' | null;
       comments: string | null;
       notes: string | null;
       createdBy: string | null;
@@ -213,7 +214,8 @@ export interface operations {
           startDate?: string | null;
           quantity?: number | null;
           city?: string | null;
-          category?: string | null;
+          /** @enum {string|null} */
+          category?: 'feedback' | 'question' | 'request' | null;
           comments?: string | null;
           notes?: string | null;
         };

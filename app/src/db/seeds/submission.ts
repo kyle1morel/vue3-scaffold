@@ -18,7 +18,7 @@ const places = [
   { province: 'BC', city: 'Victoria' },
   { province: 'SK', city: 'Regina' }
 ] as const;
-const categories = ['feedback', 'question', 'request'];
+const categories = ['feedback', 'question', 'request'] as const;
 
 const submissions = Array.from({ length: SEED_COUNT }, (_, i) => {
   const firstName = names[i % names.length]!;

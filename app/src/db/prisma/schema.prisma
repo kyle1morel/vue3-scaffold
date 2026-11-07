@@ -80,7 +80,7 @@ model submission {
   startDate     DateTime?      @map("start_date") @db.Date
   quantity      Int?
   city          String?
-  category      String?
+  category      category?
   comments      String?
   notes         String?
   createdBy     String?        @default("00000000-0000-4000-8000-000000000000") @map("created_by")
@@ -91,6 +91,14 @@ model submission {
   deletedAt     DateTime?      @map("deleted_at") @db.Timestamptz(6)
 
   @@index([createdAt], map: "submission_created_at_index")
+  @@schema("app")
+}
+
+enum category {
+  feedback
+  question
+  request
+
   @@schema("app")
 }
 

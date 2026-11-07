@@ -31,6 +31,7 @@ import { RouteName } from '@/utils/enums/application';
 import { formatDateLong } from '@/utils/formatters';
 import { focusFirstError } from '@/utils/utils';
 import {
+  blankOrOneOfSchema,
   notInFutureSchema,
   numberRangeSchema,
   optionalTextSchema,
@@ -50,6 +51,7 @@ const { submissionId = undefined } = defineProps<{
 }>();
 
 // Constants
+const CATEGORIES = ['feedback', 'question', 'request'] as const;
 const CITIES = ['Kamloops', 'Kelowna', 'Nanaimo', 'Prince George', 'Vancouver', 'Victoria'] as const;
 const CONTACT_METHODS = ['email', 'phone'] as const;
 const PROVINCES = ['AB', 'BC', 'SK'] as const;
@@ -74,7 +76,7 @@ const schema = z.object({
   startDate: notInFutureSchema(field('startDate')),
   quantity: numberRangeSchema(field('quantity'), 1, 100),
   city: optionalTextSchema(field('city'), 255),
-  category: optionalTextSchema(field('category'), 100),
+  category: blankOrOneOfSchema(field('category'), CATEGORIES),
   comments: optionalTextSchema(field('comments'), 1000),
   notes: optionalTextSchema(field('notes'), 10000),
   agree: z.boolean().refine((agreed) => agreed, t('views.demoForm.errors.agree'))

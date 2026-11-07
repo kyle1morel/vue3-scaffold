@@ -77,6 +77,11 @@ components:
         category:
           type: string
           nullable: true
+          enum:
+            - feedback
+            - question
+            - request
+            - null
         comments:
           type: string
           nullable: true
@@ -299,7 +304,11 @@ paths:
                 category:
                   type: string
                   nullable: true
-                  maxLength: 100
+                  enum:
+                    - feedback
+                    - question
+                    - request
+                    - null
                 comments:
                   type: string
                   nullable: true
