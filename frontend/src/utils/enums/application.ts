@@ -1,3 +1,5 @@
+import type { ValueOf } from '@/types';
+
 // Custom patterns only; prefer zod's built-in formats (z.uuidv4(), z.iso.date(), ...) where one exists
 export const Regex = {
   /**
@@ -21,7 +23,7 @@ export const RouteName = {
   SUBMISSIONS: 'submissions'
 } as const;
 
-export type RouteName = (typeof RouteName)[keyof typeof RouteName];
+export type RouteName = ValueOf<typeof RouteName>;
 
 export const IdentityProviderKind = {
   AZUREIDIR: 'azureidir',
@@ -30,7 +32,7 @@ export const IdentityProviderKind = {
   BCSC: 'bcsc'
 } as const;
 
-export type IdentityProviderKind = (typeof IdentityProviderKind)[keyof typeof IdentityProviderKind];
+export type IdentityProviderKind = ValueOf<typeof IdentityProviderKind>;
 
 export const StorageKey = {
   AUTH: 'entrypoint',
@@ -38,7 +40,7 @@ export const StorageKey = {
   CONFIG: 'config'
 } as const;
 
-export type StorageKey = (typeof StorageKey)[keyof typeof StorageKey];
+export type StorageKey = ValueOf<typeof StorageKey>;
 
 export const ToastTimeout = {
   ERROR: 5000,
@@ -48,4 +50,4 @@ export const ToastTimeout = {
   WARNING: 5000
 } as const;
 
-export type ToastTimeout = (typeof ToastTimeout)[keyof typeof ToastTimeout];
+export type ToastTimeout = ValueOf<typeof ToastTimeout>;

@@ -1,4 +1,3 @@
-import type { Nullable } from '@/types';
 import type { IdentityProviderKind } from '@/utils/enums/application';
 
 export interface Config {
@@ -21,16 +20,4 @@ export interface IdentityProvider {
   idp: string;
   kind: IdentityProviderKind;
   username: string;
-}
-
-export interface DateTimeStrings {
-  date: Nullable<string>;
-  time: Nullable<string>;
-}
-
-export interface Pagination {
-  rows?: number;
-  order?: number;
-  field?: string;
-  page?: number;
 }

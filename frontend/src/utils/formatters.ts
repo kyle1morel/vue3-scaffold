@@ -1,118 +1,72 @@
-import { format, parseJSON } from 'date-fns';
+import { format, isValid, parseISO } from 'date-fns';
 
-import { useConfigStore } from '@/store';
-
-function _dateFnsFormat(value: string | undefined | null, formatter: string) {
-  const formatted = '';
-  try {
-    if (value) {
-      return format(parseJSON(value), formatter);
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`_dateFnsFormat: Error parsing ${value} to ${error}`);
-  }
-  return formatted;
-}
-
-/**
- * @param value - A string representation of a date.
- * @returns A string representation of `value`.
- */
-export function formatDate(value: string | undefined | null) {
-  return value ? _dateFnsFormat(value, 'MMMM d, yyyy') : '';
-}
-
-/**
- * @param value - A string representation of a date.
- * @returns A string representation of `value`.
- */
-export function formatDateFilename(value: string | undefined | null) {
-  return _dateFnsFormat(value, 'yyyy-MM-dd_HHmm');
-}
-
-/**
- * @param value - A string representation of a date.
- * @returns A string representation of `value`.
- */
-export function formatDateLong(value: string | undefined | null) {
-  return _dateFnsFormat(value, 'MMMM d yyyy, h:mm:ss a');
-}
-
-/**
- * Formats a YYYY-MM-DD date-only string into "MMMM D, YYYY".
- * @param value - A date only string.
- * @returns A string representation of `value`.
- */
-export function formatDateOnly(value: string | null | undefined): string {
+// A date-only value parses as local midnight, so it shows the same day in every time zone
+function formatIso(value: string | null | undefined, pattern: string) {
   if (!value) return '';
 
-  // Must be exactly YYYY-MM-DD
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return '';
-
-  const [, year, month, day] = match;
-  const yearNum = Number(year);
-  const monthNum = Number(month) - 1;
-  const dayNum = Number(day);
-
-  const dateCheck = new Date(yearNum, monthNum, dayNum);
-  dateCheck.setFullYear(yearNum);
-
-  if (dateCheck.getFullYear() !== yearNum || dateCheck.getMonth() !== monthNum || dateCheck.getDate() !== dayNum) {
-    return '';
-  }
-
-  const safeMonthDate = new Date(2000, monthNum, 1);
-  const monthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(safeMonthDate);
-
-  return `${monthName} ${String(dayNum)}, ${year}`;
+  const date = parseISO(value);
+  return isValid(date) ? format(date, pattern) : '';
 }
 
 /**
- * @param value - A string representation of a date.
- * @returns A string representation of `value`.
+ * Formats a date or timestamp as a date, such as "November 1, 2023".
+ * @param value - An ISO date or timestamp.
+ * @returns The formatted date, or an empty string when `value` is missing or invalid.
  */
-export function formatDateShort(value: string | undefined | null) {
-  return _dateFnsFormat(value, 'yyyy MMM dd, HH:mm');
+export function formatDate(value: string | null | undefined) {
+  return formatIso(value, 'MMMM d, yyyy');
 }
 
 /**
- * @param value - A string representation of a date.
- * @returns A string representation of `value`.
+ * Formats a timestamp for use in a file name, such as "2023-11-01_1430".
+ * @param value - An ISO timestamp.
+ * @returns The formatted timestamp, or an empty string when `value` is missing or invalid.
  */
-export function formatDateTime(value: string | undefined | null) {
-  return _dateFnsFormat(value, 'MMMM d, yyyy, h:mm a');
+export function formatDateFilename(value: string | null | undefined) {
+  return formatIso(value, 'yyyy-MM-dd_HHmm');
 }
 
 /**
- * @deprecated Function not used anywhere.
- * @param value - A string representation of a JWT username.
- * @returns A formatted representation of `value`.
+ * Formats a timestamp with seconds, such as "November 1 2023, 2:30:00 PM".
+ * @param value - An ISO timestamp.
+ * @returns The formatted timestamp, or an empty string when `value` is missing or invalid.
  */
-export function formatJwtUsername(value: string | undefined | null) {
-  if (!value) return undefined;
-
-  const idps = useConfigStore().getConfig?.idpList;
-  if (!idps) return undefined;
-
-  value = value.toUpperCase();
-
-  let substr = value.length;
-  for (const idp of idps) {
-    const i = value.indexOf(`@${idp.idp.toUpperCase()}`);
-    if (i !== -1) {
-      substr = i;
-      break;
-    }
-  }
-  return value.substring(0, substr);
+export function formatDateLong(value: string | null | undefined) {
+  return formatIso(value, 'MMMM d yyyy, h:mm:ss a');
 }
 
 /**
- * @param value - A string representation of a date.
- * @returns A string representation of `value`.
+ * Formats a date with no time, such as "November 28, 2025"; anything but an exact YYYY-MM-DD is rejected.
+ * @param value - A YYYY-MM-DD date.
+ * @returns The formatted date, or an empty string when `value` is missing or invalid.
  */
-export function formatTime(value: string | undefined | null) {
-  return _dateFnsFormat(value, 'hh:mm a');
+export function formatDateOnly(value: string | null | undefined) {
+  return value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? formatDate(value) : '';
+}
+
+/**
+ * Formats a timestamp compactly, such as "2023 Nov 01, 14:30".
+ * @param value - An ISO timestamp.
+ * @returns The formatted timestamp, or an empty string when `value` is missing or invalid.
+ */
+export function formatDateShort(value: string | null | undefined) {
+  return formatIso(value, 'yyyy MMM dd, HH:mm');
+}
+
+/**
+ * Formats a timestamp to the minute, such as "November 1, 2023, 2:30 PM".
+ * @param value - An ISO timestamp.
+ * @returns The formatted timestamp, or an empty string when `value` is missing or invalid.
+ */
+export function formatDateTime(value: string | null | undefined) {
+  return formatIso(value, 'MMMM d, yyyy, h:mm a');
+}
+
+/**
+ * Formats the time of a timestamp, such as "02:30 PM".
+ * @param value - An ISO timestamp.
+ * @returns The formatted time, or an empty string when `value` is missing or invalid.
+ */
+export function formatTime(value: string | null | undefined) {
+  return formatIso(value, 'hh:mm a');
 }
