@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// Lives in app/, not the repo root: app/package.json makes Node run it as an ES module without a warning, and app's
+// tsc, ESLint and Prettier check it
+
 import { existsSync, lstatSync, readFileSync } from 'node:fs';
 import { dirname, join, isAbsolute, parse, resolve } from 'node:path';
 

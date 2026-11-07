@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// The colours and sizing follow the BC Design System Tag
-
 // Props
 const { color = 'blue' } = defineProps<{
   color?: 'bc-blue' | 'bc-gold' | 'blue' | 'dark' | 'gray' | 'green' | 'red' | 'yellow';

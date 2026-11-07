@@ -66,7 +66,6 @@ const links = computed(() => [
             </template>
           </i18n-t>
         </div>
-        <!-- A captioned list, as in the BC Design System footer -->
         <figure class="m-0 md:pr-20">
           <figcaption class="mb-4 font-bold uppercase">{{ t('components.footer.moreInfo') }}</figcaption>
           <ul class="m-0 p-0 list-none grid grid-flow-col grid-rows-4 gap-x-12 md:gap-x-20">

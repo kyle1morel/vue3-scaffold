@@ -36,7 +36,7 @@ const value = defineModel<Date | null>();
 const { t } = useI18n();
 
 // State
-// The input is one text box, so the format is spelled out under it, as in the BC Design System date picker
+// The input is one text box, so the format is spelled out under it
 const descriptionLines = computed(() => [
   showTime ? t('components.datePicker.formatWithTime') : t('components.datePicker.format'),
   description ?? ''

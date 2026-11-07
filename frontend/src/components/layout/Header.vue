@@ -18,7 +18,7 @@ function skipToMain() {
 
 <template>
   <header class="relative bg-surface-0 text-[var(--p-bcblue-950)] border-b-2 border-[var(--p-gold-950)]">
-    <!-- Hidden until it takes focus, then shown over the logo as in the BC Design System header -->
+    <!-- Hidden until it takes focus, then shown over the logo -->
     <a
       href="#main-content"
       class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-4 lg:focus:left-12 focus:p-2 bg-surface-0"
