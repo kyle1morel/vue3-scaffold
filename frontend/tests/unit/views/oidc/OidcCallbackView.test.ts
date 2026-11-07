@@ -1,7 +1,7 @@
 import { flushPromises } from '@vue/test-utils';
 import { AxiosError } from 'axios';
 
-import { getCurrentUser } from '@/services/userService';
+import { getCurrentUser } from '@/services/user';
 import { RouteName, StorageKey } from '@/utils/enums/application';
 import OidcCallbackView from '@/views/oidc/OidcCallbackView.vue';
 
@@ -16,7 +16,7 @@ vi.mock('@/store/authnStore', () => ({
   useAuthNStore: () => mockAuthNStore
 }));
 
-vi.mock('@/services/userService', () => ({
+vi.mock('@/services/user', () => ({
   getCurrentUser: vi.fn()
 }));
 

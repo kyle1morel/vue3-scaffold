@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import PrimeDatePicker from 'primevue/datepicker';
 import PrimeSelect from 'primevue/select';
 
-import { createSubmission, getSubmission } from '@/services/submissionService';
+import { createSubmission, getSubmission } from '@/services/submission';
 import { RouteName } from '@/utils/enums/application';
 import DemoFormView from '@/views/DemoFormView.vue';
 
@@ -22,7 +22,7 @@ vi.mock('@/lib/primevue/useToast', () => ({
   useToast: () => mockToast
 }));
 
-vi.mock('@/services/submissionService', () => ({
+vi.mock('@/services/submission', () => ({
   createSubmission: vi.fn(),
   getSubmission: vi.fn()
 }));

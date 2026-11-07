@@ -1,11 +1,11 @@
 import { createPinia, setActivePinia } from 'pinia';
 
-import { getConfig } from '@/services/configService';
+import { getConfig } from '@/services/config';
 import { useConfigStore } from '@/store/configStore';
 
 // Mocks
 
-vi.mock('@/services/configService', () => ({
+vi.mock('@/services/config', () => ({
   getConfig: vi.fn()
 }));
 

@@ -1,7 +1,7 @@
 import { flushPromises } from '@vue/test-utils';
 import PrimeDataTable from 'primevue/datatable';
 
-import { deleteSubmission, listSubmissions } from '@/services/submissionService';
+import { deleteSubmission, listSubmissions } from '@/services/submission';
 import { RouteName } from '@/utils/enums/application';
 import SubmissionsView from '@/views/SubmissionsView.vue';
 
@@ -20,7 +20,7 @@ vi.mock('@/lib/primevue/useToast', () => ({
   useToast: () => mockToast
 }));
 
-vi.mock('@/services/submissionService', () => ({
+vi.mock('@/services/submission', () => ({
   deleteSubmission: vi.fn(),
   listSubmissions: vi.fn()
 }));

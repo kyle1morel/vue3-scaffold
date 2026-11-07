@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { getConfig, refreshConfig, getCachedConfig } from '@/services/configService';
+import { getConfig, refreshConfig, getCachedConfig } from '@/services/config';
 import { StorageKey } from '@/utils/enums/application';
 
 // Mocks
@@ -17,7 +17,7 @@ vi.mock('axios', () => ({
 
 // Tests
 
-describe('configService', () => {
+describe('config service', () => {
   const mockGet = vi.mocked(axios.get);
 
   const config = {

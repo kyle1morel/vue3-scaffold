@@ -1,5 +1,5 @@
 import { appAxios } from '@/services/interceptors';
-import { createSubmission, deleteSubmission, getSubmission, listSubmissions } from '@/services/submissionService';
+import { createSubmission, deleteSubmission, getSubmission, listSubmissions } from '@/services/submission';
 
 // Mocks
 

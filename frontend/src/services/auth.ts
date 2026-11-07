@@ -1,6 +1,6 @@
 import { Log, UserManager, WebStorageStateStore } from 'oidc-client-ts';
 
-import { getCachedConfig } from './configService';
+import { getCachedConfig } from './config';
 
 import type { User, UserManagerSettings } from 'oidc-client-ts';
 

@@ -1,5 +1,5 @@
 import { appAxios } from '@/services/interceptors';
-import { getCurrentUser, searchUsers } from '@/services/userService';
+import { getCurrentUser, searchUsers } from '@/services/user';
 
 // Mocks
 

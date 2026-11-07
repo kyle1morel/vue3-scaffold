@@ -1,5 +1,5 @@
 import { appAxios } from '@/services/interceptors';
-import { getCachedConfig } from '@/services/configService';
+import { getCachedConfig } from '@/services/config';
 
 import type { Config } from '@/types';
 import type { InternalAxiosRequestConfig } from 'axios';
@@ -8,13 +8,13 @@ import type { InternalAxiosRequestConfig } from 'axios';
 
 const getUserMock = vi.fn();
 
-vi.mock('@/services/authService', () => ({
+vi.mock('@/services/auth', () => ({
   default: class {
     getUser = getUserMock;
   }
 }));
 
-vi.mock('@/services/configService', () => ({
+vi.mock('@/services/config', () => ({
   getCachedConfig: vi.fn()
 }));
 
