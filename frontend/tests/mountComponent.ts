@@ -1,8 +1,5 @@
 import { createTestingPinia } from '@pinia/testing';
 import PrimeVue from 'primevue/config';
-import ConfirmationService from 'primevue/confirmationservice';
-import ToastService from 'primevue/toastservice';
-import Tooltip from 'primevue/tooltip';
 import { Field, useForm } from 'vee-validate';
 import { defineComponent, h } from 'vue';
 import { mount, RouterLinkStub } from '@vue/test-utils';
@@ -50,10 +47,8 @@ export interface MountComponentOptions extends PiniaOptions {
   stubs?: Stubs;
   /** Injection keys/values, e.g. { [someKey]: ref('x') }. */
   provide?: Record<string | symbol, unknown>;
-  /** Extra global plugins beyond the always-installed PrimeVue/i18n/etc. */
+  /** Extra global plugins beyond the always-installed PrimeVue and i18n. */
   plugins?: Plugin[];
-  /** Extra global directives beyond the always-installed Tooltip. */
-  directives?: Record<string, unknown>;
   /** Receives errors the component lets through, as main.ts's app.config.errorHandler does in the app. */
   errorHandler?: (error: unknown) => void;
   /**
@@ -105,18 +100,10 @@ export function mountComponent(
   component: Component,
   options: MountComponentOptions = {}
 ): MountResult | MountResultWithForm {
-  const { props, stubs = {}, provide = {}, plugins = [], directives = {}, errorHandler, formContext } = options;
+  const { props, stubs = {}, provide = {}, plugins = [], errorHandler, formContext } = options;
   const { pinia, plugin } = setupPinia(options);
 
-  const resolvedPlugins: Plugin[] = [
-    ...(plugin ? [plugin] : []),
-    PrimeVue,
-    i18n,
-    ConfirmationService,
-    ToastService,
-    ...plugins
-  ];
-  const resolvedDirectives = { Tooltip, ...directives };
+  const resolvedPlugins: Plugin[] = [...(plugin ? [plugin] : []), PrimeVue, i18n, ...plugins];
 
   if (!formContext) {
     const wrapper = mount(component, {
@@ -125,7 +112,6 @@ export function mountComponent(
         plugins: resolvedPlugins,
         stubs: { ...defaultStubs, ...stubs },
         provide,
-        directives: resolvedDirectives,
         config: { errorHandler }
       }
     });
@@ -158,7 +144,6 @@ export function mountComponent(
       plugins: resolvedPlugins,
       stubs: { ...defaultStubs, ...stubs },
       provide,
-      directives: resolvedDirectives,
       config: { errorHandler }
     }
   });

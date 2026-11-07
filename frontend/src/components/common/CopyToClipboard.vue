@@ -2,7 +2,7 @@
 import { useI18n } from 'vue-i18n';
 
 import { Button } from '@/components/bcds';
-import { useToast } from '@/lib/primevue';
+import { useToast } from '@/composables/useToast';
 import { rethrowAs } from '@/utils/utils';
 
 // Props

@@ -2,21 +2,27 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faArrowLeft,
   faBars,
+  faCalendar,
   faCheck,
   faChevronDown,
+  faChevronLeft,
+  faChevronRight,
+  faCircleCheck,
   faCircleExclamation,
+  faCircleInfo,
   faClipboard,
   faEye,
+  faMagnifyingGlass,
+  faMinus,
+  faPlus,
   faRightFromBracket,
   faTrash,
+  faTriangleExclamation,
   faUser,
   faXmark
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import PrimeVue from '@primevue/core/config';
-import ConfirmationService from 'primevue/confirmationservice';
-import ToastService from 'primevue/toastservice';
-import Tooltip from 'primevue/tooltip';
 import { createPinia } from 'pinia';
 import { createPersistedState } from 'pinia-plugin-persistedstate';
 import { createApp } from 'vue';
@@ -41,13 +47,22 @@ function initializeApp(): void {
   library.add(
     faArrowLeft,
     faBars,
+    faCalendar,
     faCheck,
     faChevronDown,
+    faChevronLeft,
+    faChevronRight,
+    faCircleCheck,
     faCircleExclamation,
+    faCircleInfo,
     faClipboard,
     faEye,
+    faMagnifyingGlass,
+    faMinus,
+    faPlus,
     faRightFromBracket,
     faTrash,
+    faTriangleExclamation,
     faUser,
     faXmark
   );
@@ -64,8 +79,6 @@ function initializeApp(): void {
   app.use(getRouter());
   app.use(i18n);
   app.use(PrimeVue, {
-    // en-CA's 2026-01-15, as in the BC Design System; components.datePicker.format describes it to users
-    locale: { dateFormat: 'yy-mm-dd' },
     theme: {
       preset: ThemeOverride,
       options: {
@@ -80,10 +93,7 @@ function initializeApp(): void {
       }
     }
   });
-  app.use(ToastService);
-  app.use(ConfirmationService);
   app.component('FontAwesomeIcon', FontAwesomeIcon);
-  app.directive('tooltip', Tooltip);
 
   // Errors nothing else handled end up as a toast: Vue sends component errors here, and the listener catches
   // promises Vue never sees, such as library callbacks; showError logs them in place of the browser

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 
-import { ProgressSpinner } from '@/lib/primevue';
+import { ProgressCircle } from '@/components/bcds';
 
 // Composables
 const { t } = useI18n();
@@ -9,10 +9,10 @@ const { t } = useI18n();
 
 <template>
   <div class="flex justify-center">
-    <ProgressSpinner
-      style="width: 50px; height: 50px"
-      stroke-width="4"
+    <ProgressCircle
       :aria-label="t('ui.loading')"
+      is-indeterminate
+      size="large"
     />
   </div>
 </template>

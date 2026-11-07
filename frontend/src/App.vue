@@ -2,8 +2,8 @@
 import { storeToRefs } from 'pinia';
 import { RouterView } from 'vue-router';
 
-import { AppLayout, Breadcrumb, ProgressLoader } from '@/components/layout';
-import { ConfirmDialog, Message, Toast } from '@/lib/primevue';
+import { AlertBanner, Toaster, TooltipProvider } from '@/components/bcds';
+import { AppLayout, Breadcrumb, ConfirmDialog, ProgressLoader } from '@/components/layout';
 import { useAppStore, useConfigStore } from '@/store';
 
 // Store
@@ -13,23 +13,24 @@ const { getConfig } = storeToRefs(useConfigStore());
 </script>
 
 <template>
-  <ConfirmDialog />
-  <ProgressLoader v-if="getIsLoading" />
-  <Toast />
+  <!-- One provider for every tooltip, so moving between neighbouring tooltips skips the open delay -->
+  <TooltipProvider>
+    <ConfirmDialog />
+    <ProgressLoader v-if="getIsLoading" />
+    <Toaster />
 
-  <AppLayout>
-    <template #main>
-      <!-- A status rather than PrimeVue's assertive alert, so it doesn't interrupt on every page load -->
-      <Message
-        v-if="getConfig?.notificationBanner"
-        severity="warn"
-        class="text-center"
-        :pt="{ root: { role: 'status', 'aria-live': 'polite' } }"
-      >
-        {{ getConfig?.notificationBanner }}
-      </Message>
-      <Breadcrumb />
-      <RouterView />
-    </template>
-  </AppLayout>
+    <AppLayout>
+      <template #main>
+        <AlertBanner
+          v-if="getConfig?.notificationBanner"
+          :is-closeable="false"
+          variant="warning"
+        >
+          {{ getConfig?.notificationBanner }}
+        </AlertBanner>
+        <Breadcrumb />
+        <RouterView />
+      </template>
+    </AppLayout>
+  </TooltipProvider>
 </template>

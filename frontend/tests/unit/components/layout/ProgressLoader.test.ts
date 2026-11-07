@@ -1,5 +1,5 @@
+import { ProgressBar } from '@/components/bcds';
 import ProgressLoader from '@/components/layout/ProgressLoader.vue';
-import { ProgressBar } from '@/lib/primevue';
 
 import { mountComponent } from '../../../mountComponent';
 
@@ -25,14 +25,14 @@ describe('ProgressLoader', () => {
       const { wrapper } = mountProgressLoader({ loadingValue: 40 });
       const bar = wrapper.findComponent(ProgressBar);
 
-      expect(bar.props('mode')).toBe('determinate');
+      expect(bar.props('isIndeterminate')).toBe(false);
       expect(bar.props('value')).toBe(40);
     });
 
     it('switches to indeterminate mode', () => {
       const { wrapper } = mountProgressLoader({ loadingMode: 'indeterminate' });
 
-      expect(wrapper.findComponent(ProgressBar).props('mode')).toBe('indeterminate');
+      expect(wrapper.findComponent(ProgressBar).props('isIndeterminate')).toBe(true);
     });
   });
 });

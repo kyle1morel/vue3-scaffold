@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Separator as RekaSeparator } from 'reka-ui';
+
 // Props
 const { orientation = 'horizontal', size = 'medium' } = defineProps<{
   orientation?: 'horizontal' | 'vertical';
@@ -7,37 +9,26 @@ const { orientation = 'horizontal', size = 'medium' } = defineProps<{
 </script>
 
 <template>
-  <hr
-    v-if="orientation === 'horizontal'"
-    class="separator horizontal"
-    :class="size"
-  />
-  <!-- An hr can't be vertical, so a vertical separator states its role -->
-  <div
-    v-else
-    aria-orientation="vertical"
-    class="separator vertical"
-    :class="size"
-    role="separator"
+  <RekaSeparator
+    class="separator"
+    :class="[orientation, size]"
+    :orientation
   />
 </template>
 
 <style scoped>
 .separator {
-  border: none;
   border-radius: var(--layout-border-radius-circular);
   background-color: var(--surface-color-border-default);
 }
 
 .horizontal {
   align-self: stretch;
-  width: auto;
   margin: var(--layout-margin-small) var(--layout-margin-none);
 }
 
 .vertical {
   align-self: stretch;
-  height: auto;
   margin: var(--layout-margin-none) var(--layout-margin-small);
 }
 

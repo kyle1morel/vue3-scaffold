@@ -11,6 +11,10 @@
       content="width=device-width, initial-scale=1.0"
     />
     <title>Vue 3 Scaffold</title>
+    <!-- Component styles can load before main.css, so the layer order is fixed here, ahead of every stylesheet -->
+    <style>
+      @layer properties, theme, base, components, primeui, utilities, keyframes;
+    </style>
   </head>
 
   <body>

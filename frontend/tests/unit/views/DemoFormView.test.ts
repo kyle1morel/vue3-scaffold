@@ -19,7 +19,7 @@ import type { Submission } from '@/types';
 
 const mockToast = { error: vi.fn(), info: vi.fn(), success: vi.fn(), warn: vi.fn() };
 
-vi.mock('@/lib/primevue/useToast', () => ({
+vi.mock('@/composables/useToast', () => ({
   useToast: () => mockToast
 }));
 

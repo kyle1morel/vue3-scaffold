@@ -2,8 +2,10 @@
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { Button } from '@/components/bcds';
-import { Column, DataTable, useConfirm, useToast } from '@/lib/primevue';
+import { Button, Tooltip } from '@/components/bcds';
+import { useConfirm } from '@/composables/useConfirm';
+import { useToast } from '@/composables/useToast';
+import { Column, DataTable } from '@/lib/primevue';
 import { deleteSubmission, listSubmissions } from '@/services';
 import { RouteName } from '@/utils/enums';
 import { formatDateShort } from '@/utils/formatters';
@@ -16,7 +18,7 @@ import type { Submission } from '@/types';
 const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
 // Composables
-const confirm = useConfirm();
+const { confirm } = useConfirm();
 const { t } = useI18n();
 const toast = useToast();
 
@@ -57,16 +59,15 @@ async function removeSubmission(submission: Submission) {
   await loadPage();
 }
 
-function confirmDelete(submission: Submission) {
-  confirm.require({
-    header: t('views.submissions.confirmDelete.title'),
-    message: t('views.submissions.confirmDelete.message', { name: submission.firstName }),
+async function confirmDelete(submission: Submission) {
+  const accepted = await confirm({
     acceptLabel: t('ui.actions.delete'),
-    acceptProps: { severity: 'danger' },
+    danger: true,
+    message: t('views.submissions.confirmDelete.message', { name: submission.firstName }),
     rejectLabel: t('ui.actions.cancel'),
-    rejectProps: { outlined: true },
-    accept: () => removeSubmission(submission)
+    title: t('views.submissions.confirmDelete.title')
   });
+  if (accepted) await removeSubmission(submission);
 }
 
 onMounted(() => loadPage());
@@ -114,23 +115,31 @@ onMounted(() => loadPage());
     <Column :header="t('views.submissions.columns.actions')">
       <template #body="{ data }">
         <div class="flex gap-2">
-          <Button
-            v-tooltip.bottom="t('ui.actions.view')"
-            icon="fa-solid fa-eye"
-            icon-only
-            :label="t('views.submissions.actions.view', { name: data.firstName })"
-            :to="{ name: RouteName.SUBMISSION, params: { submissionId: data.id } }"
-            variant="tertiary"
-          />
-          <Button
-            v-tooltip.bottom="t('ui.actions.delete')"
-            danger
-            icon="fa-solid fa-trash"
-            icon-only
-            :label="t('views.submissions.actions.delete', { name: data.firstName })"
-            variant="tertiary"
-            @click="confirmDelete(data)"
-          />
+          <Tooltip
+            placement="bottom"
+            :text="t('ui.actions.view')"
+          >
+            <Button
+              icon="fa-solid fa-eye"
+              icon-only
+              :label="t('views.submissions.actions.view', { name: data.firstName })"
+              :to="{ name: RouteName.SUBMISSION, params: { submissionId: data.id } }"
+              variant="tertiary"
+            />
+          </Tooltip>
+          <Tooltip
+            placement="bottom"
+            :text="t('ui.actions.delete')"
+          >
+            <Button
+              danger
+              icon="fa-solid fa-trash"
+              icon-only
+              :label="t('views.submissions.actions.delete', { name: data.firstName })"
+              variant="tertiary"
+              @click="confirmDelete(data)"
+            />
+          </Tooltip>
         </div>
       </template>
     </Column>

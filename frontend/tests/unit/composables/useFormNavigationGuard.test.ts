@@ -1,22 +1,16 @@
 import { enableAutoUnmount } from '@vue/test-utils';
 import { defineComponent, h, ref } from 'vue';
 
+import { confirmRequest } from '@/composables/useConfirm';
 import { useFormNavigationGuard } from '@/composables/useFormNavigationGuard';
 
 import { mountComponent } from '../../mountComponent';
 
-import type { ConfirmationOptions } from 'primevue/confirmationoptions';
-
 // Mocks
 
 const hoisted = vi.hoisted(() => ({
-  confirmRequire: vi.fn(),
   onBeforeRouteLeave: vi.fn(),
   onBeforeRouteUpdate: vi.fn()
-}));
-
-vi.mock('primevue/useconfirm', () => ({
-  useConfirm: () => ({ require: hoisted.confirmRequire })
 }));
 
 vi.mock('vue-router', () => ({
@@ -38,9 +32,14 @@ function mountGuard(options: { dirty?: boolean } = {}) {
   );
 
   const guard: () => boolean | Promise<boolean> = hoisted.onBeforeRouteLeave.mock.lastCall![0];
-  const confirmation = (): ConfirmationOptions => hoisted.confirmRequire.mock.lastCall![0];
 
-  return { wrapper, isDirty, guard, confirmation };
+  return { wrapper, isDirty, guard };
+}
+
+// Answers the open request, as layout/ConfirmDialog does
+function answer(accepted: boolean) {
+  confirmRequest.value!.resolve(accepted);
+  confirmRequest.value = undefined;
 }
 
 function closeTab() {
@@ -54,6 +53,7 @@ enableAutoUnmount(afterEach);
 
 beforeEach(() => {
   vi.clearAllMocks();
+  confirmRequest.value = undefined;
 });
 
 // Tests
@@ -64,38 +64,29 @@ describe('useFormNavigationGuard', () => {
       const { guard } = mountGuard();
 
       expect(await guard()).toBe(true);
-      expect(hoisted.confirmRequire).not.toHaveBeenCalled();
+      expect(confirmRequest.value).toBeUndefined();
     });
 
     it('leaves a dirty form when the user accepts', async () => {
-      const { confirmation, guard } = mountGuard({ dirty: true });
+      const { guard } = mountGuard({ dirty: true });
 
       const result = guard();
-      confirmation().accept!();
+      answer(true);
 
       expect(await result).toBe(true);
     });
 
-    it('stays on a dirty form when the user rejects', async () => {
-      const { confirmation, guard } = mountGuard({ dirty: true });
-
-      const result = guard();
-      confirmation().reject!();
-
-      expect(await result).toBe(false);
-    });
-
-    it('stays when the dialog is dismissed, and asks again next time', async () => {
-      const { confirmation, guard } = mountGuard({ dirty: true });
+    it('stays on a dirty form when the user cancels, and asks again next time', async () => {
+      const { guard } = mountGuard({ dirty: true });
 
       const first = guard();
-      confirmation().onHide!();
+      answer(false);
       expect(await first).toBe(false);
 
       const second = guard();
-      confirmation().accept!();
+      expect(confirmRequest.value).toBeDefined();
+      answer(true);
       expect(await second).toBe(true);
-      expect(hoisted.confirmRequire).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -112,7 +103,7 @@ describe('useFormNavigationGuard', () => {
 
       updateGuard()({ fullPath: '/submissions/2' }, { fullPath: '/submissions/1' });
 
-      expect(hoisted.confirmRequire).toHaveBeenCalledOnce();
+      expect(confirmRequest.value).toBeDefined();
     });
 
     it('asks before a query change', () => {
@@ -120,7 +111,7 @@ describe('useFormNavigationGuard', () => {
 
       updateGuard()({ fullPath: '/demo-form?step=2' }, { fullPath: '/demo-form' });
 
-      expect(hoisted.confirmRequire).toHaveBeenCalledOnce();
+      expect(confirmRequest.value).toBeDefined();
     });
 
     it('lets a hash-only change through without asking', () => {
@@ -129,7 +120,7 @@ describe('useFormNavigationGuard', () => {
       const result = updateGuard()({ fullPath: '/demo-form#notes' }, { fullPath: '/demo-form' });
 
       expect(result).toBe(true);
-      expect(hoisted.confirmRequire).not.toHaveBeenCalled();
+      expect(confirmRequest.value).toBeUndefined();
     });
   });
 

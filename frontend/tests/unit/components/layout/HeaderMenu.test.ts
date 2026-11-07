@@ -1,3 +1,4 @@
+import { Menu } from '@/components/bcds';
 import HeaderMenu from '@/components/layout/HeaderMenu.vue';
 import { RouteName } from '@/utils/enums';
 
@@ -49,7 +50,7 @@ describe('HeaderMenu', () => {
     it('renders nothing when the user is not authenticated', () => {
       const { wrapper } = mountHeaderMenu();
 
-      expect(wrapper.find('#menu-toggle').exists()).toBe(false);
+      expect(wrapper.find('button').exists()).toBe(false);
     });
 
     it('shows the profile name when authenticated', () => {
@@ -58,7 +59,7 @@ describe('HeaderMenu', () => {
 
       const { wrapper } = mountHeaderMenu();
 
-      expect(wrapper.find('#menu-toggle').text()).toContain(testProfile.name);
+      expect(wrapper.find('button').text()).toContain(testProfile.name);
     });
 
     it('falls back to display_name when name is missing', () => {
@@ -67,7 +68,7 @@ describe('HeaderMenu', () => {
 
       const { wrapper } = mountHeaderMenu();
 
-      expect(wrapper.find('#menu-toggle').text()).toContain(testProfile.display_name);
+      expect(wrapper.find('button').text()).toContain(testProfile.display_name);
     });
   });
 
@@ -78,8 +79,8 @@ describe('HeaderMenu', () => {
 
       const { wrapper } = mountHeaderMenu();
 
-      const items = wrapper.findComponent({ name: 'Menu' }).props('model');
-      items?.[0].command?.({} as never);
+      const items = wrapper.findComponent(Menu).props('items');
+      items?.[0]?.onAction?.();
 
       expect(mockRouter.push).toHaveBeenCalledWith({ name: RouteName.OIDC_LOGOUT });
     });

@@ -56,9 +56,9 @@ checks an error toast passes `errorHandler: showError` to
 const { wrapper } = mountComponent(SubmissionsView, { errorHandler: showError });
 ```
 
-An error from a callback Vue never sees, such as a confirm dialog's
-`accept`, reaches the app's `unhandledrejection` listener instead. Assert
-that the call rejects with the message, rather than on the toast.
+An error from a callback Vue never sees, such as a timer, reaches the
+app's `unhandledrejection` listener instead. Assert that the call rejects
+with the message, rather than on the toast.
 
 ## Router mocking
 

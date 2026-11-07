@@ -1,6 +1,7 @@
 import { flushPromises } from '@vue/test-utils';
 import PrimeDataTable from 'primevue/datatable';
 
+import { confirmRequest } from '@/composables/useConfirm';
 import { deleteSubmission, listSubmissions } from '@/services/submission';
 import { RouteName } from '@/utils/enums';
 import { showError } from '@/utils/utils';
@@ -9,25 +10,19 @@ import SubmissionsView from '@/views/SubmissionsView.vue';
 import { expectNoAxeViolations } from '../../expectNoAxeViolations';
 import { mountComponent } from '../../mountComponent';
 
-import type { ConfirmationOptions } from 'primevue/confirmationoptions';
 import type { Submission } from '@/types';
 
 // Mocks
 
-const mockConfirm = { require: vi.fn(), close: vi.fn() };
 const mockToast = { error: vi.fn(), info: vi.fn(), success: vi.fn(), warn: vi.fn() };
 
-vi.mock('@/lib/primevue/useToast', () => ({
+vi.mock('@/composables/useToast', () => ({
   useToast: () => mockToast
 }));
 
 vi.mock('@/services/submission', () => ({
   deleteSubmission: vi.fn(),
   listSubmissions: vi.fn()
-}));
-
-vi.mock('primevue/useconfirm', () => ({
-  useConfirm: () => mockConfirm
 }));
 
 // Fixtures
@@ -42,11 +37,11 @@ const testSubmission = {
   createdAt: '2026-01-15T18:30:00.000Z'
 } as Submission;
 
-// Clicks the row's delete button and accepts the confirm dialog it opens
+// Clicks the row's delete button and accepts the confirm dialog it opens, as layout/ConfirmDialog does
 async function deleteAndAccept(wrapper: Awaited<ReturnType<typeof mountSubmissionsView>>['wrapper']) {
   await wrapper.find('button[aria-label="Delete the submission from Jane"]').trigger('click');
-  const options = mockConfirm.require.mock.calls[0]![0] as ConfirmationOptions;
-  await options.accept!();
+  confirmRequest.value!.resolve(true);
+  confirmRequest.value = undefined;
   await flushPromises();
 }
 
@@ -62,6 +57,7 @@ async function mountSubmissionsView() {
 beforeEach(() => {
   vi.clearAllMocks();
   vi.mocked(deleteSubmission).mockResolvedValue();
+  confirmRequest.value = undefined;
 });
 
 // Tests
@@ -143,10 +139,10 @@ describe('SubmissionsView', () => {
 
       await wrapper.find('button[aria-label="Delete the submission from Jane"]').trigger('click');
 
-      expect(mockConfirm.require).toHaveBeenCalledWith(
+      expect(confirmRequest.value).toEqual(
         expect.objectContaining({
-          header: 'Delete submission?',
-          message: 'Delete the submission from Jane? It will no longer appear in the list.'
+          message: 'Delete the submission from Jane? It will no longer appear in the list.',
+          title: 'Delete submission?'
         })
       );
       expect(deleteSubmission).not.toHaveBeenCalled();
@@ -175,17 +171,17 @@ describe('SubmissionsView', () => {
       expect(listSubmissions).toHaveBeenLastCalledWith({ page: 1, pageSize: 10 });
     });
 
-    // The confirm dialog calls accept outside Vue, so the error reaches main.ts's unhandledrejection listener
-    it('rejects with a message for the user and keeps the rows when the delete fails', async () => {
+    it('shows an error and keeps the rows when the delete fails', async () => {
       vi.mocked(listSubmissions).mockResolvedValue({ items: [testSubmission], total: 1 });
       vi.mocked(deleteSubmission).mockRejectedValue(new Error('delete failed'));
+      const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
       const { wrapper } = await mountSubmissionsView();
 
-      await wrapper.find('button[aria-label="Delete the submission from Jane"]').trigger('click');
-      const options = mockConfirm.require.mock.calls[0]![0] as ConfirmationOptions;
+      await deleteAndAccept(wrapper);
 
-      await expect(options.accept!()).rejects.toThrow('Unable to delete the submission. Please try again.');
+      expect(mockToast.error).toHaveBeenCalledWith('Unable to delete the submission. Please try again.');
       expect(listSubmissions).toHaveBeenCalledOnce();
+      consoleError.mockRestore();
     });
   });
 

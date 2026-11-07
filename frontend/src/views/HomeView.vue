@@ -25,11 +25,13 @@ const { getIsAuthenticated } = storeToRefs(useAuthNStore());
         <h1 class="mt-0!">{{ t('app.name') }}</h1>
         <Button
           v-if="getIsAuthenticated"
+          class="home-action"
           :label="t('views.demoForm.title')"
           @click="router.push({ name: RouteName.DEMO_FORM })"
         />
         <Button
           v-else
+          class="home-action"
           :label="t('ui.actions.logIn')"
           @click="router.push({ name: RouteName.OIDC_LOGIN })"
         />
@@ -75,24 +77,20 @@ h3 {
   }
 }
 
-.p-button {
+// A white button stands out on the blue panel
+.home-action {
   width: 12.5rem;
-  &:not(.p-button-secondary, .p-button-success, .p-button-info, .p-button-warning, .p-button-help, .p-button-danger) {
-    color: var(--p-primary-color);
-    &:not(.p-button-outlined, .p-button-text) {
-      background-color: white;
-      border-color: white;
-      color: var(--p-primary-color);
-    }
-    &:hover {
-      background-color: var(--p-greyscale-200);
-    }
-    &:focus,
-    &:focus-visible {
-      outline: 3px solid var(--p-primary-contrast-color);
-      outline-offset: 2px;
-      box-shadow: 0 0 0 3px rgba(252, 186, 25, 0.5);
-    }
+  background-color: var(--theme-gray-white);
+  color: var(--theme-primary-blue);
+
+  &:hover {
+    background-color: var(--surface-color-tertiary-button-hover);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--typography-color-primary-invert);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(252, 186, 25, 0.5);
   }
 }
 </style>

@@ -1,8 +1,8 @@
 import { onBeforeUnmount, onMounted, toValue } from 'vue';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 
+import { useConfirm } from '@/composables/useConfirm';
 import { i18n } from '@/i18n';
-import { useConfirm } from '@/lib/primevue';
 
 import type { MaybeRefOrGetter } from 'vue';
 
@@ -11,7 +11,7 @@ import type { MaybeRefOrGetter } from 'vue';
  * @param isDirty - Whether the form has unsaved changes.
  */
 export function useFormNavigationGuard(isDirty: MaybeRefOrGetter<boolean>) {
-  const confirm = useConfirm();
+  const { confirm } = useConfirm();
 
   // Closing or reloading the tab skips the router, so the browser shows its own prompt instead
   function onBeforeUnload(event: BeforeUnloadEvent) {
@@ -22,20 +22,13 @@ export function useFormNavigationGuard(isDirty: MaybeRefOrGetter<boolean>) {
   function guard() {
     if (!toValue(isDirty)) return true;
 
-    return new Promise<boolean>((resolve) =>
-      confirm.require({
-        message: i18n.t('ui.unsavedChanges.message'),
-        header: i18n.t('ui.unsavedChanges.title'),
-        acceptLabel: i18n.t('ui.actions.leave'),
-        acceptProps: { severity: 'danger' },
-        rejectLabel: i18n.t('ui.actions.cancel'),
-        rejectProps: { outlined: true },
-        accept: () => resolve(true),
-        reject: () => resolve(false),
-        // Esc, the close button and the mask call only onHide
-        onHide: () => resolve(false)
-      })
-    );
+    return confirm({
+      acceptLabel: i18n.t('ui.actions.leave'),
+      danger: true,
+      message: i18n.t('ui.unsavedChanges.message'),
+      rejectLabel: i18n.t('ui.actions.cancel'),
+      title: i18n.t('ui.unsavedChanges.title')
+    });
   }
 
   onMounted(() => window.addEventListener('beforeunload', onBeforeUnload));

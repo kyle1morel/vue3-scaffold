@@ -5,7 +5,7 @@ import { getBatches, rethrowAs, showError, toIsoRange, UserError } from '@/utils
 
 const mockToast = { error: vi.fn(), info: vi.fn(), success: vi.fn(), warn: vi.fn() };
 
-vi.mock('@/lib/primevue/useToast', () => ({
+vi.mock('@/composables/useToast', () => ({
   useToast: () => mockToast
 }));
 

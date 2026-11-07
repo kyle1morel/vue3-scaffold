@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { z } from 'zod';
 
-import { Button, Tag } from '@/components/bcds';
+import { Button, InlineAlert, Tag } from '@/components/bcds';
 import Card from '@/components/common/Card.vue';
 import {
   CancelButton,
@@ -25,7 +25,7 @@ import {
 } from '@/components/form';
 import { Spinner } from '@/components/layout';
 import { useFormNavigationGuard } from '@/composables/useFormNavigationGuard';
-import { Message, useToast } from '@/lib/primevue';
+import { useToast } from '@/composables/useToast';
 import { createSubmission, getSubmission } from '@/services';
 import { RouteName } from '@/utils/enums';
 import { formatDateLong } from '@/utils/formatters';
@@ -196,12 +196,12 @@ const onSubmit = handleSubmit(
     <Tag v-else>{{ t('views.demoForm.status.new') }}</Tag>
   </div>
 
-  <Message
+  <InlineAlert
     v-if="loadError"
-    severity="error"
-  >
-    {{ loadError }}
-  </Message>
+    :description="loadError"
+    role="alert"
+    variant="danger"
+  />
   <Spinner v-else-if="readOnly && !submission" />
   <template v-else>
     <p v-if="submission">{{ t('views.demoForm.submittedOn', { date: formatDateLong(submission.createdAt) }) }}</p>

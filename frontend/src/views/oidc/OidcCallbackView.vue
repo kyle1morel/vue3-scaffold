@@ -4,9 +4,8 @@ import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import { Button } from '@/components/bcds';
+import { Button, InlineAlert } from '@/components/bcds';
 import { Spinner } from '@/components/layout';
-import { Message } from '@/lib/primevue';
 import { getCurrentUser } from '@/services';
 import { useAuthNStore } from '@/store';
 import { RouteName, StorageKey } from '@/utils/enums';
@@ -48,7 +47,11 @@ onMounted(async () => {
     v-if="error"
     class="mx-auto mt-40 flex max-w-xl flex-col items-center gap-4"
   >
-    <Message severity="error">{{ error }}</Message>
+    <InlineAlert
+      :description="error"
+      role="alert"
+      variant="danger"
+    />
     <Button
       :label="t('ui.actions.logIn')"
       @click="router.replace({ name: RouteName.LOGIN })"

@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 
+import { useToast } from '@/composables/useToast';
 import { i18n } from '@/i18n';
-import { useToast } from '@/lib/primevue';
 import { useConfigStore } from '@/store';
 import { IdentityProviderKind, ToastTimeout } from '@/utils/enums';
 

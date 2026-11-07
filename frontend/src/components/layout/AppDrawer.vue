@@ -6,8 +6,7 @@ import { useI18n } from 'vue-i18n';
 import developer from '@/assets/images/developer.svg';
 import form from '@/assets/images/form.svg';
 import home from '@/assets/images/home.svg';
-import { Button } from '@/components/bcds';
-import { Drawer, StyleClass } from '@/lib/primevue';
+import { Button, Drawer } from '@/components/bcds';
 import { useAuthNStore } from '@/store';
 import { RouteName } from '@/utils/enums';
 
@@ -22,12 +21,12 @@ interface DrawerItem {
 
 // Composables
 const { t } = useI18n();
-const vStyleclass = StyleClass;
 
 // Store
 const { getIsAuthenticated } = storeToRefs(useAuthNStore());
 
 // State
+const expanded = ref<string[]>([]);
 const visible = ref(false);
 
 const items = computed<DrawerItem[]>(() => [
@@ -60,6 +59,13 @@ const permittedItems = computed(() =>
       items: item.items?.filter((subItem) => subItem.public || getIsAuthenticated.value)
     }))
 );
+
+// Actions
+function toggle(item: DrawerItem) {
+  expanded.value = expanded.value.includes(item.label)
+    ? expanded.value.filter((label) => label !== item.label)
+    : [...expanded.value, item.label];
+}
 </script>
 
 <template>
@@ -72,107 +78,79 @@ const permittedItems = computed(() =>
     <font-awesome-icon icon="fa-solid fa-bars" />
   </Button>
   <Drawer
-    v-model:visible="visible"
-    position="right"
+    v-model:open="visible"
+    :title="t('components.appDrawer.menu')"
   >
-    <template #container="{ closeCallback }">
-      <div class="flex flex-col h-full">
-        <div class="flex items-center justify-between px-4 pt-4 shrink-0 mb-3">
-          <span>
-            <Button
-              icon="fa-solid fa-xmark"
-              :label="t('ui.actions.close')"
-              variant="secondary"
-              @click="closeCallback"
+    <div class="flex items-center justify-between px-4 pt-4 shrink-0 mb-3">
+      <Button
+        icon="fa-solid fa-xmark"
+        :label="t('ui.actions.close')"
+        variant="secondary"
+        @click="visible = false"
+      />
+    </div>
+    <nav class="overflow-y-auto px-2">
+      <ul class="list-none p-0 m-0">
+        <li
+          v-for="item in permittedItems"
+          :key="item.label"
+        >
+          <Button
+            v-if="item.items"
+            :aria-expanded="expanded.includes(item.label)"
+            class="no-underline inline-flex items-center mt-2 w-full justify-start"
+            variant="tertiary"
+            @click="toggle(item)"
+          >
+            <img
+              class="w-7 h-8"
+              :src="item.icon"
+              alt=""
             />
-          </span>
-        </div>
-        <div class="overflow-y-auto">
-          <ul class="list-none p-0 m-0">
-            <li
-              v-for="item in permittedItems"
-              :key="item.label"
-              class="overflow-hidden"
-            >
-              <router-link
-                v-slot="{ navigate }"
-                :to="{ name: item.route ?? RouteName.HOME }"
-                custom
-              >
-                <Button
-                  v-styleclass="{
-                    selector: '@next',
-                    enterFromClass: 'hidden',
-                    enterActiveClass: 'animate-slidedown',
-                    leaveToClass: 'hidden',
-                    leaveActiveClass: 'animate-slideup'
-                  }"
-                  variant="tertiary"
-                  class="no-underline inline-flex items-center mt-2 cursor-pointer w-full justify-start"
-                  tabindex="0"
-                  :aria-expanded="item.items ? 'false' : undefined"
-                  @click="
-                    () => {
-                      if (item.route) navigate();
-                      if (!item.items) closeCallback();
-                    }
-                  "
-                  @keydown.enter="
-                    () => {
-                      if (item.route) navigate();
-                      if (!item.items) closeCallback();
-                    }
-                  "
-                >
-                  <img
-                    class="w-7 h-8"
-                    :src="item.icon"
-                    alt=""
-                    aria-hidden="true"
-                  />
-                  <span class="font-medium">{{ item.label }}</span>
-                  <font-awesome-icon
-                    v-if="item.items"
-                    class="ml-auto"
-                    icon="fa-solid fa-chevron-down"
-                  />
-                </Button>
-              </router-link>
+            <span class="font-medium">{{ item.label }}</span>
+            <font-awesome-icon
+              class="ml-auto"
+              :class="{ 'rotate-180': expanded.includes(item.label) }"
+              icon="fa-solid fa-chevron-down"
+            />
+          </Button>
+          <Button
+            v-else
+            class="no-underline inline-flex items-center mt-2 w-full justify-start"
+            :to="{ name: item.route ?? RouteName.HOME }"
+            variant="tertiary"
+            @click="visible = false"
+          >
+            <img
+              class="w-7 h-8"
+              :src="item.icon"
+              alt=""
+            />
+            <span class="font-medium">{{ item.label }}</span>
+          </Button>
 
-              <ul
-                v-if="item.items"
-                class="list-none py-0 pl-4 hidden overflow-y-hidden transition-all duration-[400ms] ease-in-out"
+          <ul
+            v-if="item.items"
+            v-show="expanded.includes(item.label)"
+            class="list-none py-0 pl-4"
+          >
+            <li
+              v-for="subItem in item.items"
+              :key="subItem.label"
+              class="my-3"
+            >
+              <Button
+                class="no-underline w-full justify-start"
+                :to="{ name: subItem.route ?? RouteName.HOME }"
+                variant="tertiary"
+                @click="visible = false"
               >
-                <li
-                  v-for="subItem in item.items"
-                  :key="subItem.label"
-                  class="my-3"
-                >
-                  <router-link
-                    v-slot="{ href, navigate }"
-                    :to="{ name: subItem.route ?? RouteName.HOME }"
-                    custom
-                  >
-                    <Button
-                      class="no-underline w-full justify-start"
-                      :href="href"
-                      variant="tertiary"
-                      @click="
-                        () => {
-                          if (subItem.route) navigate();
-                          closeCallback();
-                        }
-                      "
-                    >
-                      <span class="font-medium">{{ subItem.label }}</span>
-                    </Button>
-                  </router-link>
-                </li>
-              </ul>
+                <span class="font-medium">{{ subItem.label }}</span>
+              </Button>
             </li>
           </ul>
-        </div>
-      </div>
-    </template>
+        </li>
+      </ul>
+    </nav>
   </Drawer>
 </template>
