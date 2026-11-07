@@ -42,12 +42,8 @@ const { getIsAuthenticated } = storeToRefs(useAuthNStore());
 
 <style scoped lang="scss">
 h1,
-h3 {
+p {
   color: rgba(255, 255, 255, 0.9);
-}
-
-h3 {
-  font-weight: 400;
 }
 
 .bg {
