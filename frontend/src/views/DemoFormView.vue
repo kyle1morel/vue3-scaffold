@@ -277,14 +277,14 @@ const onSubmit = handleSubmit(
           name="startDate"
           :readonly="readOnly"
           :label="field('startDate')"
-          :max-date="new Date()"
+          :max-value="new Date()"
         />
         <NumberField
           class="col-span-12 md:col-span-6"
           name="quantity"
           :readonly="readOnly"
           :label="field('quantity')"
-          :max-fraction-digits="0"
+          :format-options="{ maximumFractionDigits: 0 }"
           :description="t('views.demoForm.help.quantity')"
         />
         <ComboBox

@@ -8,6 +8,7 @@ defineOptions({ inheritAttrs: false });
 
 // Props
 const {
+  counter = undefined,
   description = undefined,
   errorIcon = false,
   errorMessage = undefined,
@@ -15,6 +16,8 @@ const {
   nonLabelable = false,
   required = false
 } = defineProps<{
+  // Shown at the end of the description's row, such as a character count
+  counter?: string;
   // Several lines show one per row, as one description
   description?: string | string[];
   // Puts the error icon beside the message, for controls with no box to show it in
@@ -88,14 +91,26 @@ function inputAttrs() {
         labelId: label ? ids.label : undefined
       }"
     />
-    <!-- One text with line breaks, so screen readers still hear a space between lines -->
-    <small
-      v-if="descriptionLines.length"
-      :id="ids.description"
-      class="app-description block whitespace-pre-line"
+    <div
+      v-if="descriptionLines.length || counter"
+      class="flex gap-[var(--layout-margin-medium)]"
     >
-      {{ descriptionLines.join('\n') }}
-    </small>
+      <!-- One text with line breaks, so screen readers still hear a space between lines -->
+      <small
+        v-if="descriptionLines.length"
+        :id="ids.description"
+        class="app-description block whitespace-pre-line"
+      >
+        {{ descriptionLines.join('\n') }}
+      </small>
+      <small
+        v-if="counter"
+        class="app-description ms-auto"
+        :class="{ danger: errorMessage }"
+      >
+        {{ counter }}
+      </small>
+    </div>
     <div
       v-if="errorMessage"
       :id="ids.error"

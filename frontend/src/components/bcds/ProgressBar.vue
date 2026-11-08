@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 
 // Props
 const {
+  formatOptions = { style: 'percent' },
   isIndeterminate = false,
   maxValue = 100,
   minValue = 0,
@@ -12,6 +13,8 @@ const {
   value = 0,
   valueLabel = undefined
 } = defineProps<{
+  // How the value is shown; a percent style shows the share done, and any other shows the value itself
+  formatOptions?: Intl.NumberFormatOptions;
   isIndeterminate?: boolean;
   maxValue?: number;
   minValue?: number;
@@ -30,7 +33,9 @@ const labelId = useId();
 const range = computed(() => maxValue - minValue);
 const progress = computed(() => Math.min(Math.max(value - minValue, 0), range.value));
 const valueText = computed(() =>
-  new Intl.NumberFormat(locale.value, { style: 'percent' }).format(progress.value / range.value)
+  new Intl.NumberFormat(locale.value, formatOptions).format(
+    formatOptions.style === 'percent' ? progress.value / range.value : progress.value + minValue
+  )
 );
 
 // Actions

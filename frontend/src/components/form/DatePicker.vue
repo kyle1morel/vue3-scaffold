@@ -7,21 +7,21 @@ import BcdsDatePicker from '@/components/bcds/DatePicker.vue';
 const {
   description = undefined,
   disabled = false,
+  granularity = 'day',
   label = undefined,
-  maxDate = undefined,
+  maxValue = undefined,
   name,
   readonly = false,
-  required = false,
-  showTime = false
+  required = false
 } = defineProps<{
   description?: string;
   disabled?: boolean;
+  granularity?: 'day' | 'hour' | 'minute' | 'second';
   label?: string;
-  maxDate?: Date;
+  maxValue?: Date;
   name: string;
   readonly?: boolean;
   required?: boolean;
-  showTime?: boolean;
 }>();
 
 // State
@@ -34,12 +34,12 @@ const { errorMessage, handleBlur, value } = useField<Date | null | undefined>(()
     :description
     :disabled
     :error-message="errorMessage"
+    :granularity
     :label
-    :max-date
+    :max-value
     :name
     :readonly
     :required
-    :show-time
     @blur="handleBlur"
   />
 </template>

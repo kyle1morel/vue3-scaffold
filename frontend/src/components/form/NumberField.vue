@@ -7,8 +7,8 @@ import BcdsNumberField from '@/components/bcds/NumberField.vue';
 const {
   description = undefined,
   disabled = false,
+  formatOptions = undefined,
   label = undefined,
-  maxFractionDigits = undefined,
   name,
   placeholder = undefined,
   readonly = false,
@@ -16,8 +16,8 @@ const {
 } = defineProps<{
   description?: string;
   disabled?: boolean;
+  formatOptions?: Intl.NumberFormatOptions;
   label?: string;
-  maxFractionDigits?: number;
   name: string;
   placeholder?: string;
   readonly?: boolean;
@@ -34,8 +34,8 @@ const { errorMessage, handleBlur, value } = useField<number | null | undefined>(
     :description
     :disabled
     :error-message="errorMessage"
+    :format-options
     :label
-    :max-fraction-digits
     :name
     :placeholder
     :readonly

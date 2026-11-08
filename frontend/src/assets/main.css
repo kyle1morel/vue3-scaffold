@@ -124,6 +124,11 @@
     padding: var(--layout-padding-xsmall) var(--layout-padding-none);
   }
 
+  /* A character count turns red with the error, as BC's does */
+  .app-description.danger {
+    color: var(--typography-color-danger);
+  }
+
   .app-error-message {
     display: flex;
     align-items: center;

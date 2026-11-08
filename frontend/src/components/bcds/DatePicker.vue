@@ -54,34 +54,44 @@ const {
   description = undefined,
   disabled = false,
   errorMessage = undefined,
+  firstDayOfWeek = undefined,
+  granularity = 'day',
+  hourCycle = undefined,
   isBrowserLocaleUsed = false,
   isCalendarDisabled = false,
+  isDateUnavailable = undefined,
   label = undefined,
-  maxDate = undefined,
-  minDate = undefined,
+  maxValue = undefined,
+  minValue = undefined,
   name = undefined,
   readonly = false,
   required = false,
   showFormatHelpText = true,
-  showTime = false,
   size = 'medium'
 } = defineProps<{
   description?: string;
   disabled?: boolean;
   errorMessage?: string;
+  // The calendar's first column; without it, Reka starts the week on Sunday
+  firstDayOfWeek?: 'fri' | 'mon' | 'sat' | 'sun' | 'thu' | 'tue' | 'wed';
+  // The smallest unit typed, so anything finer than day adds the time
+  granularity?: 'day' | 'hour' | 'minute' | 'second';
+  // 12 or 24 hour time; without it, the locale decides
+  hourCycle?: 12 | 24;
   // Orders the date segments as the browser's language does, instead of the app's
   isBrowserLocaleUsed?: boolean;
   // Leaves out the calendar button, so the date can only be typed
   isCalendarDisabled?: boolean;
+  // Dates that can't be chosen, such as weekends; the calendar strikes them through
+  isDateUnavailable?: (date: Date) => boolean;
   label?: string;
-  maxDate?: Date;
-  minDate?: Date;
+  maxValue?: Date;
+  minValue?: Date;
   name?: string;
   readonly?: boolean;
   required?: boolean;
   // Spells out the segment order under the field, such as year - month - day
   showFormatHelpText?: boolean;
-  showTime?: boolean;
   size?: 'medium' | 'small';
 }>();
 
@@ -90,6 +100,10 @@ const {
 const emit = defineEmits<{ blur: [event: FocusEvent] }>();
 
 const value = defineModel<Date | null>();
+
+// Constants
+// Reka numbers the days of the week from Sunday
+const WEEKDAYS = { fri: 5, mon: 1, sat: 6, sun: 0, thu: 4, tue: 2, wed: 3 } as const;
 
 // Composables
 const { locale, t } = useI18n();
@@ -102,8 +116,12 @@ const dateValue = computed<DateValue | null>({
 });
 
 const dateLocale = computed(() => (isBrowserLocaleUsed ? navigator.language : locale.value));
-const maxValue = computed(() => (maxDate ? toDateValue(maxDate) : undefined));
-const minValue = computed(() => (minDate ? toDateValue(minDate) : undefined));
+const maxDateValue = computed(() => (maxValue ? toDateValue(maxValue) : undefined));
+const minDateValue = computed(() => (minValue ? toDateValue(minValue) : undefined));
+const unavailable = computed(() =>
+  isDateUnavailable ? (date: DateValue) => isDateUnavailable(date.toDate(getLocalTimeZone())) : undefined
+);
+const weekStartsOn = computed(() => (firstDayOfWeek ? WEEKDAYS[firstDayOfWeek] : undefined));
 
 // The calendar shows days; its month and year open grids to jump to another month or year
 const view = ref<'day' | 'month' | 'year'>('day');
@@ -123,13 +141,16 @@ const formatHelpText = computed(() => {
     hour: t('components.datePicker.parts.hour'),
     minute: t('components.datePicker.parts.minute'),
     month: t('components.datePicker.parts.month'),
+    second: t('components.datePicker.parts.second'),
     year: t('components.datePicker.parts.year')
   };
   const parts = new Intl.DateTimeFormat(dateLocale.value, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
-    ...(showTime ? { hour: 'numeric', minute: '2-digit' } : {})
+    ...(granularity !== 'day' ? { hour: 'numeric', hour12: hourCycle ? hourCycle === 12 : undefined } : {}),
+    ...(granularity === 'minute' || granularity === 'second' ? { minute: '2-digit' } : {}),
+    ...(granularity === 'second' ? { second: '2-digit' } : {})
   }).formatToParts();
   const format = parts
     .map(({ type, value: text }) => {
@@ -176,7 +197,9 @@ function onYearSelect(year: DateValue | DateValue[] | undefined) {
 
 function toDateValue(date: Date) {
   const day = [date.getFullYear(), date.getMonth() + 1, date.getDate()] as const;
-  return showTime ? new CalendarDateTime(...day, date.getHours(), date.getMinutes()) : new CalendarDate(...day);
+  return granularity === 'day'
+    ? new CalendarDate(...day)
+    : new CalendarDateTime(...day, date.getHours(), date.getMinutes(), date.getSeconds());
 }
 </script>
 
@@ -196,13 +219,16 @@ function toDateValue(date: Date) {
       v-model:placeholder="placeholder"
       close-on-select
       :disabled
-      :granularity="showTime ? 'minute' : 'day'"
+      :granularity
+      :hour-cycle
+      :is-date-unavailable="unavailable"
       :locale="dateLocale"
-      :max-value
-      :min-value
+      :max-value="maxDateValue"
+      :min-value="minDateValue"
       :name
       :readonly
       :required
+      :week-starts-on
       weekday-format="short"
       @update:open="view = 'day'"
     >
@@ -331,8 +357,8 @@ function toDateValue(date: Date) {
             v-slot="{ grid }"
             v-model:placeholder="placeholder"
             :locale="dateLocale"
-            :max-value
-            :min-value
+            :max-value="maxDateValue"
+            :min-value="minDateValue"
             :model-value="dateValue"
             prevent-deselect
             @update:model-value="onMonthSelect"
@@ -380,8 +406,8 @@ function toDateValue(date: Date) {
             v-slot="{ grid }"
             v-model:placeholder="placeholder"
             :locale="dateLocale"
-            :max-value
-            :min-value
+            :max-value="maxDateValue"
+            :min-value="minDateValue"
             :model-value="dateValue"
             prevent-deselect
             @update:model-value="onYearSelect"

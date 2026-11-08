@@ -11,10 +11,11 @@ const {
   description = undefined,
   disabled = false,
   errorMessage = undefined,
+  formatOptions = undefined,
+  isWheelDisabled = false,
   label = undefined,
-  max = undefined,
-  maxFractionDigits = undefined,
-  min = undefined,
+  maxValue = undefined,
+  minValue = undefined,
   name = undefined,
   placeholder = undefined,
   readonly = false,
@@ -25,10 +26,13 @@ const {
   description?: string;
   disabled?: boolean;
   errorMessage?: string;
+  // How the number is shown, such as { style: 'currency', currency: 'CAD' }
+  formatOptions?: Intl.NumberFormatOptions;
+  // Stops the mouse wheel changing the value while the field has focus
+  isWheelDisabled?: boolean;
   label?: string;
-  max?: number;
-  maxFractionDigits?: number;
-  min?: number;
+  maxValue?: number;
+  minValue?: number;
   name?: string;
   placeholder?: string;
   readonly?: boolean;
@@ -59,10 +63,11 @@ const { locale } = useI18n();
       class="app-input number-field"
       :class="[size, { invalid, readonly }]"
       :disabled
-      :format-options="{ maximumFractionDigits: maxFractionDigits }"
+      :disable-wheel-change="isWheelDisabled"
+      :format-options
       :locale
-      :max
-      :min
+      :max="maxValue"
+      :min="minValue"
       :name
       :readonly
       :required

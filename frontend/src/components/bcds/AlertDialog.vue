@@ -7,13 +7,19 @@ import Button from './Button.vue';
 // Props
 const {
   isCloseable = true,
+  isDismissable = false,
   isIconHidden = false,
+  isKeyboardDismissDisabled = false,
   role = 'dialog',
   title = undefined,
   variant = 'info'
 } = defineProps<{
   isCloseable?: boolean;
+  // Lets a click outside close it; off by default, as one could dismiss it by accident
+  isDismissable?: boolean;
   isIconHidden?: boolean;
+  // Stops Esc closing it, leaving only the buttons
+  isKeyboardDismissDisabled?: boolean;
   // alertdialog tells screen readers the dialog interrupts to ask for a response, such as a confirmation
   role?: 'alertdialog' | 'dialog';
   title?: string;
@@ -41,12 +47,12 @@ const { t } = useI18n();
   <DialogRoot v-model:open="open">
     <DialogPortal>
       <DialogOverlay class="bcds-dialog-overlay" />
-      <!-- A click outside could dismiss it by accident, so only Esc and the buttons close it -->
       <DialogContent
         class="bcds-alert-dialog"
         :class="variant"
         :role
-        @interact-outside.prevent
+        @escape-key-down="(event) => isKeyboardDismissDisabled && event.preventDefault()"
+        @interact-outside="(event) => !isDismissable && event.preventDefault()"
       >
         <div class="header">
           <font-awesome-icon

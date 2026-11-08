@@ -8,17 +8,21 @@ import {
   TooltipRoot,
   TooltipTrigger
 } from 'reka-ui';
+import { onBeforeUnmount, ref } from 'vue';
 
 import type { FunctionalComponent } from 'vue';
 
 // Props
 const {
+  closeDelay = 500,
   delay = undefined,
   isDisabled = false,
   offset = 10,
   placement = 'top',
   text
 } = defineProps<{
+  // Milliseconds it stays after the pointer or focus leaves, React Aria's 500 by default
+  closeDelay?: number;
   // Milliseconds of hover before it opens; App.vue's provider sets the default
   delay?: number;
   isDisabled?: boolean;
@@ -35,6 +39,25 @@ defineSlots<{ default(): unknown }>();
 // App.vue's provider lets neighbouring tooltips skip the open delay; without one, such as in a spec, it brings its own
 const Passthrough: FunctionalComponent = (_, { slots }) => slots.default?.();
 const provider = injectTooltipProviderContext(null) ? Passthrough : TooltipProvider;
+
+// Reka closes straight away, so the close is held back here
+const open = ref(false);
+let closeTimer: ReturnType<typeof setTimeout> | undefined;
+
+onBeforeUnmount(() => clearTimeout(closeTimer));
+
+// Actions
+function onOpenChange(value: boolean) {
+  clearTimeout(closeTimer);
+  if (value || !closeDelay) open.value = value;
+  else closeTimer = setTimeout(() => (open.value = false), closeDelay);
+}
+
+// Esc still closes at once, so the tooltip can always be dismissed
+function closeNow() {
+  clearTimeout(closeTimer);
+  open.value = false;
+}
 </script>
 
 <template>
@@ -42,6 +65,8 @@ const provider = injectTooltipProviderContext(null) ? Passthrough : TooltipProvi
     <TooltipRoot
       :delay-duration="delay"
       :disabled="isDisabled"
+      :open
+      @update:open="onOpenChange"
     >
       <TooltipTrigger as-child>
         <slot />
@@ -51,6 +76,7 @@ const provider = injectTooltipProviderContext(null) ? Passthrough : TooltipProvi
           class="bcds-tooltip"
           :side="placement"
           :side-offset="offset"
+          @escape-key-down="closeNow"
         >
           {{ text }}
           <TooltipArrow

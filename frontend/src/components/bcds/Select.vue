@@ -54,6 +54,7 @@ defineOptions({ inheritAttrs: false });
 const {
   description = undefined,
   disabled = false,
+  disabledKeys = [],
   errorMessage = undefined,
   items = undefined,
   label = undefined,
@@ -69,6 +70,8 @@ const {
 } = defineProps<{
   description?: string;
   disabled?: boolean;
+  // Options that can't be chosen, by id, or label when there's no id
+  disabledKeys?: Key[];
   errorMessage?: string;
   // A flat list of options; use sections instead for options under headers
   items?: SelectItemProps[];
@@ -249,7 +252,7 @@ function deselect(item: SelectItemProps) {
                 :key="keyOf(item)"
                 class="app-option"
                 :class="{ destructive: item.isDestructive }"
-                :disabled="item.isDisabled"
+                :disabled="item.isDisabled || disabledKeys.includes(keyOf(item))"
                 :value="keyOf(item)"
               >
                 <span

@@ -29,6 +29,7 @@
         "hour": "hour",
         "minute": "minute",
         "month": "month",
+        "second": "second",
         "year": "year"
       }
     },

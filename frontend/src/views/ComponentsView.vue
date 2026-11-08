@@ -516,8 +516,8 @@ function showToast(severity: (typeof TOASTS)[number]) {
         v-model="number"
         class="col-span-12 md:col-span-4"
         :label="t('views.components.fields.number')"
-        :max="10"
-        :min="0"
+        :max-value="10"
+        :min-value="0"
         :step="2"
       />
       <DatePicker

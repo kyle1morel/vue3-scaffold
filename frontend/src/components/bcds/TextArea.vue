@@ -11,6 +11,7 @@ const {
   disabled = false,
   errorMessage = undefined,
   label = undefined,
+  maxLength = undefined,
   name = undefined,
   placeholder = undefined,
   readonly = false,
@@ -21,6 +22,8 @@ const {
   disabled?: boolean;
   errorMessage?: string;
   label?: string;
+  // Stops typing at this many characters, with a count of them under the box
+  maxLength?: number;
   name?: string;
   placeholder?: string;
   readonly?: boolean;
@@ -38,6 +41,7 @@ const value = defineModel<string>();
     :description
     error-icon
     :error-message
+    :counter="maxLength ? `${value?.length ?? 0}/${maxLength}` : undefined"
     :label
     :required
   >
@@ -47,6 +51,7 @@ const value = defineModel<string>();
       class="w-full"
       :disabled
       :invalid
+      :maxlength="maxLength"
       :name
       :placeholder
       :pt="{ root: inputAttrs }"

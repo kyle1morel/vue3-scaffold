@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import {
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuPortal,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuRoot,
   DropdownMenuSeparator,
   DropdownMenuTrigger
@@ -35,17 +38,29 @@ export interface MenuSectionProps {
 
 // Props
 const {
+  disabledKeys = [],
+  disallowEmptySelection = false,
   itemSize = 'medium',
   items = undefined,
   placement = 'bottom',
-  sections = undefined
+  sections = undefined,
+  selectionMode = 'none'
 } = defineProps<{
+  // Items that can't be chosen, by id, or label when there's no id
+  disabledKeys?: string[];
+  // Keeps at least one item selected
+  disallowEmptySelection?: boolean;
   itemSize?: 'medium' | 'small';
   // A plain list; use sections instead to group items under headers
   items?: MenuItemProps[];
   placement?: 'bottom' | 'left' | 'right' | 'top';
   sections?: MenuSectionProps[];
+  // Lets items be selected, each shown with a check
+  selectionMode?: 'multiple' | 'none' | 'single';
 }>();
+
+// Ids, or labels when there's no id, of the selected items
+const selectedKeys = defineModel<string[]>('selectedKeys', { default: () => [] });
 
 // The slot is the button that opens the menu
 defineSlots<{ default(): unknown }>();
@@ -55,7 +70,38 @@ const menuSections = computed<MenuSectionProps[]>(() =>
   sections?.length ? sections : [{ id: 'items', items: items ?? [] }]
 );
 
+// Reka gives each mode its own item, so screen readers hear a radio or checkbox
+const itemComponent = computed(
+  () => ({ multiple: DropdownMenuCheckboxItem, none: DropdownMenuItem, single: DropdownMenuRadioItem })[selectionMode]
+);
+
 // Actions
+function keyOf(item: MenuItemProps) {
+  return item.id ?? item.label;
+}
+
+// Reka's checked state follows these, and onSelect makes the change
+function selectionProps(item: MenuItemProps) {
+  if (selectionMode === 'single') return { value: keyOf(item) };
+  return selectionMode === 'multiple' ? { modelValue: selectedKeys.value.includes(keyOf(item)) } : {};
+}
+
+function onSelect(item: MenuItemProps, event: Event) {
+  item.onAction?.();
+  if (selectionMode === 'none') return;
+  const key = keyOf(item);
+  const selected = selectedKeys.value.includes(key);
+  if (selectionMode === 'single') {
+    if (!selected) selectedKeys.value = [key];
+    else if (!disallowEmptySelection) selectedKeys.value = [];
+    return;
+  }
+  // Several can be chosen, so the menu stays open, as in React Aria
+  event.preventDefault();
+  if (selected && disallowEmptySelection && selectedKeys.value.length === 1) return;
+  selectedKeys.value = selected ? selectedKeys.value.filter((k) => k !== key) : [...selectedKeys.value, key];
+}
+
 function linkOf(item: MenuItemProps) {
   if (item.to) return { as: RouterLink, to: item.to };
   return item.href ? { as: 'a', href: item.href } : {};
@@ -82,22 +128,28 @@ function linkOf(item: MenuItemProps) {
             v-if="index > 0"
             class="separator"
           />
-          <DropdownMenuGroup class="section">
+          <!-- An empty string rather than undefined, so Reka doesn't keep its own selection -->
+          <component
+            :is="selectionMode === 'single' ? DropdownMenuRadioGroup : DropdownMenuGroup"
+            class="section"
+            v-bind="selectionMode === 'single' ? { modelValue: selectedKeys[0] ?? '' } : {}"
+          >
             <DropdownMenuLabel
               v-if="section.header"
               class="header"
             >
               {{ section.header }}
             </DropdownMenuLabel>
-            <DropdownMenuItem
+            <component
+              :is="itemComponent"
               v-for="item in section.items"
-              :key="item.id ?? item.label"
-              v-bind="linkOf(item)"
+              :key="keyOf(item)"
+              v-bind="{ ...linkOf(item), ...selectionProps(item) }"
               class="item"
               :class="itemSize"
-              :disabled="item.isDisabled"
+              :disabled="item.isDisabled || disabledKeys.includes(keyOf(item))"
               :text-value="item.label"
-              @select="item.onAction?.()"
+              @select="onSelect(item, $event)"
             >
               <font-awesome-icon
                 v-if="item.icon"
@@ -113,8 +165,13 @@ function linkOf(item: MenuItemProps) {
                   {{ item.description }}
                 </span>
               </div>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
+              <font-awesome-icon
+                v-if="selectionMode !== 'none' && selectedKeys.includes(keyOf(item))"
+                class="icon"
+                icon="fa-solid fa-check"
+              />
+            </component>
+          </component>
         </template>
       </DropdownMenuContent>
     </DropdownMenuPortal>
