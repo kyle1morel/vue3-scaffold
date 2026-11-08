@@ -9,7 +9,6 @@ export { default as FieldWrapper } from './FieldWrapper.vue';
 export { default as InlineAlert } from './InlineAlert.vue';
 export { default as Menu } from './Menu.vue';
 export { default as NumberField } from './NumberField.vue';
-export { default as PasswordField } from './PasswordField.vue';
 export { default as ProgressBar } from './ProgressBar.vue';
 export { default as ProgressCircle } from './ProgressCircle.vue';
 export { default as RadioGroup } from './RadioGroup.vue';

@@ -55,6 +55,10 @@
     "header": {
       "skipToMain": "Skip to main content"
     },
+    "passwordField": {
+      "hide": "Hide password",
+      "show": "Show password"
+    },
     "select": {
       "placeholder": "Select an item",
       "remove": "Remove {item}",

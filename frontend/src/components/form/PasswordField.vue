@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { useField } from 'vee-validate';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-import BcdsPasswordField from '@/components/bcds/PasswordField.vue';
+import BcdsButton from '@/components/bcds/Button.vue';
+import BcdsTextField from '@/components/bcds/TextField.vue';
+
+// BC has no password component, so this is its TextField as a password, plus the show/hide button BC leaves to apps
 
 // Props
 const {
@@ -22,12 +27,16 @@ const {
   required?: boolean;
 }>();
 
+// Composables
+const { t } = useI18n();
+
 // State
 const { errorMessage, handleBlur, value } = useField<string | undefined>(() => name);
+const shown = ref(false);
 </script>
 
 <template>
-  <BcdsPasswordField
+  <BcdsTextField
     v-model="value"
     :description
     :disabled
@@ -37,6 +46,20 @@ const { errorMessage, handleBlur, value } = useField<string | undefined>(() => n
     :placeholder
     :readonly
     :required
+    :type="shown ? 'text' : 'password'"
     @blur="handleBlur"
-  />
+  >
+    <template #iconRight>
+      <BcdsButton
+        :aria-pressed="shown"
+        :disabled
+        :icon="shown ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"
+        icon-only
+        :label="shown ? t('components.passwordField.hide') : t('components.passwordField.show')"
+        size="xsmall"
+        variant="tertiary"
+        @click="shown = !shown"
+      />
+    </template>
+  </BcdsTextField>
 </template>

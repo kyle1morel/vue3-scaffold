@@ -18,7 +18,8 @@ const {
   placeholder = undefined,
   readonly = false,
   required = false,
-  size = 'medium'
+  size = 'medium',
+  type = 'text'
 } = defineProps<{
   description?: string;
   disabled?: boolean;
@@ -34,7 +35,11 @@ const {
   readonly?: boolean;
   required?: boolean;
   size?: 'medium' | 'small';
+  type?: 'email' | 'password' | 'search' | 'tel' | 'text' | 'url';
 }>();
+
+// BC's iconRight takes any element, so a caller can put a button there
+defineSlots<{ iconRight?(): unknown }>();
 
 const value = defineModel<string>();
 </script>
@@ -69,6 +74,7 @@ const value = defineModel<string>();
         :placeholder
         :pt="{ root: { ...inputAttrs, 'aria-invalid': invalid || undefined } }"
         :readonly
+        :type
         unstyled
       />
       <input
@@ -81,16 +87,19 @@ const value = defineModel<string>();
         :name
         :placeholder
         :readonly
+        :type
       />
       <font-awesome-icon
         v-if="invalid"
         class="text-[var(--icons-color-danger)]"
         icon="fa-solid fa-triangle-exclamation"
       />
-      <font-awesome-icon
-        v-if="iconRight"
-        :icon="iconRight"
-      />
+      <slot name="iconRight">
+        <font-awesome-icon
+          v-if="iconRight"
+          :icon="iconRight"
+        />
+      </slot>
     </div>
   </FieldWrapper>
 </template>
