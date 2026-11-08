@@ -28,5 +28,11 @@ describe('Tag', () => {
 
       expect(wrapper.classes()).toContain('blue');
     });
+
+    it('greys out when disabled', () => {
+      const { wrapper } = mountTag({ disabled: true });
+
+      expect(wrapper.classes()).toContain('disabled');
+    });
   });
 });

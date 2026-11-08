@@ -1,17 +1,21 @@
 <script setup lang="ts">
-// Props
-const {
-  color = 'blue',
-  icon = undefined,
-  size = 'small',
-  tagStyle = 'rectangular'
-} = defineProps<{
+export interface TagProps {
   color?: 'bc-blue' | 'bc-gold' | 'blue' | 'dark' | 'gray' | 'green' | 'grey' | 'red' | 'yellow';
+  disabled?: boolean;
   // A FontAwesome icon, such as fa-solid fa-check
   icon?: string;
   size?: 'medium' | 'small' | 'xsmall';
   tagStyle?: 'circular' | 'rectangular';
-}>();
+}
+
+// Props
+const {
+  color = 'blue',
+  disabled = false,
+  icon = undefined,
+  size = 'small',
+  tagStyle = 'rectangular'
+} = defineProps<TagProps>();
 
 defineSlots<{ default?(): unknown }>();
 </script>
@@ -19,7 +23,7 @@ defineSlots<{ default?(): unknown }>();
 <template>
   <span
     class="tag"
-    :class="[color === 'grey' ? 'gray' : color, `size-${size}`, tagStyle]"
+    :class="[color === 'grey' ? 'gray' : color, `size-${size}`, tagStyle, { disabled }]"
   >
     <font-awesome-icon
       v-if="icon"
@@ -106,5 +110,12 @@ defineSlots<{ default?(): unknown }>();
 .yellow {
   border-color: var(--support-border-color-warning);
   background: var(--support-surface-color-warning);
+}
+
+.disabled {
+  border-color: var(--surface-color-border-default);
+  background: var(--surface-color-primary-button-disabled);
+  color: var(--typography-color-disabled);
+  cursor: not-allowed;
 }
 </style>

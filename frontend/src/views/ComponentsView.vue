@@ -15,6 +15,7 @@ import {
   ProgressBar,
   ProgressCircle,
   RadioGroup,
+  Select,
   Separator,
   Tag,
   TextField,
@@ -26,7 +27,7 @@ import { useConfirm } from '@/composables/useConfirm';
 import { useToast } from '@/composables/useToast';
 import { RouteName } from '@/utils/enums';
 
-import type { MenuItemProps, MenuSectionProps } from '@/components/bcds';
+import type { MenuItemProps, MenuSectionProps, SelectSectionProps } from '@/components/bcds';
 import type { MessageSchema } from '@/i18n';
 
 type Text = MessageSchema['views']['components'];
@@ -75,6 +76,10 @@ const dateSmall = ref<Date | null>(null);
 const dateTypedOnly = ref<Date | null>(null);
 const number = ref<number | null>(4);
 const search = ref('');
+const selectScroll = ref<(string | number)[]>(TAGS.map((tag) => tag.key));
+const selectSections = ref<string | number | null>(null);
+const selectSmall = ref<string | number | null>(null);
+const selectWrap = ref<(string | number)[]>(['blue', 'green', 'yellow']);
 
 // Checking select all checks both; it's indeterminate while only one is
 const allChosen = computed({
@@ -97,6 +102,26 @@ const menuItems: MenuItemProps[] = (['view', 'copy', 'delete'] as const).map((it
   onAction: () =>
     toast.info(t('views.components.menu.selected', { item: t(`views.components.menu.items.${item}.label`) }))
 }));
+
+const selectItems = contactOptions.map(({ label, value }) => ({ id: value, label }));
+
+const tagItems = TAGS.map(({ color, key }) => ({ color, id: key, label: t(`views.components.tags.${key}`) }));
+const circularTagItems = tagItems.map((item) => ({ ...item, tagStyle: 'circular' as const }));
+
+const selectSectionList: SelectSectionProps[] = [
+  {
+    header: t('views.components.menu.sections.actions'),
+    id: 'actions',
+    items: menuItems.map(({ description, icon, label }, index) => ({
+      description,
+      iconLeft: icon,
+      id: index,
+      isDestructive: icon === 'fa-solid fa-trash',
+      label
+    }))
+  },
+  { header: t('views.components.fields.contact.label'), id: 'contact', items: selectItems }
+];
 
 const menuSections: MenuSectionProps[] = [
   { header: t('views.components.menu.sections.actions'), id: 'actions', items: menuItems },
@@ -467,7 +492,7 @@ function showToast(severity: (typeof TOASTS)[number]) {
       />
       <TextField
         v-model="search"
-        class="col-span-12 md:col-span-6"
+        class="col-span-12 md:col-span-4"
         icon-left="fa-solid fa-magnifying-glass"
         icon-right="fa-solid fa-circle-info"
         :label="t('views.components.fields.search.label')"
@@ -476,13 +501,20 @@ function showToast(severity: (typeof TOASTS)[number]) {
       />
       <DatePicker
         v-model="dateSmall"
-        class="col-span-12 md:col-span-6"
+        class="col-span-12 md:col-span-4"
         :label="t('views.components.fields.dateSmall')"
+        size="small"
+      />
+      <Select
+        v-model="selectSmall"
+        class="col-span-12 md:col-span-4"
+        :items="selectItems"
+        :label="t('views.components.fields.selectSmall')"
         size="small"
       />
       <NumberField
         v-model="number"
-        class="col-span-12 md:col-span-6"
+        class="col-span-12 md:col-span-4"
         :label="t('views.components.fields.number')"
         :max="10"
         :min="0"
@@ -490,9 +522,30 @@ function showToast(severity: (typeof TOASTS)[number]) {
       />
       <DatePicker
         v-model="dateTypedOnly"
-        class="col-span-12 md:col-span-6"
+        class="col-span-12 md:col-span-4"
         is-calendar-disabled
         :label="t('views.components.fields.dateTypedOnly')"
+      />
+      <Select
+        v-model="selectSections"
+        class="col-span-12 md:col-span-4"
+        :label="t('views.components.fields.selectSections')"
+        :sections="selectSectionList"
+      />
+      <Select
+        v-model="selectWrap"
+        class="col-span-12 md:col-span-6"
+        :items="tagItems"
+        :label="t('views.components.fields.selectWrap')"
+        selection-mode="multiple"
+      />
+      <Select
+        v-model="selectScroll"
+        class="col-span-12 md:col-span-6"
+        :items="circularTagItems"
+        :label="t('views.components.fields.selectScroll')"
+        overflow="scroll"
+        selection-mode="multiple"
       />
     </div>
   </section>

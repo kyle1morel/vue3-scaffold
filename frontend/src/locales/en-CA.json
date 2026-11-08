@@ -54,6 +54,12 @@
     },
     "header": {
       "skipToMain": "Skip to main content"
+    },
+    "select": {
+      "placeholder": "Select an item",
+      "remove": "Remove {item}",
+      "selected": "Selected options",
+      "selections": "{label} selections"
     }
   },
   "ui": {
@@ -206,7 +212,11 @@
           "label": "A small text field with icons",
           "placeholder": "Search"
         },
-        "secondChoice": "Second choice"
+        "secondChoice": "Second choice",
+        "selectScroll": "Several choices, with tags that scroll",
+        "selectSections": "A select with sections, icons and descriptions",
+        "selectSmall": "A small select",
+        "selectWrap": "Several choices, with tags that wrap"
       },
       "intro": "The shared components and the variants each one offers. The demo form shows the form fields in use.",
       "menu": {

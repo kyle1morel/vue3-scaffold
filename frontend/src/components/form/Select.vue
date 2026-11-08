@@ -3,35 +3,41 @@ import { useField } from 'vee-validate';
 
 import BcdsSelect from '@/components/bcds/Select.vue';
 
+import type { SelectItemProps, SelectSectionProps } from '@/components/bcds';
+
 // Props
 const {
   description = undefined,
   disabled = false,
+  items = undefined,
   label = undefined,
   loading = false,
   name,
-  optionLabel = undefined,
-  options,
-  optionValue = undefined,
+  overflow = 'wrap',
   placeholder = undefined,
   readonly = false,
-  required = false
+  required = false,
+  sections = undefined,
+  selectionMode = 'single',
+  size = 'medium'
 } = defineProps<{
   description?: string;
   disabled?: boolean;
+  items?: SelectItemProps[];
   label?: string;
   loading?: boolean;
   name: string;
-  optionLabel?: string;
-  options: unknown[];
-  optionValue?: string;
+  overflow?: 'scroll' | 'wrap';
   placeholder?: string;
   readonly?: boolean;
   required?: boolean;
+  sections?: SelectSectionProps[];
+  selectionMode?: 'multiple' | 'single';
+  size?: 'medium' | 'small';
 }>();
 
 // State
-const { errorMessage, handleBlur, value } = useField<unknown>(() => name);
+const { errorMessage, handleBlur, value } = useField<string | number | (string | number)[] | null>(() => name);
 </script>
 
 <template>
@@ -40,15 +46,17 @@ const { errorMessage, handleBlur, value } = useField<unknown>(() => name);
     :description
     :disabled
     :error-message="errorMessage"
+    :items
     :label
     :loading
     :name
-    :option-label
-    :options
-    :option-value
+    :overflow
     :placeholder
     :readonly
     :required
+    :sections
+    :selection-mode
+    :size
     @blur="handleBlur"
   />
 </template>

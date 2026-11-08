@@ -8,9 +8,9 @@ import { mountWithFormContext } from '../../../mountWithFormContext';
 // Fixtures
 
 const testName = 'province';
-const testOptions = [
-  { label: 'Alberta', value: 'AB' },
-  { label: 'British Columbia', value: 'BC' }
+const testItems = [
+  { id: 'AB', label: 'Alberta' },
+  { id: 'BC', label: 'British Columbia' }
 ];
 
 // Mount
@@ -20,9 +20,7 @@ function mountSelect(componentProps: Record<string, unknown> = {}) {
     componentProps: {
       name: testName,
       label: 'Province',
-      options: testOptions,
-      optionLabel: 'label',
-      optionValue: 'value',
+      items: testItems,
       ...componentProps
     }
   });
@@ -47,10 +45,16 @@ describe('Select', () => {
       expect(combobox.attributes('aria-required')).toBe('true');
     });
 
-    it('passes the options to the select and disables it', () => {
+    it('shows a placeholder until an option is chosen', () => {
+      const { combobox } = mountSelect();
+
+      expect(combobox.text()).toContain('Select an item');
+    });
+
+    it('passes the items to the select and disables it', () => {
       const { combobox, select } = mountSelect({ disabled: true });
 
-      expect(select.props('options')).toEqual(testOptions);
+      expect(select.props('items')).toEqual(testItems);
       expect(combobox.attributes('disabled')).toBeDefined();
     });
   });
@@ -65,6 +69,45 @@ describe('Select', () => {
     });
   });
 
+  describe('multiple selection', () => {
+    function mountMultiple(componentProps: Record<string, unknown> = {}) {
+      return mountWithFormContext(Select, {
+        formProps: { initialValues: { [testName]: ['AB', 'BC'] } },
+        componentProps: {
+          name: testName,
+          label: 'Province',
+          items: testItems,
+          selectionMode: 'multiple',
+          ...componentProps
+        }
+      });
+    }
+
+    it('shows each chosen option as a tag in a labelled group', () => {
+      const { wrapper } = mountMultiple();
+
+      const group = wrapper.find('[role="group"]');
+      expect(group.attributes('aria-label')).toBe('Province selections');
+      expect(group.findAll('.tag-label').map((tag) => tag.text())).toEqual(['Alberta', 'British Columbia']);
+      expect(wrapper.find('[role="combobox"]').text()).not.toContain('Select an item');
+    });
+
+    it('removes an option from the field when its tag is removed', async () => {
+      const { wrapper, form } = mountMultiple();
+
+      await wrapper.find('button[aria-label="Remove Alberta"]').trigger('click');
+
+      expect(form.values[testName]).toEqual(['BC']);
+    });
+
+    it('greys out the tags and hides their remove buttons when disabled', () => {
+      const { wrapper } = mountMultiple({ disabled: true });
+
+      expect(wrapper.findAll('.tag').every((tag) => tag.classes('disabled'))).toBe(true);
+      expect(wrapper.find('button.remove').exists()).toBe(false);
+    });
+  });
+
   describe('read only', () => {
     it('shows the chosen option label in a labelled read-only input', () => {
       const { wrapper } = mountWithFormContext(Select, {
@@ -72,9 +115,7 @@ describe('Select', () => {
         componentProps: {
           name: testName,
           label: 'Province',
-          options: testOptions,
-          optionLabel: 'label',
-          optionValue: 'value',
+          items: testItems,
           readonly: true
         }
       });

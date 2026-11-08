@@ -25,3 +25,4 @@ export { default as Tooltip } from './Tooltip.vue';
 export { TooltipProvider } from 'reka-ui';
 
 export type { MenuItemProps, MenuSectionProps } from './Menu.vue';
+export type { SelectItemProps, SelectSectionProps } from './Select.vue';

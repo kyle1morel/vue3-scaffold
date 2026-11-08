@@ -97,18 +97,18 @@ const readOnly = !!submissionId;
 const submission = ref<Submission>();
 
 const categories = [
-  { label: t('views.demoForm.options.categories.feedback'), value: 'feedback' },
-  { label: t('views.demoForm.options.categories.question'), value: 'question' },
-  { label: t('views.demoForm.options.categories.request'), value: 'request' }
+  { id: 'feedback', label: t('views.demoForm.options.categories.feedback') },
+  { id: 'question', label: t('views.demoForm.options.categories.question') },
+  { id: 'request', label: t('views.demoForm.options.categories.request') }
 ];
 const contactMethods = [
   { label: t('views.demoForm.options.contactMethods.email'), value: 'email' },
   { label: t('views.demoForm.options.contactMethods.phone'), value: 'phone' }
 ];
 const provinces = [
-  { label: t('views.demoForm.options.provinces.alberta'), value: 'AB' },
-  { label: t('views.demoForm.options.provinces.britishColumbia'), value: 'BC' },
-  { label: t('views.demoForm.options.provinces.saskatchewan'), value: 'SK' }
+  { id: 'AB', label: t('views.demoForm.options.provinces.alberta') },
+  { id: 'BC', label: t('views.demoForm.options.provinces.britishColumbia') },
+  { id: 'SK', label: t('views.demoForm.options.provinces.saskatchewan') }
 ];
 
 // Actions
@@ -255,9 +255,7 @@ const onSubmit = handleSubmit(
           name="province"
           :readonly="readOnly"
           :label="field('province')"
-          :options="provinces"
-          option-label="label"
-          option-value="value"
+          :items="provinces"
           :placeholder="t('views.demoForm.placeholders.province')"
           required
         />
@@ -304,9 +302,7 @@ const onSubmit = handleSubmit(
           name="category"
           :readonly="readOnly"
           :label="field('category')"
-          :options="categories"
-          option-label="label"
-          option-value="value"
+          :items="categories"
           :placeholder="t('views.demoForm.placeholders.category')"
         />
         <TextArea
