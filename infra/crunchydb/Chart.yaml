@@ -2,7 +2,7 @@ apiVersion: v2
 name: crunchydb
 description: Standalone Crunchy PostgreSQL cluster for vue3-scaffold (wraps bcgov/crunchy-postgres)
 type: application
-version: 0.0.4
+version: 0.1.0
 appVersion: "18"
 dependencies:
   - name: crunchy-postgres
