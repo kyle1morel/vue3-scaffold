@@ -365,6 +365,7 @@
         "email": "Email must be a valid email address",
         "load": "Unable to load the submission. Please try again.",
         "notFound": "This submission doesn't exist or has been deleted.",
+        "phone": "Phone must be a full number, such as (250) 555-0100",
         "save": "Unable to save the submission. Please try again."
       },
       "fields": {

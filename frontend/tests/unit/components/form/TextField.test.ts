@@ -1,5 +1,3 @@
-import PrimeInputMask from 'primevue/inputmask';
-
 import TextField from '@/components/form/TextField.vue';
 
 import { mountWithFormContext } from '../../../mountWithFormContext';
@@ -9,7 +7,6 @@ import { mountWithFormContext } from '../../../mountWithFormContext';
 // Fixtures
 
 const testName = 'firstName';
-const testMask = '(999) 999-9999';
 
 // Mount
 
@@ -61,23 +58,6 @@ describe('TextField', () => {
 
       expect(wrapper.find('.col-span-6').element.contains(input.element)).toBe(true);
       expect(input.classes()).not.toContain('col-span-6');
-    });
-  });
-
-  describe('mask', () => {
-    it('passes the mask to the input', () => {
-      const { wrapper } = mountTextField({ mask: testMask });
-
-      expect(wrapper.findComponent(PrimeInputMask).props('mask')).toBe(testMask);
-    });
-
-    it('clears the field when the mask is emptied', async () => {
-      const { form, wrapper } = mountTextField({ mask: testMask });
-      form.setFieldValue(testName, '(250) 555-1234');
-
-      await wrapper.findComponent(PrimeInputMask).vm.$emit('update:modelValue', '');
-
-      expect(form.values[testName]).toBeUndefined();
     });
   });
 });

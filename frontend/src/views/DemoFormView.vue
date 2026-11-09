@@ -14,6 +14,7 @@ import {
   Checkbox,
   ComboBox,
   DatePicker,
+  MaskedField,
   NumberField,
   PasswordField,
   RadioGroup,
@@ -54,6 +55,8 @@ const { submissionId = undefined } = defineProps<{
 const CATEGORIES = ['feedback', 'question', 'request'] as const;
 const CITIES = ['Kamloops', 'Kelowna', 'Nanaimo', 'Prince George', 'Vancouver', 'Victoria'] as const;
 const CONTACT_METHODS = ['email', 'phone'] as const;
+// What the phone field's mask makes a full number
+const PHONE = /^\(\d{3}\) \d{3}-\d{4}$/;
 const PROVINCES = ['AB', 'BC', 'SK'] as const;
 
 // Composables
@@ -67,7 +70,10 @@ const field = (name: keyof MessageSchema['views']['demoForm']['fields']) => t(`v
 const schema = z.object({
   firstName: requiredTextSchema(field('firstName'), 255),
   email: z.email(t('views.demoForm.errors.email')),
-  phone: optionalTextSchema(field('phone')),
+  phone: optionalTextSchema(field('phone')).refine(
+    (phone) => !phone || PHONE.test(phone),
+    t('views.demoForm.errors.phone')
+  ),
   password: z
     .string(requiredMessage(field('password')))
     .min(8, t('validation.minLength', { label: field('password'), min: 8 })),
@@ -244,12 +250,13 @@ const onSubmit = handleSubmit(
           :label="field('email')"
           required
         />
-        <TextField
+        <MaskedField
           class="col-span-12 md:col-span-6"
           name="phone"
           :readonly="readOnly"
           :label="field('phone')"
-          mask="(999) 999-9999"
+          mask="(###) ###-####"
+          type="tel"
           :placeholder="t('views.demoForm.placeholders.phone')"
         />
         <PasswordField

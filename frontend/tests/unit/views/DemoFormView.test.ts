@@ -133,6 +133,15 @@ describe('DemoFormView', () => {
       expect(wrapper.text()).toContain('You must accept the terms');
       expect(createSubmission).not.toHaveBeenCalled();
     });
+
+    it('rejects a phone number the mask has only partly filled', async () => {
+      const { wrapper } = mountDemoFormView();
+
+      await wrapper.find('input[name="phone"]').setValue('25055');
+      await wrapper.find('form').trigger('submit');
+
+      await vi.waitFor(() => expect(wrapper.text()).toContain('Phone must be a full number, such as (250) 555-0100'));
+    });
   });
 
   describe('submit', () => {

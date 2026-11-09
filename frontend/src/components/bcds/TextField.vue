@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import InputMask from 'primevue/inputmask';
-
 import FieldWrapper from './FieldWrapper.vue';
 
 defineOptions({ inheritAttrs: false });
@@ -13,7 +11,6 @@ const {
   iconLeft = undefined,
   iconRight = undefined,
   label = undefined,
-  mask = undefined,
   name = undefined,
   placeholder = undefined,
   readonly = false,
@@ -28,8 +25,6 @@ const {
   iconLeft?: string;
   iconRight?: string;
   label?: string;
-  // Formats the text as it's typed, such as (999) 999-9999
-  mask?: string;
   name?: string;
   placeholder?: string;
   readonly?: boolean;
@@ -62,23 +57,7 @@ const value = defineModel<string>();
         v-if="iconLeft"
         :icon="iconLeft"
       />
-      <!-- Unstyled, so the mask's input looks like the plain one. -->
-      <InputMask
-        v-if="mask"
-        :id
-        v-model="value"
-        :disabled
-        :invalid
-        :mask
-        :name
-        :placeholder
-        :pt="{ root: { ...inputAttrs, 'aria-invalid': invalid || undefined } }"
-        :readonly
-        :type
-        unstyled
-      />
       <input
-        v-else
         :id
         v-model="value"
         v-bind="inputAttrs"
