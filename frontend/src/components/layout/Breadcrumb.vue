@@ -1,84 +1,76 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
-import { Breadcrumb } from '@/lib/primevue';
-import { RouteName } from '@/utils/enums';
+import { breadcrumbLabel } from '@/composables/useBreadcrumb';
 
-import type { MenuItem } from '@/lib/primevue';
-import type { RouteLocationMatched, RouteRecordNameGeneric, RouteRecordRaw } from 'vue-router';
+import type { RouteLocationRaw, RouteRecordNameGeneric, RouteRecordRaw } from 'vue-router';
 
 // Composables
+const { t } = useI18n();
 const route = useRoute();
 
 // State
-const breadcrumbItems = computed<MenuItem[]>(() => {
+// One crumb per matched route with a breadcrumb, so nesting routes builds the trail.
+const crumbs = computed(() => {
   if (route.meta.hideBreadcrumb) return [];
-  const matchedCrumbs = route.matched.filter((m) => m.meta?.breadcrumb !== undefined);
+  const page = route.matched.at(-1);
 
-  return matchedCrumbs.map((record, index) => ({
-    label: record.meta.breadcrumb as string,
-    to: index < matchedCrumbs.length - 1 ? generateToObject(record) : null
-  }));
+  return route.matched
+    .filter((record) => record.meta.breadcrumb)
+    .map((record) => {
+      // An empty-path child shares its parent's path, so the parent's crumb is the current page too.
+      const current = record.path === page?.path;
+      return {
+        current,
+        key: record.path,
+        label: (current && breadcrumbLabel.value) || record.meta.breadcrumb!(),
+        to: current ? undefined : linkTo(record)
+      };
+    });
 });
 
 // Actions
-function generateToObject(record: RouteLocationMatched) {
-  let toName: RouteRecordNameGeneric;
-
-  // If record has no name then the empty nested child/grandchild will define the route name
-  if (!record.name && record.children[0]) {
-    toName = getRouteNameFromFirstChild(record.children[0]);
-  } else {
-    toName = record.name;
-  }
-
-  const toObject = {
-    name: toName
-    // Note: Params, query & hash not needed
-    // Breacrumb always navigates backwards so required params are present in router
-    // If navigation leads to different part of router tree without needed params
-    // The breadcrumbs will reflect that and not show link back to previous view/route
-  };
-  return toObject;
-}
-
-// Recursively find a empty nested child path
-function getRouteNameFromFirstChild(record: RouteRecordRaw) {
-  if (record.name) {
-    return record.name;
-  } else if (record.children?.[0]) {
-    return getRouteNameFromFirstChild(record.children[0]);
-  } else {
-    // Route name not found case
-    return RouteName.HOME;
-  }
+// A nameless route's page is its empty-path child, which carries the name; the current params fill any it needs.
+function linkTo(record: { children?: RouteRecordRaw[]; name?: RouteRecordNameGeneric }): RouteLocationRaw | undefined {
+  if (record.name) return { name: record.name };
+  const child = record.children?.find(({ path }) => path === '');
+  return child && linkTo(child);
 }
 </script>
 
 <template>
-  <Breadcrumb
-    v-if="breadcrumbItems.length > 1"
-    :model="breadcrumbItems"
+  <nav
+    v-if="crumbs.length > 1 && breadcrumbLabel !== null"
+    :aria-label="t('components.breadcrumb.label')"
     class="p-0.5"
   >
-    <template #separator>/</template>
-    <template #item="{ item }">
-      <!-- eslint-disable max-len -->
-      <router-link
-        v-if="item.to"
-        class="text-[var(--p-textlink)] font-[family-name:'BC_Sans',sans-serif] font-normal no-underline hover:underline"
-        :to="item.to"
+    <ol class="flex flex-wrap gap-2">
+      <li
+        v-for="(crumb, index) in crumbs"
+        :key="crumb.key"
+        class="flex gap-2"
       >
-        <!-- eslint-enable max-len -->
-        {{ item.label }}
-      </router-link>
-      <span
-        v-else
-        class="text-[var(--p-text-color)] font-[family-name:'BC_Sans',sans-serif] font-bold"
-      >
-        {{ item.label }}
-      </span>
-    </template>
-  </Breadcrumb>
+        <span
+          v-if="index > 0"
+          aria-hidden="true"
+        >
+          /
+        </span>
+        <router-link
+          v-if="crumb.to"
+          :to="crumb.to"
+        >
+          {{ crumb.label }}
+        </router-link>
+        <span
+          v-else
+          :aria-current="crumb.current ? 'page' : undefined"
+        >
+          {{ crumb.label }}
+        </span>
+      </li>
+    </ol>
+  </nav>
 </template>

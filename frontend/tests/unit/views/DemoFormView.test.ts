@@ -210,7 +210,7 @@ describe('DemoFormView', () => {
       expect(unmarked.map((el) => el.attributes('aria-label') ?? el.attributes('role'))).toEqual([]);
     });
 
-    it('hides the password, submit and cancel, and links back to the submissions', async () => {
+    it('hides the password, submit and cancel', async () => {
       vi.mocked(getSubmission).mockResolvedValue(testSubmission);
 
       const { wrapper } = await mountReadOnlyDemoFormView();
@@ -218,7 +218,6 @@ describe('DemoFormView', () => {
       expect(wrapper.find('input[type="password"]').exists()).toBe(false);
       expect(wrapper.find('button[type="submit"]').exists()).toBe(false);
       expect(wrapper.text()).toContain('Submitted January 20 2026');
-      expect(wrapper.findComponent({ name: 'RouterLinkStub' }).props('to')).toEqual({ name: RouteName.SUBMISSIONS });
     });
 
     it('shows the not found message instead of the form when the submission is missing or deleted', async () => {

@@ -1,11 +1,22 @@
 import { createRouter, createWebHistory, START_LOCATION } from 'vue-router';
 
+import { i18n } from '@/i18n';
 import oidcRoutes from '@/router/oidc';
 import { AuthService } from '@/services';
 import { useAppStore, useAuthNStore, useConfigStore } from '@/store';
 import { RouteName, StorageKey } from '@/utils/enums';
 
 import type { LocationQuery, RouteParamsGeneric, RouteRecordRaw } from 'vue-router';
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    // The route's crumb; nest routes to build a trail, and a view can rename its own with useBreadcrumb.
+    breadcrumb?: () => string;
+    hideAppDrawer?: boolean;
+    hideBreadcrumb?: boolean;
+    requiresAuth?: boolean;
+  }
+}
 
 /**
  * Obtains any information that should be loaded only once on hard navigation.
@@ -50,8 +61,8 @@ function waitFor(ready: () => boolean, timeout = 2000): Promise<void> {
 
 const routes: RouteRecordRaw[] = [
   {
+    // No component, so each page renders in App's RouterView.
     path: '/',
-    component: () => import('@/views/GenericView.vue'),
     beforeEnter: bootstrap,
     children: [
       {
@@ -73,17 +84,23 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true }
       },
       {
+        // No component, so the children render in its place; it's here for the crumb its children share.
         path: '/submissions',
-        name: RouteName.SUBMISSIONS,
-        component: () => import('@/views/SubmissionsView.vue'),
-        meta: { requiresAuth: true }
-      },
-      {
-        path: '/submissions/:submissionId',
-        name: RouteName.SUBMISSION,
-        component: () => import('@/views/DemoFormView.vue'),
-        props: createProps,
-        meta: { requiresAuth: true }
+        meta: { breadcrumb: () => i18n.t('components.breadcrumb.submissions'), requiresAuth: true },
+        children: [
+          {
+            path: '',
+            name: RouteName.SUBMISSIONS,
+            component: () => import('@/views/SubmissionsView.vue')
+          },
+          {
+            path: ':submissionId',
+            name: RouteName.SUBMISSION,
+            component: () => import('@/views/DemoFormView.vue'),
+            props: createProps,
+            meta: { breadcrumb: () => i18n.t('components.breadcrumb.submission') }
+          }
+        ]
       },
       {
         path: '/developer',

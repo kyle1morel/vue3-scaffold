@@ -1,11 +1,10 @@
-import { RouterLinkStub } from '@vue/test-utils';
+import { enableAutoUnmount, RouterLinkStub } from '@vue/test-utils';
+import { defineComponent, h } from 'vue';
 
 import Breadcrumb from '@/components/layout/Breadcrumb.vue';
-import { RouteName } from '@/utils/enums';
+import { useBreadcrumb } from '@/composables/useBreadcrumb';
 
 import { mountComponent } from '../../../mountComponent';
-
-import type { MenuItem } from 'primevue/menuitem';
 
 // Mocks
 
@@ -18,88 +17,99 @@ vi.mock('vue-router', () => ({
 
 // Fixtures
 
-const testStaticRoute = {
-  meta: { hideBreadcrumb: false },
-  matched: [
-    { meta: { breadcrumb: 'Static One' }, name: 'one', path: '/one' },
-    { meta: { breadcrumb: 'Static Two' }, name: 'two', path: '/two' }
-  ]
+// A nameless parent whose empty-path child is its page, and a named child page under it
+const testParent = {
+  path: '/submissions',
+  meta: { breadcrumb: () => 'Submissions' },
+  children: [{ path: '', name: 'submissions' }]
+};
+const testChild = {
+  path: '/submissions/:id',
+  name: 'submission',
+  meta: { breadcrumb: () => 'Submission' },
+  children: []
 };
 
-// Builds a route whose first crumb has no name, so its link target comes from its children
-function testNamelessRoute(children: unknown[]) {
-  return {
-    meta: { hideBreadcrumb: false },
-    matched: [
-      { meta: { breadcrumb: 'Parent' }, name: undefined, children, path: '/parent' },
-      { meta: { breadcrumb: 'Last' }, name: 'last', path: '/last' }
-    ]
-  };
+function testRoute(matched: unknown[], meta = {}) {
+  return { matched, meta };
 }
 
 // Mount
 
-function mountBreadcrumb() {
-  const { wrapper } = mountComponent(Breadcrumb);
-  // breadcrumbItems is script-setup state; the link targets aren't otherwise observable through the stub
-  const vm = wrapper.vm as unknown as { breadcrumbItems: MenuItem[] };
+function mountBreadcrumb(pageLabel?: string | null) {
+  // A view naming its own crumb, as DemoFormView does
+  const View = defineComponent(() => {
+    if (pageLabel !== undefined) useBreadcrumb(pageLabel);
+    return () => h(Breadcrumb);
+  });
+  const { wrapper } = mountComponent(View);
 
-  return { wrapper, vm };
+  return { wrapper, links: () => wrapper.findAllComponents(RouterLinkStub) };
 }
 
 beforeEach(() => {
   mockUseRoute.mockReset();
 });
 
+// The view's label is shared state, cleared when the view unmounts.
+enableAutoUnmount(afterEach);
+
 // Tests
 
 describe('Breadcrumb', () => {
   describe('rendering', () => {
     it('renders nothing with fewer than two crumbs', () => {
-      mockUseRoute.mockReturnValue({
-        meta: { hideBreadcrumb: false },
-        matched: [{ meta: { breadcrumb: 'One' }, name: 'one', path: '/one' }]
-      });
+      mockUseRoute.mockReturnValue(testRoute([testParent, { path: '/submissions', meta: {} }]));
 
       const { wrapper } = mountBreadcrumb();
 
-      expect(wrapper.find('.p-breadcrumb').exists()).toBe(false);
-    });
-
-    it('links earlier crumbs and shows the current page as text', () => {
-      mockUseRoute.mockReturnValue(testStaticRoute);
-
-      const { wrapper } = mountBreadcrumb();
-      const links = wrapper.findAllComponents(RouterLinkStub);
-
-      expect(links.map((link) => link.text())).toEqual(['Static One']);
-      expect(wrapper.text()).toContain('Static Two');
+      expect(wrapper.find('nav').exists()).toBe(false);
     });
 
     it('renders nothing when the route hides the breadcrumb', () => {
-      mockUseRoute.mockReturnValue({ ...testStaticRoute, meta: { hideBreadcrumb: true } });
+      mockUseRoute.mockReturnValue(testRoute([testParent, testChild], { hideBreadcrumb: true }));
 
-      const { vm } = mountBreadcrumb();
+      const { wrapper } = mountBreadcrumb();
 
-      expect(vm.breadcrumbItems).toEqual([]);
-    });
-  });
-
-  describe('link targets', () => {
-    it('links a nameless crumb to its first named descendant', () => {
-      mockUseRoute.mockReturnValue(testNamelessRoute([{ name: undefined, children: [{ name: 'childRouteName' }] }]));
-
-      const { vm } = mountBreadcrumb();
-
-      expect(vm.breadcrumbItems[0]?.to).toMatchObject({ name: 'childRouteName' });
+      expect(wrapper.find('nav').exists()).toBe(false);
     });
 
-    it('links a nameless crumb to the home page when no descendant has a name', () => {
-      mockUseRoute.mockReturnValue(testNamelessRoute([{}]));
+    it('links the parent through its empty-path child and marks the current page', () => {
+      mockUseRoute.mockReturnValue(testRoute([testParent, testChild]));
 
-      const { vm } = mountBreadcrumb();
+      const { wrapper, links } = mountBreadcrumb();
 
-      expect(vm.breadcrumbItems[0]?.to).toMatchObject({ name: RouteName.HOME });
+      expect(wrapper.find('nav').attributes('aria-label')).toBe('Breadcrumb');
+      expect(links().map((link) => [link.text(), link.props('to')])).toEqual([
+        ['Submissions', { name: 'submissions' }]
+      ]);
+      expect(wrapper.find('[aria-current="page"]').text()).toBe('Submission');
+    });
+
+    it('shows the label the view gives its own crumb', () => {
+      mockUseRoute.mockReturnValue(testRoute([testParent, testChild]));
+
+      const { wrapper } = mountBreadcrumb('Jane');
+
+      expect(wrapper.find('[aria-current="page"]').text()).toBe('Jane');
+    });
+
+    it('hides the trail while the view loads its label', () => {
+      mockUseRoute.mockReturnValue(testRoute([testParent, testChild]));
+
+      const { wrapper } = mountBreadcrumb(null);
+
+      expect(wrapper.find('nav').exists()).toBe(false);
+    });
+
+    it('marks no crumb as current when the page has no crumb of its own', () => {
+      const confirmation = { path: '/submissions/:id/confirmation', name: 'confirmation', meta: {} };
+      mockUseRoute.mockReturnValue(testRoute([testParent, testChild, confirmation]));
+
+      const { wrapper, links } = mountBreadcrumb();
+
+      expect(links().map((link) => link.text())).toEqual(['Submissions', 'Submission']);
+      expect(wrapper.find('[aria-current]').exists()).toBe(false);
     });
   });
 });

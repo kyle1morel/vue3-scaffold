@@ -13,6 +13,11 @@
       "menu": "Menu",
       "submissions": "Submissions"
     },
+    "breadcrumb": {
+      "label": "Breadcrumb",
+      "submission": "Submission",
+      "submissions": "Submissions"
+    },
     "copyToClipboard": {
       "button": "Copy to clipboard",
       "copied": "Copied to clipboard",
@@ -346,7 +351,6 @@
       }
     },
     "demoForm": {
-      "back": "Back to submissions",
       "errors": {
         "agree": "You must accept the terms",
         "email": "Email must be a valid email address",

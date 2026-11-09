@@ -24,6 +24,7 @@ import {
   TextField
 } from '@/components/form';
 import { Spinner } from '@/components/layout';
+import { useBreadcrumb } from '@/composables/useBreadcrumb';
 import { useFormNavigationGuard } from '@/composables/useFormNavigationGuard';
 import { useToast } from '@/composables/useToast';
 import { createSubmission, getSubmission } from '@/services';
@@ -95,6 +96,8 @@ const citySuggestions = ref<string[]>([]);
 const loadError = ref<string>();
 const readOnly = !!submissionId;
 const submission = ref<Submission>();
+// A saved submission's crumb is the submitter's name, with no trail while it loads and the route's label if it can't.
+useBreadcrumb(() => submission.value?.firstName ?? (readOnly && !loadError.value ? null : undefined));
 
 const categories = [
   { id: 'feedback', label: t('views.demoForm.options.categories.feedback') },
@@ -346,13 +349,4 @@ const onSubmit = handleSubmit(
       </form>
     </template>
   </Card>
-
-  <Button
-    v-if="readOnly"
-    class="mt-6"
-    icon="fa-solid fa-arrow-left"
-    :label="t('views.demoForm.back')"
-    :to="{ name: RouteName.SUBMISSIONS }"
-    variant="secondary"
-  />
 </template>
