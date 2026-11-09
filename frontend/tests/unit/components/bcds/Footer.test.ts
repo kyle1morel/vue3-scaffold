@@ -1,4 +1,4 @@
-import Footer from '@/components/layout/Footer.vue';
+import { Footer } from '@/components/bcds';
 
 import { mountComponent } from '../../../mountComponent';
 
@@ -13,8 +13,8 @@ const testContactLinks = [
 
 // Mount
 
-function mountFooter() {
-  const { wrapper } = mountComponent(Footer);
+function mountFooter(props: Record<string, unknown> = {}) {
+  const { wrapper } = mountComponent(Footer, { props });
 
   return { wrapper };
 }
@@ -35,6 +35,20 @@ describe('Footer', () => {
 
       expect(contact?.text()).toContain('Call, email or text us, or find a service centre');
       expect(contact?.findAll('a').map((link) => link.attributes('href'))).toEqual(testContactLinks);
+    });
+  });
+
+  describe('full width', () => {
+    it('keeps the cap by default', () => {
+      const { wrapper } = mountFooter();
+
+      expect(wrapper.classes()).not.toContain('bcds-footer-full-width');
+    });
+
+    it('drops the cap when full width', () => {
+      const { wrapper } = mountFooter({ fullWidth: true });
+
+      expect(wrapper.classes()).toContain('bcds-footer-full-width');
     });
   });
 });

@@ -2,7 +2,5 @@ export { default as AppDrawer } from './AppDrawer.vue';
 export { default as AppLayout } from './AppLayout.vue';
 export { default as Breadcrumb } from './Breadcrumb.vue';
 export { default as ConfirmDialog } from './ConfirmDialog.vue';
-export { default as Footer } from './Footer.vue';
-export { default as Header } from './Header.vue';
 export { default as Spinner } from './Spinner.vue';
 export { default as ProgressLoader } from './ProgressLoader.vue';
