@@ -25,7 +25,6 @@ import {
   faXmark
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import PrimeVue from '@primevue/core/config';
 import { createPinia } from 'pinia';
 import { createPersistedState } from 'pinia-plugin-persistedstate';
 import { createApp } from 'vue';
@@ -33,7 +32,6 @@ import { createApp } from 'vue';
 import App from '@/App.vue';
 import i18n from '@/i18n';
 import getRouter from '@/router';
-import { ThemeOverride } from '@/lib/primevue/theme';
 import { AuthService, refreshConfig } from '@/services';
 import { StorageKey } from '@/utils/enums';
 import { showError } from '@/utils/utils';
@@ -87,21 +85,6 @@ function initializeApp(): void {
   app.use(pinia);
   app.use(getRouter());
   app.use(i18n);
-  app.use(PrimeVue, {
-    theme: {
-      preset: ThemeOverride,
-      options: {
-        prefix: 'p',
-        darkModeSelector: 'dark',
-        // PrimeVue prepends this order to <head>, so it's declared before main.css; utilities sit above PrimeVue so
-        // Tailwind classes can restyle its components.
-        cssLayer: {
-          name: 'primeui',
-          order: 'properties, theme, base, components, primeui, utilities, keyframes'
-        }
-      }
-    }
-  });
   app.component('FontAwesomeIcon', FontAwesomeIcon);
 
   // Errors nothing else handled end up as a toast: Vue sends component errors here, and the listener catches

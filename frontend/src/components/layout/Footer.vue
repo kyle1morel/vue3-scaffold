@@ -37,10 +37,10 @@ const links = computed(() => [
 
 <template>
   <div class="flex flex-col pt-8">
-    <div class="bg-surface-950 text-surface-0 border-y-3 border-[var(--p-gold-950)] px-4 md:px-20 py-8">
+    <div class="bg-[var(--theme-gray-110)] text-white border-y-3 border-[var(--theme-gold-100)] px-4 md:px-20 py-8">
       {{ t('components.footer.acknowledgement') }}
     </div>
-    <div class="bg-surface-0 px-4 md:px-20 py-8">
+    <div class="bg-white px-4 md:px-20 py-8">
       <div class="flex flex-col md:flex-row md:justify-between gap-8 pb-8">
         <div class="flex flex-col">
           <img
@@ -75,7 +75,7 @@ const links = computed(() => [
             >
               <a
                 :href="link.href"
-                class="text-color block py-2 pr-4 no-underline hover:underline"
+                class="text-[var(--typography-color-primary)] block py-2 pr-4 no-underline hover:underline"
               >
                 {{ link.label }}
               </a>
@@ -83,7 +83,7 @@ const links = computed(() => [
           </ul>
         </figure>
       </div>
-      <div class="border-t border-surface-950 pt-8">
+      <div class="border-t border-[var(--theme-gray-110)] pt-8">
         © {{ new Date().getUTCFullYear() }} {{ t('components.footer.government') }}.
       </div>
     </div>

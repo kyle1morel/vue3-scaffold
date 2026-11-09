@@ -27,7 +27,7 @@ export interface FormContextOptions {
   componentProps?: Record<string, unknown>;
   /** Component stubs, merged with mountComponent's dependency-level defaults. */
   stubs?: MountComponentOptions['stubs'];
-  /** Extra global plugins beyond PrimeVue + i18n. */
+  /** Extra global plugins beyond i18n. */
   plugins?: MountComponentOptions['plugins'];
   /** Pinia initial state, keyed by store id, e.g. { auth: { user: {} } }. */
   piniaState?: MountComponentOptions['piniaState'];

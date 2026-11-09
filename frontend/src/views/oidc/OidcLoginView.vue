@@ -65,7 +65,7 @@ function login(kind: IdentityProviderKind) {
           <Separator size="small" />
 
           <h2 class="mt-0 mb-3">{{ t('views.oidcLogin.headings.register') }}</h2>
-          <div class="outline outline-[var(--p-borderlight)] rounded-lg p-2 mb-3">
+          <div class="outline outline-[var(--surface-color-border-default)] rounded-lg p-2 mb-3">
             <a
               class="mb-3 mr-1"
               href="https://id.gov.bc.ca/account/"
@@ -75,7 +75,7 @@ function login(kind: IdentityProviderKind) {
             </a>
             <span>{{ t('views.oidcLogin.providers.bcsc.requirement') }}</span>
           </div>
-          <div class="outline outline-[var(--p-borderlight)] rounded-lg p-2 mb-3">
+          <div class="outline outline-[var(--surface-color-border-default)] rounded-lg p-2 mb-3">
             <a
               class="mb-3 mr-1"
               href="https://www.bceid.ca/register/basic/account_details.aspx?type=regular&eServiceType=basic"
@@ -86,7 +86,7 @@ function login(kind: IdentityProviderKind) {
             <span>{{ t('views.oidcLogin.providers.basicBceid.requirement') }}</span>
           </div>
 
-          <div class="outline outline-[var(--p-borderlight)] rounded-lg p-2">
+          <div class="outline outline-[var(--surface-color-border-default)] rounded-lg p-2">
             <a
               class="mb-3 mr-1"
               href="https://www.bceid.ca/register/business/getting_started/getting_started.aspx"

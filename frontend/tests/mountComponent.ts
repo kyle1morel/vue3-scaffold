@@ -1,5 +1,4 @@
 import { createTestingPinia } from '@pinia/testing';
-import PrimeVue from 'primevue/config';
 import { Field, useForm } from 'vee-validate';
 import { defineComponent, h } from 'vue';
 import { mount, RouterLinkStub } from '@vue/test-utils';
@@ -47,7 +46,7 @@ export interface MountComponentOptions extends PiniaOptions {
   stubs?: Stubs;
   /** Injection keys/values, e.g. { [someKey]: ref('x') }. */
   provide?: Record<string | symbol, unknown>;
-  /** Extra global plugins beyond the always-installed PrimeVue and i18n. */
+  /** Extra global plugins beyond the always-installed i18n. */
   plugins?: Plugin[];
   /** Receives errors the component lets through, as main.ts's app.config.errorHandler does in the app. */
   errorHandler?: (error: unknown) => void;
@@ -103,7 +102,7 @@ export function mountComponent(
   const { props, stubs = {}, provide = {}, plugins = [], errorHandler, formContext } = options;
   const { pinia, plugin } = setupPinia(options);
 
-  const resolvedPlugins: Plugin[] = [...(plugin ? [plugin] : []), PrimeVue, i18n, ...plugins];
+  const resolvedPlugins: Plugin[] = [...(plugin ? [plugin] : []), i18n, ...plugins];
 
   if (!formContext) {
     const wrapper = mount(component, {

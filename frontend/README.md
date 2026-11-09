@@ -1,6 +1,6 @@
 # Vue 3 Scaffold Frontend
 
-The Vue 3 single-page app: PrimeVue and Reka styled to the [BC Design System](https://www2.gov.bc.ca/gov/content/digital/design-system),
+The Vue 3 single-page app: Reka styled to the [BC Design System](https://www2.gov.bc.ca/gov/content/digital/design-system),
 Tailwind, Pinia, vue-i18n, and vee-validate with zod for forms.
 
 ## Getting Started
@@ -37,17 +37,16 @@ Install the extensions recommended in [.vscode/extensions.json](../.vscode/exten
 
 ## Components
 
-| Folder                  | Holds                                                                                                                            |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `src/components/bcds`   | Components named and shaped after the BC Design System, such as `Button`, `TextField` and `Tag`, most backed by PrimeVue or Reka |
-| `src/components/form`   | vee-validate fields: each binds one `bcds` component to a form field with `useField(name)`                                       |
-| `src/components/common` | Shared app components, such as `CopyToClipboard`                                                                                 |
-| `src/components/layout` | The page shell: header and its menu, breadcrumb, footer, drawer, confirm dialog and loading indicators                           |
+| Folder                  | Holds                                                                                                               |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `src/components/bcds`   | Components named and shaped after the BC Design System, such as `Button`, `TextField` and `Tag`, most built on Reka |
+| `src/components/form`   | vee-validate fields: each binds one `bcds` component to a form field with `useField(name)`                          |
+| `src/components/common` | Shared app components, such as `CopyToClipboard` and `DataTable` with its `Column`s                                 |
+| `src/components/layout` | The page shell: header and its menu, breadcrumb, footer, drawer, confirm dialog and loading indicators              |
 
-PrimeVue and Reka stay behind `components/bcds`, so either can be replaced later without touching the rest of the app.
-ESLint fails any other file that imports `primevue` or `reka-ui`, except `main.ts` and `src/lib/primevue`, which also
-holds the theme preset. Its barrel lists the PrimeVue components used directly on purpose: `Breadcrumb`, `Column`
-and `DataTable`.
+Reka stays behind `src/components`, so views only ever use our own components, and Reka could be replaced later
+without touching them. ESLint fails any file outside `src/components` that imports `reka-ui`. Colours come from the BC
+design tokens' CSS variables, such as `var(--typography-color-primary)`.
 
 `bcds/FieldWrapper.vue` renders the label, description and error message every field shares, and links them to the
 control with `aria-describedby`, `aria-required` and `for`. New `bcds` fields should build on it.

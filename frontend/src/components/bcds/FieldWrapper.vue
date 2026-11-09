@@ -3,7 +3,7 @@ import { computed, useAttrs, useId } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 // The field passes its attributes on with v-bind="$attrs": class and style stay on this wrapper, and the rest go to
-// the control through inputAttrs, so PrimeVue's own props can't be set from outside.
+// the control through inputAttrs.
 defineOptions({ inheritAttrs: false });
 
 // Props

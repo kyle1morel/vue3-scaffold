@@ -17,11 +17,11 @@ function skipToMain() {
 </script>
 
 <template>
-  <header class="relative bg-surface-0 text-[var(--p-bcblue-950)] border-b-2 border-[var(--p-gold-950)]">
+  <header class="relative bg-white text-[var(--theme-blue-100)] border-b-2 border-[var(--theme-gold-100)]">
     <!-- Hidden until it takes focus, then shown over the logo -->
     <a
       href="#main-content"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-4 lg:focus:left-12 focus:p-2 bg-surface-0"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-4 lg:focus:left-12 focus:p-2 bg-white"
       @click.prevent="skipToMain"
     >
       {{ t('components.header.skipToMain') }}
@@ -42,7 +42,7 @@ function skipToMain() {
       <p class="grow min-w-0 my-0 truncate text-lg sm:text-[2rem] font-bold leading-normal">
         <router-link
           :to="{ name: RouteName.HOME }"
-          class="text-[var(--p-primary-color)] no-underline"
+          class="text-[var(--theme-blue-100)] no-underline"
         >
           {{ t('app.name') }}
         </router-link>

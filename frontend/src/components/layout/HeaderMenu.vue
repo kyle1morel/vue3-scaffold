@@ -41,7 +41,7 @@ const displayName = computed(() => getProfile.value?.name ?? String(getProfile.v
       >
         <font-awesome-icon
           icon="fa-solid fa-user"
-          class="ml-2 text-primary pointer-events-none"
+          class="ml-2 text-[var(--theme-blue-100)] pointer-events-none"
         />
         <span class="hidden sm:inline">{{ displayName }}</span>
       </Button>

@@ -131,29 +131,14 @@ export default defineConfig([
       '@intlify/vue-i18n/valid-message-syntax': 'error'
     }
   },
-  // PrimeVue stays behind components/bcds and Reka behind src/components; lib/primevue only holds PrimeVue's theme
+  // Reka stays behind src/components
   {
     files: ['src/**/*.{ts,vue}'],
-    ignores: ['src/components/**', 'src/lib/primevue/**', 'src/main.ts'],
+    ignores: ['src/components/**'],
     rules: {
       'no-restricted-imports': [
         'error',
-        {
-          patterns: [
-            { regex: '^@?primevue(/|$)', message: 'Use a components/bcds component.' },
-            { regex: '^reka-ui(/|$)', message: 'Use a component from src/components.' }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    files: ['src/components/**/*.{ts,vue}'],
-    ignores: ['src/components/bcds/**'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        { patterns: [{ regex: '^@?primevue(/|$)', message: 'Use a components/bcds component.' }] }
+        { patterns: [{ regex: '^reka-ui(/|$)', message: 'Use a component from src/components.' }] }
       ]
     }
   },

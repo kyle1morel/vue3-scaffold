@@ -65,7 +65,7 @@ p {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--p-primary-color);
+  background-color: var(--theme-blue-100);
   opacity: 0.9;
 
   @media (min-width: 768px) {
