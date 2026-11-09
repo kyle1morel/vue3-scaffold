@@ -187,7 +187,8 @@
     cursor: not-allowed;
   }
 
-  .app-input input {
+  .app-input input,
+  .app-input textarea {
     flex: 1 1 auto;
     min-width: 0;
     padding: 0;
@@ -198,7 +199,8 @@
     font: inherit;
   }
 
-  .app-input input::placeholder {
+  .app-input input::placeholder,
+  .app-input textarea::placeholder {
     color: var(--typography-color-placeholder);
   }
 

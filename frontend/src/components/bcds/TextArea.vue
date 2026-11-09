@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import Textarea from 'primevue/textarea';
-
 import FieldWrapper from './FieldWrapper.vue';
 
 defineOptions({ inheritAttrs: false });
@@ -45,18 +43,37 @@ const value = defineModel<string>();
     :label
     :required
   >
-    <Textarea
-      :id
-      v-model="value"
-      class="w-full"
-      :disabled
-      :invalid
-      :maxlength="maxLength"
-      :name
-      :placeholder
-      :pt="{ root: inputAttrs }"
-      :readonly
-      :rows
-    />
+    <div
+      class="app-input bcds-text-area"
+      :class="{ 'app-input-invalid': invalid, 'app-input-readonly': readonly }"
+      :data-disabled="disabled || undefined"
+    >
+      <textarea
+        :id
+        v-model="value"
+        v-bind="inputAttrs"
+        :aria-invalid="invalid || undefined"
+        :disabled
+        :maxlength="maxLength"
+        :name
+        :placeholder
+        :readonly
+        :rows
+      />
+    </div>
   </FieldWrapper>
 </template>
+
+<style scoped>
+@layer components {
+  /* The shared box is sized for one line; this one grows with its rows. */
+  .bcds-text-area {
+    height: auto;
+    align-items: stretch;
+  }
+
+  .bcds-text-area textarea {
+    resize: vertical;
+  }
+}
+</style>
