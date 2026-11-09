@@ -6,6 +6,7 @@ export { default as ComboBox } from './ComboBox.vue';
 export { default as DatePicker } from './DatePicker.vue';
 export { default as Drawer } from './Drawer.vue';
 export { default as FieldWrapper } from './FieldWrapper.vue';
+export { default as Form } from './Form.vue';
 export { default as InlineAlert } from './InlineAlert.vue';
 export { default as Menu } from './Menu.vue';
 export { default as NumberField } from './NumberField.vue';

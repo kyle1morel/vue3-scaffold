@@ -7,7 +7,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { z } from 'zod';
 
-import { Button, InlineAlert, Tag } from '@/components/bcds';
+import { Button, Form, InlineAlert, Tag } from '@/components/bcds';
 import Card from '@/components/common/Card.vue';
 import {
   CancelButton,
@@ -226,9 +226,9 @@ const onSubmit = handleSubmit(
 
   <Card v-if="!readOnly || submission">
     <template #content>
-      <form
+      <Form
         class="grid grid-cols-12 gap-x-6 gap-y-2"
-        novalidate
+        validation-behavior="aria"
         @submit="onSubmit"
       >
         <SectionHeader
@@ -348,7 +348,7 @@ const onSubmit = handleSubmit(
           />
           <CancelButton @click="resetForm()" />
         </div>
-      </form>
+      </Form>
     </template>
   </Card>
 </template>
