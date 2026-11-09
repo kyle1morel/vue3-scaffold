@@ -6,8 +6,6 @@ import { useI18n } from 'vue-i18n';
 import BcdsButton from '@/components/bcds/Button.vue';
 import BcdsTextField from '@/components/bcds/TextField.vue';
 
-// BC has no password component, so this is its TextField as a password, plus the show/hide button BC leaves to apps.
-
 // Props
 const {
   description = undefined,

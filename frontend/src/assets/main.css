@@ -100,7 +100,6 @@
 
 /* Shared by the bcds components; a sublayer, so their own styles override it and Tailwind utilities beat both */
 @layer components.shared {
-  /* Field text as in the BC Design System form components */
   .app-field-label,
   .app-description,
   .app-error-message {
@@ -125,7 +124,7 @@
     padding: var(--layout-padding-xsmall) var(--layout-padding-none);
   }
 
-  /* A character count turns red with the error, as BC's does */
+  /* A character count turns red with the error */
   .app-description.app-description-danger {
     color: var(--typography-color-danger);
   }

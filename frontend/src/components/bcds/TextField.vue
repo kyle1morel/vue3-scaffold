@@ -38,7 +38,7 @@ const {
   type?: 'email' | 'password' | 'search' | 'tel' | 'text' | 'url';
 }>();
 
-// BC's iconRight takes any element, so a caller can put a button there.
+// Any element, so a caller can put a button there
 defineSlots<{ iconRight?(): unknown }>();
 
 const value = defineModel<string>();

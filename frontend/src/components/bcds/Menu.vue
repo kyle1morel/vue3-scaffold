@@ -98,7 +98,7 @@ function onSelect(item: MenuItemProps, event: Event) {
     else if (!disallowEmptySelection) selectedKeys.value = [];
     return;
   }
-  // Several can be chosen, so the menu stays open, as in React Aria.
+  // Several can be chosen, so the menu stays open.
   event.preventDefault();
   if (selected && disallowEmptySelection && selectedKeys.value.length === 1) return;
   selectedKeys.value = selected ? selectedKeys.value.filter((k) => k !== key) : [...selectedKeys.value, key];

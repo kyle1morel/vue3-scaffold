@@ -23,7 +23,7 @@ const {
   placement = 'top',
   text
 } = defineProps<{
-  // Milliseconds it stays after the pointer or focus leaves, React Aria's 500 by default
+  // Milliseconds it stays after the pointer or focus leaves
   closeDelay?: number;
   // Milliseconds of hover before it opens; App.vue's provider sets the default.
   delay?: number;
