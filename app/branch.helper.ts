@@ -10,7 +10,7 @@ import { dirname, join, isAbsolute, parse, resolve } from 'node:path';
  * Conventional Branch Naming Convention.
  * @see https://conventional-branch.github.io
  */
-const conventionalBranchRegex = /^(main|((bugfix|chore|feature|hotfix|release)\/[a-z0-9]+([.-][a-z0-9]+)*))$/;
+const conventionalBranchRegex = /^(main|((bugfix|chore|feature|hotfix|infra|release)\/[a-z0-9]+([.-][a-z0-9]+)*))$/;
 
 /**
  * Finds the actual git directory. Handles standard .git folders and worktree .git files.
