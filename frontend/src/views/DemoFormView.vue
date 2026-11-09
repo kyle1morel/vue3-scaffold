@@ -17,7 +17,6 @@ import {
   NumberField,
   PasswordField,
   RadioGroup,
-  RichTextEditor,
   SectionHeader,
   Select,
   TextArea,
@@ -79,7 +78,6 @@ const schema = z.object({
   city: optionalTextSchema(field('city'), 255),
   category: blankOrOneOfSchema(field('category'), CATEGORIES),
   comments: optionalTextSchema(field('comments'), 1000),
-  notes: optionalTextSchema(field('notes'), 10000),
   agree: z.boolean().refine((agreed) => agreed, t('views.demoForm.errors.agree'))
 });
 
@@ -149,7 +147,6 @@ async function loadSubmission(id: string) {
       city: s.city,
       category: s.category,
       comments: s.comments,
-      notes: s.notes,
       agree: true
     }
   });
@@ -179,8 +176,7 @@ const onSubmit = handleSubmit(
       quantity: values.quantity,
       city: values.city,
       category: values.category,
-      comments: values.comments,
-      notes: values.notes
+      comments: values.comments
     }).catch(rethrowAs(t('views.demoForm.errors.save')));
 
     toast.success(t('views.demoForm.submitted.title'), t('views.demoForm.submitted.detail'));
@@ -325,18 +321,6 @@ const onSubmit = handleSubmit(
           :readonly="readOnly"
           :label="field('comments')"
           :description="t('views.demoForm.help.comments')"
-        />
-
-        <SectionHeader
-          class="col-span-12"
-          :title="t('views.demoForm.sections.notes')"
-        />
-        <RichTextEditor
-          class="col-span-12"
-          name="notes"
-          :readonly="readOnly"
-          :label="field('notes')"
-          :description="t('views.demoForm.help.notes')"
         />
 
         <Checkbox

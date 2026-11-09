@@ -12,7 +12,6 @@ export { default as NumberField } from './NumberField.vue';
 export { default as ProgressBar } from './ProgressBar.vue';
 export { default as ProgressCircle } from './ProgressCircle.vue';
 export { default as RadioGroup } from './RadioGroup.vue';
-export { default as RichTextEditor } from './RichTextEditor.vue';
 export { default as Select } from './Select.vue';
 export { default as Separator } from './Separator.vue';
 export { default as Tag } from './Tag.vue';

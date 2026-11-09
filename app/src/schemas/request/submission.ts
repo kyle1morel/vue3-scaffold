@@ -17,8 +17,7 @@ export const schema = {
         quantity: z.number().int().min(1).max(100).nullish(),
         city: z.string().max(255).nullish(),
         category: z.enum(['feedback', 'question', 'request']).nullish(),
-        comments: z.string().max(1000).nullish(),
-        notes: z.string().max(10000).nullish()
+        comments: z.string().max(1000).nullish()
       })
       .strict()
   },

@@ -104,7 +104,6 @@ export interface components {
       /** @enum {string|null} */
       category: 'feedback' | 'question' | 'request' | null;
       comments: string | null;
-      notes: string | null;
       createdBy: string | null;
       /** Format: date-time */
       createdAt: string | null;
@@ -217,7 +216,6 @@ export interface operations {
           /** @enum {string|null} */
           category?: 'feedback' | 'question' | 'request' | null;
           comments?: string | null;
-          notes?: string | null;
         };
       };
     };

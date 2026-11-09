@@ -21,8 +21,7 @@ describe('submission request schemas', () => {
         quantity: null,
         city: null,
         category: null,
-        comments: null,
-        notes: null
+        comments: null
       });
 
       expect(result.success).toBe(true);

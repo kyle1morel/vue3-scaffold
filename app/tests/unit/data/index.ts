@@ -37,7 +37,6 @@ export const TEST_SUBMISSION_1: Submission = {
   city: 'Victoria',
   category: 'question',
   comments: null,
-  notes: '<p>Some notes</p>',
   createdAt: null,
   createdBy: null,
   updatedAt: null,

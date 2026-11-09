@@ -36,7 +36,7 @@ vi.mock('vue-router', () => ({
 
 // Fixtures
 
-const testSections = ['Contact', 'Details', 'Notes'];
+const testSections = ['Contact', 'Details'];
 
 const testSubmission: Submission = {
   id: '0b6a1f3e-6d2c-4f0e-9a51-3c8e2d7b4a10',
@@ -50,7 +50,6 @@ const testSubmission: Submission = {
   city: 'Victoria',
   category: 'question',
   comments: 'Some comments',
-  notes: '<p>Some notes</p>',
   createdAt: '2026-01-20T18:30:00.000Z',
   createdBy: null,
   updatedAt: null,
@@ -91,7 +90,7 @@ function radio(wrapper: VueWrapper, label: string) {
 
 function mountDemoFormView() {
   // Quill doesn't run in happy-dom.
-  const { wrapper } = mountComponent(DemoFormView, { errorHandler: showError, stubs: { Editor: true } });
+  const { wrapper } = mountComponent(DemoFormView, { errorHandler: showError });
 
   return { wrapper };
 }
@@ -99,7 +98,7 @@ function mountDemoFormView() {
 async function mountReadOnlyDemoFormView() {
   const { wrapper } = mountComponent(DemoFormView, {
     props: { submissionId: testSubmission.id },
-    stubs: { Editor: true, Spinner: true }
+    stubs: { Spinner: true }
   });
   await flushPromises();
 
@@ -155,8 +154,7 @@ describe('DemoFormView', () => {
         quantity: undefined,
         city: undefined,
         category: undefined,
-        comments: undefined,
-        notes: undefined
+        comments: undefined
       });
       await vi.waitFor(() => expect(mockRouter.push).toHaveBeenCalledWith({ name: RouteName.SUBMISSIONS }));
       expect(mockToast.success).toHaveBeenCalledWith('Form submitted', 'Your submission was saved');

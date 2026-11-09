@@ -85,9 +85,6 @@ components:
         comments:
           type: string
           nullable: true
-        notes:
-          type: string
-          nullable: true
         createdBy:
           type: string
           nullable: true
@@ -121,7 +118,6 @@ components:
         - city
         - category
         - comments
-        - notes
         - createdBy
         - createdAt
         - updatedBy
@@ -313,10 +309,6 @@ paths:
                   type: string
                   nullable: true
                   maxLength: 1000
-                notes:
-                  type: string
-                  nullable: true
-                  maxLength: 10000
               required:
                 - firstName
                 - email

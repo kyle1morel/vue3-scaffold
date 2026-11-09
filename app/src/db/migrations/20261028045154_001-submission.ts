@@ -30,7 +30,6 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn('city', 'text')
     .addColumn('category', sql`app.category`)
     .addColumn('comments', 'text')
-    .addColumn('notes', 'text')
     .$call(withTimestamps)
     .execute();
 
