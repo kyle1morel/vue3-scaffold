@@ -2,7 +2,7 @@
 import { isAxiosError } from 'axios';
 import { format, parseISO } from 'date-fns';
 import { useForm } from 'vee-validate';
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { z } from 'zod';
@@ -89,12 +89,12 @@ const { handleSubmit, meta, resetForm } = useForm({
   initialValues: { agree: false }
 });
 
-useFormNavigationGuard(() => meta.value.dirty);
-
 // State
 const citySuggestions = ref<string[]>([]);
 const loadError = ref<string>();
 const readOnly = !!submissionId;
+// A read-only form has nothing to lose, even when its fields unmount while the next submission loads.
+useFormNavigationGuard(() => !readOnly && meta.value.dirty);
 const submission = ref<Submission>();
 // A saved submission's crumb is the submitter's name, with no trail while it loads and the route's label if it can't.
 useBreadcrumb(() => submission.value?.firstName ?? (readOnly && !loadError.value ? null : undefined));
@@ -121,8 +121,12 @@ function filterCities(query: string) {
 
 async function loadSubmission(id: string) {
   try {
-    submission.value = await getSubmission(id);
+    const loaded = await getSubmission(id);
+    // A slower response for an earlier id mustn't replace the current one.
+    if (id !== submissionId) return;
+    submission.value = loaded;
   } catch (e) {
+    if (id !== submissionId) return;
     loadError.value =
       isAxiosError(e) && e.response?.status === 404
         ? t('views.demoForm.errors.notFound')
@@ -151,9 +155,16 @@ async function loadSubmission(id: string) {
   });
 }
 
-onMounted(() => {
-  if (submissionId) loadSubmission(submissionId);
-});
+// The view stays mounted when the route only changes its id, so each new id loads afresh.
+watch(
+  () => submissionId,
+  (id) => {
+    submission.value = undefined;
+    loadError.value = undefined;
+    if (id) loadSubmission(id);
+  },
+  { immediate: true }
+);
 
 const onSubmit = handleSubmit(
   async (values) => {
