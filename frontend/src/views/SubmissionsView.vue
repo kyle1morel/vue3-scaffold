@@ -33,7 +33,7 @@ const total = ref(0);
 async function loadPage() {
   loading.value = true;
   try {
-    // The table tracks the first row index and the API takes a 1-based page
+    // The table tracks the first row index and the API takes a 1-based page.
     const result = await listSubmissions({ page: first.value / pageSize.value + 1, pageSize: pageSize.value }).catch(
       rethrowAs(t('views.submissions.errors.load'))
     );
@@ -54,7 +54,7 @@ async function removeSubmission(submission: Submission) {
   await deleteSubmission(submission.id).catch(rethrowAs(t('views.submissions.errors.delete')));
 
   toast.success(t('views.submissions.deleted'));
-  // Deleting the last row on a page leaves it empty, so show the page before it
+  // Deleting the last row on a page leaves it empty, so show the page before it.
   if (submissions.value.length === 1 && first.value > 0) first.value -= pageSize.value;
   await loadPage();
 }

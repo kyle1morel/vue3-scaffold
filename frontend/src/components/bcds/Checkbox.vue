@@ -34,14 +34,14 @@ const value = defineModel<boolean>();
 const { t } = useI18n();
 
 // Actions
-// Reka has no read-only state, so a read-only box ignores the change
+// Reka has no read-only state, so a read-only box ignores the change.
 function update(checked: boolean | 'indeterminate') {
   if (!readonly) value.value = checked === true;
 }
 </script>
 
 <template>
-  <!-- The label sits beside the box, so the wrapper only adds the description and error -->
+  <!-- The label sits beside the box, so the wrapper only adds the description and error. -->
   <FieldWrapper
     v-slot="{ id, inputAttrs, invalid }"
     v-bind="$attrs"

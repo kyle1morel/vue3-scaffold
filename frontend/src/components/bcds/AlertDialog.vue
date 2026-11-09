@@ -22,7 +22,7 @@ const {
   isIconHidden?: boolean;
   // Stops Esc closing it, leaving only the buttons
   isKeyboardDismissDisabled?: boolean;
-  // alertdialog tells screen readers the dialog interrupts to ask for a response, such as a confirmation
+  // alertdialog tells screen readers the dialog interrupts to ask for a response, such as a confirmation.
   role?: 'alertdialog' | 'dialog';
   title?: string;
   variant?: 'confirmation' | 'destructive' | 'error' | 'info' | 'warning';
@@ -99,7 +99,7 @@ const { t } = useI18n();
   </DialogRoot>
 </template>
 
-<!-- Reka renders the overlay and panel itself, out of reach of a scoped style -->
+<!-- Reka renders the overlay and panel itself, out of reach of a scoped style. -->
 <style>
 @layer components {
   .bcds-dialog-overlay {

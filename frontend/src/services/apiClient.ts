@@ -2,7 +2,7 @@ import { appAxios } from './interceptors';
 
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-// A 204 has no body, which axios reports as an empty string
+// A 204 has no body, which axios reports as an empty string.
 const dataOf = <T>(res: AxiosResponse<T>) => (res.status === 204 ? undefined : res.data) as T;
 
 /**

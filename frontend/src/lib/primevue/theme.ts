@@ -12,7 +12,7 @@ import * as tokens from '@bcgov/design-tokens/js';
 import { definePreset } from '@primeuix/themes';
 import Material from '@primeuix/themes/material';
 
-// A component css override replaces Material's css for that component, so extend it instead
+// A component css override replaces Material's css for that component, so extend it instead.
 const materialCss = (component: string, options: unknown) => {
   const css = (Material.components as Record<string, { css?: unknown }>)[component]?.css;
   if (typeof css === 'function') return css(options);
@@ -22,7 +22,7 @@ const materialCss = (component: string, options: unknown) => {
 export const ThemeOverride = definePreset(Material, {
   // Must use lower case for primitive keys unless you want pain
   primitive: {
-    // bcblue.950 is the BC primary blue; BC has 10 shades, so 50 is filled with the BC info surface
+    // bcblue.950 is the BC primary blue; BC has 10 shades, so 50 is filled with the BC info surface.
     bcblue: {
       50: tokens.supportSurfaceColorInfo,
       100: tokens.themeBlue10,
@@ -36,7 +36,7 @@ export const ThemeOverride = definePreset(Material, {
       900: tokens.themeBlue90,
       950: tokens.themeBlue100
     },
-    // BC has no green scale, only the success tokens; the rest are tints and shades of the success border
+    // BC has no green scale, only the success tokens; the rest are tints and shades of the success border.
     green: {
       50: tokens.supportSurfaceColorSuccess,
       100: '#d9e6db',
@@ -50,7 +50,7 @@ export const ThemeOverride = definePreset(Material, {
       900: '#1a341e',
       950: '#0d1a0f'
     },
-    // BC has 10 gold shades, so 50 is filled with the lightest grey
+    // BC has 10 gold shades, so 50 is filled with the lightest grey.
     gold: {
       50: tokens.themeGray10,
       100: tokens.themeGold10,
@@ -77,7 +77,7 @@ export const ThemeOverride = definePreset(Material, {
       900: tokens.themeGray100,
       950: tokens.themeGray110
     },
-    // BC has no red scale, so it is banded from the danger surface, default and hover tokens
+    // BC has no red scale, so it is banded from the danger surface, default and hover tokens.
     red: {
       50: tokens.supportSurfaceColorDanger,
       100: tokens.supportSurfaceColorDanger,
@@ -112,7 +112,7 @@ export const ThemeOverride = definePreset(Material, {
         surface: tokens.supportSurfaceColorWarning
       }
     },
-    // Medium border meets the 3:1 contrast WCAG requires for control edges
+    // Medium border meets the 3:1 contrast WCAG requires for control edges.
     borderactive: tokens.surfaceColorBorderActive,
     borderdark: tokens.surfaceColorBorderDark,
     borderlight: tokens.surfaceColorBorderDefault,
@@ -244,7 +244,7 @@ export const ThemeOverride = definePreset(Material, {
         .p-datatable .p-paginator { justify-content: flex-end; }
       `
     },
-    // PrimeVue leaves read-only fields looking editable; BC greys them but keeps the text at full contrast
+    // PrimeVue leaves read-only fields looking editable; BC greys them but keeps the text at full contrast.
     editor: {
       css: () => `
         .p-editor .p-editor-content .ql-editor[aria-readonly='true'] {

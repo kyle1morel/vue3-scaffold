@@ -1,6 +1,6 @@
 import { format, isValid, parseISO } from 'date-fns';
 
-// A date-only value parses as local midnight, so it shows the same day in every time zone
+// A date-only value parses as local midnight, so it shows the same day in every time zone.
 function formatIso(value: string | null | undefined, pattern: string) {
   if (!value) return '';
 

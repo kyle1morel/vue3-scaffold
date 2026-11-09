@@ -9,7 +9,7 @@ export interface ConfirmOptions {
   title: string;
 }
 
-// layout/ConfirmDialog shows the open request; the app has one dialog, so a new request answers the last with false
+// layout/ConfirmDialog shows the open request; the app has one dialog, so a new request answers the last with false.
 export const confirmRequest = shallowRef<ConfirmOptions & { resolve: (accepted: boolean) => void }>();
 
 /**

@@ -57,7 +57,7 @@ const { locale } = useI18n();
     :label
     :required
   >
-    <!-- Clearing the input gives undefined, which the form treats as no value, as it does null -->
+    <!-- Clearing the input gives undefined, which the form treats as no value, as it does null. -->
     <NumberFieldRoot
       v-model="value"
       class="app-input bcds-number-field"

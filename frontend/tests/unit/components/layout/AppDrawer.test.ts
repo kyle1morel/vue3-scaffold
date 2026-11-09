@@ -23,7 +23,7 @@ interface DrawerItem {
 
 function mountAppDrawer() {
   const { wrapper } = mountComponent(AppDrawer);
-  // permittedItems and visible are script-setup state with no rendered equivalent until the drawer opens
+  // permittedItems and visible are script-setup state with no rendered equivalent until the drawer opens.
   const vm = wrapper.vm as unknown as { permittedItems: DrawerItem[]; visible: boolean };
 
   return { wrapper, vm };
@@ -33,7 +33,7 @@ beforeEach(() => {
   resetMockAuthNStore();
 });
 
-// An open drawer teleports to the body and outlives its test, re-rendering when a later test changes the auth mock
+// An open drawer teleports to the body and outlives its test, re-rendering when a later test changes the auth mock.
 enableAutoUnmount(afterEach);
 
 // Tests
@@ -87,7 +87,7 @@ describe('AppDrawer', () => {
       await wrapper.find('button').trigger('click');
       await flushPromises();
 
-      // The drawer teleports to the body, outside the wrapper
+      // The drawer teleports to the body, outside the wrapper.
       const nested = [...document.body.querySelectorAll('ul ul li')].map((li) => li.textContent?.trim());
       expect(nested).toEqual(['Demo form', 'Submissions', 'Components']);
     });

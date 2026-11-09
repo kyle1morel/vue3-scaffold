@@ -33,7 +33,7 @@ const {
   required = false,
   suggestions
 } = defineProps<{
-  // Text that matches no suggestion is kept as entered; otherwise it's cleared
+  // Text that matches no suggestion is kept as entered; otherwise it's cleared.
   allowsCustomValue?: boolean;
   // Milliseconds after typing stops before complete is emitted
   delay?: number;
@@ -77,7 +77,7 @@ function onOpenChange(isOpen: boolean) {
   open.value = isOpen && !readonly;
 }
 
-// Reka also writes the chosen label back into the input, which is no new search
+// Reka also writes the chosen label back into the input, which is no new search.
 function onSearch(term: string) {
   searchTerm.value = term;
   if (readonly || term === labelOf(value.value)) return;
@@ -164,7 +164,7 @@ onBeforeUnmount(() => clearTimeout(completeTimer));
   </FieldWrapper>
 </template>
 
-<!-- Reka renders the list inside its own wrapper, which a scoped style can't reach -->
+<!-- Reka renders the list inside its own wrapper, which a scoped style can't reach. -->
 <style>
 @layer components {
   .bcds-combobox-options {

@@ -31,7 +31,7 @@ const {
 }>();
 
 // Emits
-// Quill has no blur event, so a cleared selection stands in for one
+// Quill has no blur event, so a cleared selection stands in for one.
 const emit = defineEmits<{ blur: [] }>();
 
 const value = defineModel<string>();
@@ -41,7 +41,7 @@ const loaded = ref(false);
 
 // Actions
 // Quill builds its editable element itself, out of reach of pt, so the field's attributes are copied onto it;
-// listeners can't be set as attributes, so they're skipped
+// listeners can't be set as attributes, so they're skipped.
 function setEditableAttrs(el: HTMLElement, { value }: DirectiveBinding<Record<string, unknown> | false>) {
   const editable = el.querySelector('.ql-editor');
   if (!editable || !value) return;

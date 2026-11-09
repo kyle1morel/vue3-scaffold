@@ -12,7 +12,7 @@ export const DEFAULTCORS = Object.freeze({
  */
 export const SYSTEM_ID = '00000000-0000-4000-8000-000000000000';
 
-// Custom patterns only; prefer zod's built-in formats (z.uuidv4(), z.iso.date(), ...) where one exists
+// Custom patterns only; prefer zod's built-in formats (z.uuidv4(), z.iso.date(), ...) where one exists.
 export const Regex = {
   /**
    * Generic email regex requiring a domain of at least 2 chars.

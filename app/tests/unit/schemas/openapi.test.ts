@@ -26,7 +26,7 @@ describe('getSpec', () => {
     expect(Object.keys(spec.components?.schemas ?? {})).toEqual(expect.arrayContaining(['User', 'Problem']));
   });
 
-  // Generated frontend types key operations by id, so a collision would silently merge two endpoints
+  // Generated frontend types key operations by id, so a collision would silently merge two endpoints.
   it('gives every operation a unique operationId', () => {
     const operationIds = Object.values(getSpec().paths ?? {}).flatMap((pathItem) =>
       Object.values(pathItem as Record<string, OperationObject>).map((operation) => operation.operationId)

@@ -8,7 +8,7 @@ import { mountComponent } from '../../../mountComponent';
 
 // Mocks
 
-// `useRoute` is a vi.fn() so each test can set the matched route records
+// `useRoute` is a vi.fn() so each test can set the matched route records.
 const mockUseRoute = vi.fn();
 
 vi.mock('vue-router', () => ({

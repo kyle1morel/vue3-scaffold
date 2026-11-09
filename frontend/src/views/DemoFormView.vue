@@ -46,7 +46,7 @@ import type { MessageSchema } from '@/i18n';
 import type { Submission } from '@/types';
 
 // Props
-// A submission id shows that saved submission in the form, read only
+// A submission id shows that saved submission in the form, read only.
 const { submissionId = undefined } = defineProps<{
   submissionId?: string;
 }>();
@@ -62,7 +62,7 @@ const router = useRouter();
 const { t } = useI18n();
 const toast = useToast();
 
-// Typed from the locale file, so a misspelled field name fails to compile
+// Typed from the locale file, so a misspelled field name fails to compile.
 const field = (name: keyof MessageSchema['views']['demoForm']['fields']) => t(`views.demoForm.fields.${name}`);
 
 const schema = z.object({
@@ -83,7 +83,7 @@ const schema = z.object({
   agree: z.boolean().refine((agreed) => agreed, t('views.demoForm.errors.agree'))
 });
 
-// Unticked terms start as false, not missing, so they fail with the terms message rather than a type error
+// Unticked terms start as false, not missing, so they fail with the terms message rather than a type error.
 const { handleSubmit, meta, resetForm } = useForm({
   validationSchema: toTypedSchema(schema),
   initialValues: { agree: false }
@@ -135,7 +135,7 @@ async function loadSubmission(id: string) {
   }
 
   const s = submission.value;
-  // The password isn't saved, and the terms were accepted to submit
+  // The password isn't saved, and the terms were accepted to submit.
   resetForm({
     values: {
       firstName: s.firstName,
@@ -143,7 +143,7 @@ async function loadSubmission(id: string) {
       phone: s.phone,
       province: s.province,
       contactMethod: s.contactMethod,
-      // A date-only value arrives as midnight UTC, so parse its date part as a local date
+      // A date-only value arrives as midnight UTC, so parse its date part as a local date.
       startDate: s.startDate ? parseISO(s.startDate.slice(0, 10)) : null,
       quantity: s.quantity,
       city: s.city,
@@ -168,7 +168,7 @@ watch(
 
 const onSubmit = handleSubmit(
   async (values) => {
-    // The password and terms only demonstrate their components, so they aren't saved
+    // The password and terms only demonstrate their components, so they aren't saved.
     await createSubmission({
       firstName: values.firstName,
       email: values.email,
@@ -184,7 +184,7 @@ const onSubmit = handleSubmit(
     }).catch(rethrowAs(t('views.demoForm.errors.save')));
 
     toast.success(t('views.demoForm.submitted.title'), t('views.demoForm.submitted.detail'));
-    // Clears the dirty state, so the navigation guard lets the user leave
+    // Clears the dirty state, so the navigation guard lets the user leave.
     resetForm();
     router.push({ name: RouteName.SUBMISSIONS });
   },

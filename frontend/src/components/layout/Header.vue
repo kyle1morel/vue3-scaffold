@@ -10,7 +10,7 @@ import { RouteName } from '@/utils/enums';
 const { t } = useI18n();
 const route = useRoute();
 
-// A plain #main-content link would go through the router and leave focus where it was, so focus moves directly
+// A plain #main-content link would go through the router and leave focus where it was, so focus moves directly.
 function skipToMain() {
   document.getElementById('main-content')?.focus();
 }
@@ -38,7 +38,7 @@ function skipToMain() {
         />
       </a>
       <div class="hidden sm:block mx-2 bg-[var(--surface-color-border-default)] w-px h-8" />
-      <!-- The app name repeats on every page, so it isn't a heading; each page's own title is its h1 -->
+      <!-- The app name repeats on every page, so it isn't a heading; each page's own title is its h1. -->
       <p class="grow min-w-0 my-0 truncate text-lg sm:text-[2rem] font-bold leading-normal">
         <router-link
           :to="{ name: RouteName.HOME }"

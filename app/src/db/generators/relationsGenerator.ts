@@ -9,7 +9,7 @@ import { getLogger } from '#src/utils/log';
 
 import type { GeneratorOptions } from '@prisma/generator-helper';
 
-// CJS package: Node can't detect its named exports from ESM
+// CJS package: Node can't detect its named exports from ESM.
 const { generatorHandler } = generatorHelper;
 const log = getLogger(import.meta.filename);
 

@@ -19,14 +19,14 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 
 const log = getLogger(import.meta.filename);
 
-// Helmet types res as a plain ServerResponse, but Express hands it the full Response
+// Helmet types res as a plain ServerResponse, but Express hands it the full Response.
 const cspNonce = (_req: IncomingMessage, res: ServerResponse): string => `'nonce-${(res as Response).locals.cspNonce}'`;
 
 const appRouter = express.Router();
 const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
-// Static files are cheap to serve, and counting them would throttle a few hard refreshes
+// Static files are cheap to serve, and counting them would throttle a few hard refreshes.
 app.use(
   ['/api', '/config'],
   rateLimit({
@@ -108,9 +108,9 @@ appRouter.get('/config', (_req: Request, res: Response, next: NextFunction): voi
 // Base API Directory
 appRouter.use('/api', router);
 
-// Host the static frontend assets; hashed filenames change whenever content does, so browsers can keep them forever
+// Host the static frontend assets; hashed filenames change whenever content does, so browsers can keep them forever.
 appRouter.use('/assets', express.static(join(import.meta.dirname, './dist/assets'), { immutable: true, maxAge: '1y' }));
-// index.html is left to the fallback below so it always gets no-cache
+// index.html is left to the fallback below so it always gets no-cache.
 appRouter.use('/', express.static(join(import.meta.dirname, './dist'), { index: false }));
 
 // SPA history fallback: client routes get index.html, while unknown API paths and missing files stay 404.
@@ -145,7 +145,7 @@ export function errorHandler(
   _next: NextFunction // eslint-disable-line @typescript-eslint/no-unused-vars
 ): void {
   if (err instanceof Problem) {
-    // httpLogger already logs every failed response; only 5xx needs the detail and stack logged here
+    // httpLogger already logs every failed response; only 5xx needs the detail and stack logged here.
     if (err.status >= 500) log.error(err);
     err.send(req, res);
   } else {

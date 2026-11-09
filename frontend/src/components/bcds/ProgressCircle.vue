@@ -13,7 +13,7 @@ const {
   value = 0,
   valueLabel = undefined
 } = defineProps<{
-  // How the value is shown; a percent style shows the share done, and any other shows the value itself
+  // How the value is shown; a percent style shows the share done, and any other shows the value itself.
   formatOptions?: Intl.NumberFormatOptions;
   isIndeterminate?: boolean;
   maxValue?: number;
@@ -29,7 +29,7 @@ const { locale } = useI18n();
 // State
 const labelId = useId();
 
-// Reka counts from 0 and treats a value outside 0 to max as indeterminate, so the value is shifted and clamped
+// Reka counts from 0 and treats a value outside 0 to max as indeterminate, so the value is shifted and clamped.
 const range = computed(() => maxValue - minValue);
 const progress = computed(() => Math.min(Math.max(value - minValue, 0), range.value));
 const valueText = computed(() =>
@@ -37,11 +37,11 @@ const valueText = computed(() =>
     formatOptions.style === 'percent' ? progress.value / range.value : progress.value + minValue
   )
 );
-// The fill's path is 100 long, so an indeterminate circle shows a quarter of it spinning
+// The fill's path is 100 long, so an indeterminate circle shows a quarter of it spinning.
 const dashOffset = computed(() => 100 - (isIndeterminate ? 25 : (progress.value / range.value) * 100));
 
 // Actions
-// The label or the caller's aria-label names the circle, not Reka's default of the percentage
+// The label or the caller's aria-label names the circle, not Reka's default of the percentage.
 const noLabel = () => undefined;
 const getValueText = () => (isIndeterminate ? undefined : valueText.value);
 </script>

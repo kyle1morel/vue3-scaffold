@@ -30,7 +30,7 @@ export default class AuthService {
 
   /**
    * @returns Yields OIDC settings.
-   * @throws If OIDC configuration is missing or incomplete
+   * @throws If OIDC configuration is missing or incomplete.
    */
   public getOidcSettings(): UserManagerSettings {
     const config = getCachedConfig();

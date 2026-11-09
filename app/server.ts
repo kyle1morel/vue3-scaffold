@@ -12,10 +12,10 @@ import { state } from './state.ts';
 const log = getLogger(import.meta.filename);
 const port = normalizePort(process.env.SERVER_PORT ?? '3000');
 
-// Time for the load balancer to see readiness fail and stop routing here; skipped locally so restarts stay quick
+// Time for the load balancer to see readiness fail and stop routing here; skipped locally so restarts stay quick.
 const DRAIN_MS = process.env.NODE_ENV === 'production' ? 5000 : 0;
 
-// Log crashes through pino before Node exits; unhandled rejections are thrown as uncaught exceptions by default
+// Log crashes through pino before Node exits; unhandled rejections are thrown as uncaught exceptions by default.
 process.on('uncaughtExceptionMonitor', (err, origin) => log.fatal({ err, origin }, 'Process crashed'));
 
 // Graceful shutdown support
@@ -108,7 +108,7 @@ function cleanup(signal?: NodeJS.Signals): void {
  * @param signal - Received termination signal (e.g., 'SIGINT', 'SIGTERM').
  */
 function shutdown(signal: NodeJS.Signals): void {
-  // A second signal while draining would close the server twice
+  // A second signal while draining would close the server twice.
   if (state.shutdown) return;
   state.shutdown = true;
   log.info(`Received ${signal} signal. Shutting down...`);

@@ -72,17 +72,17 @@ const {
   description?: string;
   disabled?: boolean;
   errorMessage?: string;
-  // The calendar's first column; without it, Reka starts the week on Sunday
+  // The calendar's first column; without it, Reka starts the week on Sunday.
   firstDayOfWeek?: 'fri' | 'mon' | 'sat' | 'sun' | 'thu' | 'tue' | 'wed';
-  // The smallest unit typed, so anything finer than day adds the time
+  // The smallest unit typed, so anything finer than day adds the time.
   granularity?: 'day' | 'hour' | 'minute' | 'second';
-  // 12 or 24 hour time; without it, the locale decides
+  // 12 or 24 hour time; without it, the locale decides.
   hourCycle?: 12 | 24;
   // Orders the date segments as the browser's language does, instead of the app's
   isBrowserLocaleUsed?: boolean;
-  // Leaves out the calendar button, so the date can only be typed
+  // Leaves out the calendar button, so the date can only be typed.
   isCalendarDisabled?: boolean;
-  // Dates that can't be chosen, such as weekends; the calendar strikes them through
+  // Dates that can't be chosen, such as weekends; the calendar strikes them through.
   isDateUnavailable?: (date: Date) => boolean;
   label?: string;
   maxValue?: Date;
@@ -96,20 +96,20 @@ const {
 }>();
 
 // Emits
-// The segments are separate inputs, so blur is when focus leaves them all
+// The segments are separate inputs, so blur is when focus leaves them all.
 const emit = defineEmits<{ blur: [event: FocusEvent] }>();
 
 const value = defineModel<Date | null>();
 
 // Constants
-// Reka numbers the days of the week from Sunday
+// Reka numbers the days of the week from Sunday.
 const WEEKDAYS = { fri: 5, mon: 1, sat: 6, sun: 0, thu: 4, tue: 2, wed: 3 } as const;
 
 // Composables
 const { locale, t } = useI18n();
 
 // State
-// Reka works in calendar dates, which carry no time zone; the form keeps a local Date
+// Reka works in calendar dates, which carry no time zone; the form keeps a local Date.
 const dateValue = computed<DateValue | null>({
   get: () => (value.value ? toDateValue(value.value) : null),
   set: (date) => (value.value = date ? date.toDate(getLocalTimeZone()) : null)
@@ -123,7 +123,7 @@ const unavailable = computed(() =>
 );
 const weekStartsOn = computed(() => (firstDayOfWeek ? WEEKDAYS[firstDayOfWeek] : undefined));
 
-// The calendar shows days; its month and year open grids to jump to another month or year
+// The calendar shows days; its month and year open grids to jump to another month or year.
 const view = ref<'day' | 'month' | 'year'>('day');
 const calendar = useTemplateRef<HTMLElement>('calendar');
 
@@ -169,7 +169,7 @@ const descriptionLines = computed(() =>
   [showFormatHelpText ? formatHelpText.value : '', description ?? ''].filter(Boolean)
 );
 
-// Each view starts with focus on its current cell, so the keyboard can carry on from there
+// Each view starts with focus on its current cell, so the keyboard can carry on from there.
 watch(view, async () => {
   await nextTick();
   const cells = calendar.value?.querySelectorAll<HTMLElement>('.cell:not([data-disabled]):not([data-unavailable])');
@@ -204,7 +204,7 @@ function toDateValue(date: Date) {
 </script>
 
 <template>
-  <!-- The date is typed as separate segments, so the field is named with aria-labelledby -->
+  <!-- The date is typed as separate segments, so the field is named with aria-labelledby. -->
   <FieldWrapper
     v-slot="{ inputAttrs, invalid, labelId }"
     v-bind="$attrs"
@@ -351,7 +351,7 @@ function toDateValue(date: Date) {
               </DatePickerGridBody>
             </DatePickerGrid>
           </DatePickerCalendar>
-          <!-- Picking a month or year only moves the calendar to it; the date is still chosen from the days -->
+          <!-- Picking a month or year only moves the calendar to it; the date is still chosen from the days. -->
           <MonthPickerRoot
             v-else-if="view === 'month'"
             v-slot="{ grid }"
@@ -447,7 +447,7 @@ function toDateValue(date: Date) {
   </FieldWrapper>
 </template>
 
-<!-- Reka renders the calendar inside its own wrapper, which a scoped style can't reach -->
+<!-- Reka renders the calendar inside its own wrapper, which a scoped style can't reach. -->
 <style>
 @layer components {
   .bcds-calendar {

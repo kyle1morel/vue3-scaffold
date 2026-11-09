@@ -14,12 +14,12 @@ import axe from 'axe-core';
 import { expect } from 'vitest';
 
 export async function expectNoAxeViolations(element: Element) {
-  // axe only audits nodes in the document, and a mounted wrapper isn't attached
+  // axe only audits nodes in the document, and a mounted wrapper isn't attached.
   const host = document.createElement('div');
   host.appendChild(element.cloneNode(true));
   document.body.appendChild(host);
 
-  // RouterLinkStub renders <a> without the href a real router-link has, which axe treats as a non-link
+  // RouterLinkStub renders <a> without the href a real router-link has, which axe treats as a non-link.
   for (const link of host.querySelectorAll('a:not([href])')) link.setAttribute('href', '#');
 
   try {

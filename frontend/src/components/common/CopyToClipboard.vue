@@ -17,7 +17,7 @@ const { t } = useI18n();
 // Actions
 const toast = useToast();
 
-// Writing fails without clipboard permission or a secure context
+// Writing fails without clipboard permission or a secure context.
 async function copyToClipboard() {
   if (!toCopy) return;
 

@@ -3,7 +3,7 @@ import { computed, useAttrs, useId } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 // The field passes its attributes on with v-bind="$attrs": class and style stay on this wrapper, and the rest go to
-// the control through inputAttrs, so PrimeVue's own props can't be set from outside
+// the control through inputAttrs, so PrimeVue's own props can't be set from outside.
 defineOptions({ inheritAttrs: false });
 
 // Props
@@ -18,13 +18,13 @@ const {
 } = defineProps<{
   // Shown at the end of the description's row, such as a character count
   counter?: string;
-  // Several lines show one per row, as one description
+  // Several lines show one per row, as one description.
   description?: string | string[];
   // Puts the error icon beside the message, for controls with no box to show it in
   errorIcon?: boolean;
   errorMessage?: string;
   label?: string;
-  // The control isn't an input a label can point at, so it's named with aria-labelledby instead
+  // The control isn't an input a label can point at, so it's named with aria-labelledby instead.
   nonLabelable?: boolean;
   required?: boolean;
 }>();
@@ -47,7 +47,7 @@ const id = useId();
 const ids = { description: `${id}-description`, error: `${id}-error`, label: `${id}-label` };
 const descriptionLines = computed(() => [description ?? []].flat().filter(Boolean));
 
-// Only rendered ids, so nothing points at a missing element
+// Only rendered ids, so nothing points at a missing element.
 const aria = computed(() => ({
   'aria-describedby':
     [descriptionLines.value.length && ids.description, errorMessage && ids.error].filter(Boolean).join(' ') ||
@@ -95,7 +95,7 @@ function inputAttrs() {
       v-if="descriptionLines.length || counter"
       class="flex gap-[var(--layout-margin-medium)]"
     >
-      <!-- One text with line breaks, so screen readers still hear a space between lines -->
+      <!-- One text with line breaks, so screen readers still hear a space between lines. -->
       <small
         v-if="descriptionLines.length"
         :id="ids.description"

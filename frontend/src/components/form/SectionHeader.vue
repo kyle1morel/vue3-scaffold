@@ -16,7 +16,7 @@ const { level = 2, title } = defineProps<{
     >
       {{ title }}
     </component>
-    <!-- The separator stretches across its parent, so this box takes the row's space and the row centres it -->
+    <!-- The separator stretches across its parent, so this box takes the row's space and the row centres it. -->
     <div class="flex-1">
       <Separator />
     </div>

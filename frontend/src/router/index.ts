@@ -50,7 +50,7 @@ function convertRemToPixels(rem: number) {
   return pixels || 64;
 }
 
-// Content loads after navigation, so wait until the scroll target can actually be reached
+// Content loads after navigation, so wait until the scroll target can actually be reached.
 function waitFor(ready: () => boolean, timeout = 2000): Promise<void> {
   const start = performance.now();
   return new Promise((resolve) => {
@@ -137,9 +137,9 @@ export default function getRouter() {
   const router = createRouter({
     history: createWebHistory(),
     routes,
-    // Views with tabs should keep the active tab in the query, or a restored position lands on the wrong layout
+    // Views with tabs should keep the active tab in the query, or a restored position lands on the wrong layout.
     scrollBehavior(to, from, savedPosition) {
-      // vue-router also passes the position saved before a reload; only back/forward should restore it
+      // vue-router also passes the position saved before a reload; only back/forward should restore it.
       if (savedPosition && from !== START_LOCATION) {
         const { top } = savedPosition;
         return waitFor(() => document.documentElement.scrollHeight - window.innerHeight >= top).then(
@@ -153,7 +153,7 @@ export default function getRouter() {
           top: convertRemToPixels(5)
         }));
       }
-      // Query or hash changes on the same page keep the scroll position
+      // Query or hash changes on the same page keep the scroll position.
       if (to.path === from.path) return false;
       return { top: 0 };
     }

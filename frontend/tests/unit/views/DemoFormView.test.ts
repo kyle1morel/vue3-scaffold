@@ -90,7 +90,7 @@ function radio(wrapper: VueWrapper, label: string) {
 // Mount
 
 function mountDemoFormView() {
-  // Quill doesn't run in happy-dom
+  // Quill doesn't run in happy-dom.
   const { wrapper } = mountComponent(DemoFormView, { errorHandler: showError, stubs: { Editor: true } });
 
   return { wrapper };
@@ -128,7 +128,7 @@ describe('DemoFormView', () => {
 
       await wrapper.find('form').trigger('submit');
 
-      // The zod schema validates asynchronously
+      // The zod schema validates asynchronously.
       await vi.waitFor(() => expect(wrapper.text()).toContain('First name is a required field'));
       expect(wrapper.text()).toContain('Province is a required field');
       expect(wrapper.text()).toContain('You must accept the terms');
@@ -198,13 +198,13 @@ describe('DemoFormView', () => {
 
       const { wrapper } = await mountReadOnlyDemoFormView();
 
-      // Reka's hidden inputs only carry values for a native form submit, out of the user's reach
+      // Reka's hidden inputs only carry values for a native form submit, out of the user's reach.
       const fields = wrapper.findAll('input:not([aria-hidden="true"]), textarea');
       const editable = fields.filter((el) => el.attributes('readonly') === undefined);
       const disabled = fields.filter((el) => el.attributes('disabled') !== undefined);
       expect(editable.map((el) => el.attributes('name'))).toEqual([]);
       expect(disabled.map((el) => el.attributes('name'))).toEqual([]);
-      // Controls that aren't inputs say they're read only to assistive tech instead
+      // Controls that aren't inputs say they're read only to assistive tech instead.
       const controls = wrapper.findAll('[role="radiogroup"], [role="checkbox"], [role="spinbutton"]:not(input)');
       const unmarked = controls.filter((el) => el.attributes('aria-readonly') !== 'true');
       expect(unmarked.map((el) => el.attributes('aria-label') ?? el.attributes('role'))).toEqual([]);

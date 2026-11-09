@@ -19,7 +19,7 @@ import type { RouteLocationRaw } from 'vue-router';
 
 export interface MenuItemProps {
   description?: string;
-  // Makes the item a link to another site; use to for a page in the app
+  // Makes the item a link to another site; use to for a page in the app.
   href?: string;
   // A FontAwesome icon, such as fa-solid fa-check
   icon?: string;
@@ -53,7 +53,7 @@ const {
   // Keeps at least one item selected
   disallowEmptySelection?: boolean;
   itemSize?: 'medium' | 'small';
-  // A plain list; use sections instead to group items under headers
+  // A plain list; use sections instead to group items under headers.
   items?: MenuItemProps[];
   placement?: 'bottom' | 'left' | 'right' | 'top';
   sections?: MenuSectionProps[];
@@ -64,7 +64,7 @@ const {
 // Ids, or labels when there's no id, of the selected items
 const selectedKeys = defineModel<string[]>('selectedKeys', { default: () => [] });
 
-// The slot is the button that opens the menu
+// The slot is the button that opens the menu.
 defineSlots<{ default(): unknown }>();
 
 // State
@@ -72,7 +72,7 @@ const menuSections = computed<MenuSectionProps[]>(() =>
   sections?.length ? sections : [{ id: 'items', items: items ?? [] }]
 );
 
-// Reka gives each mode its own item, so screen readers hear a radio or checkbox
+// Reka gives each mode its own item, so screen readers hear a radio or checkbox.
 const itemComponent = computed(
   () => ({ multiple: DropdownMenuCheckboxItem, none: DropdownMenuItem, single: DropdownMenuRadioItem })[selectionMode]
 );
@@ -82,7 +82,7 @@ function keyOf(item: MenuItemProps) {
   return item.id ?? item.label;
 }
 
-// Reka's checked state follows these, and onSelect makes the change
+// Reka's checked state follows these, and onSelect makes the change.
 function selectionProps(item: MenuItemProps) {
   if (selectionMode === 'single') return { value: keyOf(item) };
   return selectionMode === 'multiple' ? { modelValue: selectedKeys.value.includes(keyOf(item)) } : {};
@@ -98,7 +98,7 @@ function onSelect(item: MenuItemProps, event: Event) {
     else if (!disallowEmptySelection) selectedKeys.value = [];
     return;
   }
-  // Several can be chosen, so the menu stays open, as in React Aria
+  // Several can be chosen, so the menu stays open, as in React Aria.
   event.preventDefault();
   if (selected && disallowEmptySelection && selectedKeys.value.length === 1) return;
   selectedKeys.value = selected ? selectedKeys.value.filter((k) => k !== key) : [...selectedKeys.value, key];
@@ -131,7 +131,7 @@ function linkOf(item: MenuItemProps) {
             v-if="index > 0"
             class="bcds-menu-separator"
           />
-          <!-- An empty string rather than undefined, so Reka doesn't keep its own selection -->
+          <!-- An empty string rather than undefined, so Reka doesn't keep its own selection. -->
           <component
             :is="selectionMode === 'single' ? DropdownMenuRadioGroup : DropdownMenuGroup"
             class="bcds-menu-section"
@@ -181,7 +181,7 @@ function linkOf(item: MenuItemProps) {
   </DropdownMenuRoot>
 </template>
 
-<!-- Reka renders the menu inside its own wrapper, which a scoped style can't reach -->
+<!-- Reka renders the menu inside its own wrapper, which a scoped style can't reach. -->
 <style>
 @layer components {
   .bcds-menu {

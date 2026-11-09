@@ -23,10 +23,10 @@ onMounted(async () => {
 
   try {
     await authnStore.loginCallback();
-    // The API creates or updates the user's record on their first authenticated request
+    // The API creates or updates the user's record on their first authenticated request.
     await getCurrentUser();
   } catch (e) {
-    // Don't leave the app showing a user the API rejected
+    // Don't leave the app showing a user the API rejected.
     await authnStore.removeUser();
     error.value =
       isAxiosError(e) && e.response?.status === 403

@@ -24,7 +24,7 @@ function live(modelName: string, where: unknown): unknown {
   return softDeleteModels.has(modelName) && isObject(walked) ? { ...walked, deletedAt: null } : walked;
 }
 
-// False when the filter is always true, e.g. {}, { AND: [] } or { OR: [{}, ...] }; OR: [] is always false
+// False when the filter is always true, e.g. {}, { AND: [] } or { OR: [{}, ...] }; OR: [] is always false.
 function hasConditions(where: unknown): boolean {
   if (where === undefined) return false;
   if (!isObject(where)) return true;
@@ -51,11 +51,11 @@ function filterListRelation(modelName: string, filter: unknown): unknown {
     return next;
   }
 
-  // An empty every is always true, and Prisma reads the NOT: {} its rewrite would produce as no condition
+  // An empty every is always true, and Prisma reads the NOT: {} its rewrite would produce as no condition.
   const everyHasConditions = isObject(every) && hasConditions(every);
   if (every !== undefined && !everyHasConditions) next.every = every;
 
-  // A nested deletedAt filter would make `every` fail whenever any soft deleted row exists
+  // A nested deletedAt filter would make `every` fail whenever any soft deleted row exists.
   if (everyHasConditions) {
     const failsEvery = { NOT: filterWhere(modelName, every) };
     next.none = {
@@ -120,7 +120,7 @@ function filterWhere(modelName: string, where: unknown): unknown {
   return next;
 }
 
-// `_count: true` counts every list relation
+// `_count: true` counts every list relation.
 function countSelect(count: unknown, relations: Record<string, RelationInfo>): Where | undefined {
   if (count === true) {
     return Object.fromEntries(Object.entries(relations).flatMap(([key, rel]) => (rel.isList ? [[key, true]] : [])));
@@ -210,7 +210,7 @@ function processArguments<T>(modelName: string, operation: string, args: T): T {
 
   const safeArgs = { ...((args ?? {}) as Record<string, unknown>) };
 
-  // Custom includeDeleted flag disables soft delete filtering for the entire query, including nested relations
+  // Custom includeDeleted flag disables soft delete filtering for the entire query, including nested relations.
   const includeDeleted = safeArgs.includeDeleted;
   delete safeArgs.includeDeleted;
 

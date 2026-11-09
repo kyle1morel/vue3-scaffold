@@ -50,7 +50,7 @@ export const getSubmissionService = async (id: string): Promise<Submission> => {
 export const listSubmissionsService = async ({ page, pageSize }: ListSubmissionsQuery): Promise<SubmissionPage> => {
   return await unitOfWork.execute(async ({ submission }) => {
     const items = await submission.findMany({
-      // id breaks createdAt ties, so a row can't appear on two pages
+      // id breaks createdAt ties, so a row can't appear on two pages.
       orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
       skip: (page - 1) * pageSize,
       take: pageSize

@@ -140,7 +140,7 @@ describe('ReadableRepository', () => {
     });
 
     it('passes includeDeleted through when soft delete is disabled', async () => {
-      // The extension filters every model with deletedAt, regardless of this repository setting
+      // The extension filters every model with deletedAt, regardless of this repository setting.
       const repo = new TestReadableRepository(false);
 
       await repo.findMany({ where: { id: 'e1' } }, { includeDeleted: true });

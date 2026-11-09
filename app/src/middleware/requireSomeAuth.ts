@@ -17,7 +17,7 @@ export const requireSomeAuth = (req: Request, res: Response, next: NextFunction)
   if (!authType || authType === AuthType.NONE) {
     const audience = process.env.SERVER_OIDC_AUDIENCE!;
     setAuthHeader(res, { realm: audience });
-    // Problem is a 401 due to missing authentication as all other errors are handled in authentication middleware
+    // Problem is a 401 due to missing authentication as all other errors are handled in authentication middleware.
     return next(new Problem(401, { detail: 'Missing authentication', instance: req.originalUrl }));
   }
 

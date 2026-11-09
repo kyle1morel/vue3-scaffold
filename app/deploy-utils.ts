@@ -1,4 +1,4 @@
-// This script attempts to gracefully rebuild and update vue3-scaffold-frontend if necessary
+// This script attempts to gracefully rebuild and update vue3-scaffold-frontend if necessary.
 /* eslint-disable no-console */
 import { spawnSync } from 'child_process';
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'fs';
@@ -106,7 +106,7 @@ export function runSync(cmd: string, cwd: string | undefined) {
 export function copyFileSync(source: string, target: string) {
   let targetFile = target;
 
-  // If target is a directory, a new file with the same name will be created
+  // If target is a directory, a new file with the same name will be created.
   if (existsSync(target)) {
     if (lstatSync(target).isDirectory()) {
       targetFile = join(target, basename(source));

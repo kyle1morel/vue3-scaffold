@@ -21,7 +21,7 @@ const {
   // Shows only the icon, with the label as its accessible name
   iconOnly?: boolean;
   label?: string;
-  // The button's height, from 24px for xsmall to 48px for large; an icon-only button is a square of it
+  // The button's height, from 24px for xsmall to 48px for large; an icon-only button is a square of it.
   size?: 'large' | 'medium' | 'small' | 'xsmall';
   // Renders a router link styled as a button
   to?: RouteLocationRaw;
@@ -33,7 +33,7 @@ defineSlots<{ default?(): unknown }>();
 </script>
 
 <template>
-  <!-- The label names the button when it isn't shown; attributes from the caller win over these -->
+  <!-- The label names the button when it isn't shown; attributes from the caller win over these. -->
   <component
     :is="to ? 'RouterLink' : 'button'"
     :aria-label="(iconOnly || $slots.default) && label ? label : undefined"

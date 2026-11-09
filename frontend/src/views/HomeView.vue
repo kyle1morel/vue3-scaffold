@@ -57,7 +57,7 @@ p {
   height: 100%;
 }
 
-// The angled panel needs room beside it; on phones it covers the full width
+// The angled panel needs room beside it; on phones it covers the full width.
 .poly {
   z-index: -500;
   position: fixed;
@@ -73,7 +73,7 @@ p {
   }
 }
 
-// A white button stands out on the blue panel
+// A white button stands out on the blue panel.
 .home-action {
   width: 12.5rem;
   background-color: var(--theme-gray-white);

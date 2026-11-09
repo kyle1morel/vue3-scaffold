@@ -12,7 +12,7 @@ const isDirty = useIsFormDirty();
 </script>
 
 <template>
-  <!-- A clean form has nothing to cancel; @click and :disabled fall through to the Button -->
+  <!-- A clean form has nothing to cancel; @click and :disabled fall through to the Button. -->
   <Button
     :disabled="!isDirty"
     icon="fa-solid fa-xmark"

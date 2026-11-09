@@ -13,7 +13,7 @@ const { getConfig } = storeToRefs(useConfigStore());
 </script>
 
 <template>
-  <!-- One provider for every tooltip, so moving between neighbouring tooltips skips the open delay -->
+  <!-- One provider for every tooltip, so moving between neighbouring tooltips skips the open delay. -->
   <TooltipProvider>
     <ConfirmDialog />
     <ProgressLoader v-if="getIsLoading" />

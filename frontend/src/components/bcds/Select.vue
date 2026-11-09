@@ -32,7 +32,7 @@ export interface SelectItemProps {
   iconLeft?: string;
   // Hidden while the option is selected, when the check takes its place
   iconRight?: string;
-  // The value the field takes; without it the label is used, so give one when labels repeat
+  // The value the field takes; without it the label is used, so give one when labels repeat.
   id?: Key;
   // Red text, for an option that deletes or can't be undone
   isDestructive?: boolean;
@@ -73,7 +73,7 @@ const {
   // Options that can't be chosen, by id, or label when there's no id
   disabledKeys?: Key[];
   errorMessage?: string;
-  // A flat list of options; use sections instead for options under headers
+  // A flat list of options; use sections instead for options under headers.
   items?: SelectItemProps[];
   label?: string;
   loading?: boolean;
@@ -81,11 +81,11 @@ const {
   // Whether the chosen tags wrap onto more lines or scroll sideways on one
   overflow?: 'scroll' | 'wrap';
   placeholder?: string;
-  // A select can't be read-only, so this shows the chosen labels in a read-only input
+  // A select can't be read-only, so this shows the chosen labels in a read-only input.
   readonly?: boolean;
   required?: boolean;
   sections?: SelectSectionProps[];
-  // Multiple takes an array and shows each chosen option as a removable tag
+  // Multiple takes an array and shows each chosen option as a removable tag.
   selectionMode?: 'multiple' | 'single';
   size?: 'medium' | 'small';
 }>();
@@ -96,11 +96,11 @@ const value = defineModel<Key | Key[] | null>();
 const { t } = useI18n();
 
 // State
-// Reka focuses an option on open, which Chrome styles as keyboard focus; the highlight waits for a key press
+// Reka focuses an option on open, which Chrome styles as keyboard focus; the highlight waits for a key press.
 const usingKeys = ref(false);
 
 const multiple = computed(() => selectionMode === 'multiple');
-// A flat list is one section without a header, so both render the same way
+// A flat list is one section without a header, so both render the same way.
 const sectionList = computed<SelectSectionProps[]>(() => sections ?? [{ id: 'items', items: items ?? [] }]);
 const selectedKeys = computed<Key[]>(() => {
   if (Array.isArray(value.value)) return value.value;
@@ -181,7 +181,7 @@ function deselect(item: SelectItemProps) {
               v-if="multiple"
               #default
             >
-              <!-- An empty slot falls back to Reka's joined labels, so this renders an empty text node instead -->
+              <!-- An empty slot falls back to Reka's joined labels, so this renders an empty text node instead. -->
               {{ selectedItems.length ? '' : placeholderText }}
             </template>
           </SelectValue>
@@ -197,7 +197,7 @@ function deselect(item: SelectItemProps) {
           />
           <font-awesome-icon :icon="open ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" />
         </SelectTrigger>
-        <!-- The tags hold buttons, which can't sit inside the trigger button, so they lie over it instead -->
+        <!-- The tags hold buttons, which can't sit inside the trigger button, so they lie over it instead. -->
         <div
           v-if="multiple && selectedItems.length"
           class="bcds-select-tag-overlay"
@@ -295,7 +295,7 @@ function deselect(item: SelectItemProps) {
   </FieldWrapper>
 </template>
 
-<!-- Reka renders the list inside its own wrapper, which a scoped style can't reach -->
+<!-- Reka renders the list inside its own wrapper, which a scoped style can't reach. -->
 <style>
 @layer components {
   .bcds-select-options {

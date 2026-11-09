@@ -81,7 +81,7 @@ const selectSections = ref<string | number | null>(null);
 const selectSmall = ref<string | number | null>(null);
 const selectWrap = ref<(string | number)[]>(['blue', 'green', 'yellow']);
 
-// Checking select all checks both; it's indeterminate while only one is
+// Checking select all checks both; it's indeterminate while only one is.
 const allChosen = computed({
   get: () => choices.value.first && choices.value.second,
   set: (checked: boolean) => (choices.value = { first: checked, second: checked })

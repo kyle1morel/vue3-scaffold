@@ -31,7 +31,7 @@ const ICONS: Record<ToastSeverity, string> = {
 // Composables
 const { t } = useI18n();
 
-// useToastManager reads the provider, so the list has to render inside it
+// useToastManager reads the provider, so the list has to render inside it.
 const ToastList = defineComponent({
   slots: Object as SlotsType<{ default: { toasts: ToastObject<{ severity: ToastSeverity }>[] } }>,
   setup(_, { slots }) {
@@ -80,7 +80,7 @@ const ToastList = defineComponent({
   </ToastProvider>
 </template>
 
-<!-- Reka moves each toast into the viewport, out of reach of a scoped style -->
+<!-- Reka moves each toast into the viewport, out of reach of a scoped style. -->
 <style>
 @layer components {
   .bcds-toast-viewport {

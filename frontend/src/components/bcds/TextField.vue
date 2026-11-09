@@ -38,7 +38,7 @@ const {
   type?: 'email' | 'password' | 'search' | 'tel' | 'text' | 'url';
 }>();
 
-// BC's iconRight takes any element, so a caller can put a button there
+// BC's iconRight takes any element, so a caller can put a button there.
 defineSlots<{ iconRight?(): unknown }>();
 
 const value = defineModel<string>();
@@ -62,7 +62,7 @@ const value = defineModel<string>();
         v-if="iconLeft"
         :icon="iconLeft"
       />
-      <!-- Unstyled, so the mask's input looks like the plain one -->
+      <!-- Unstyled, so the mask's input looks like the plain one. -->
       <InputMask
         v-if="mask"
         :id

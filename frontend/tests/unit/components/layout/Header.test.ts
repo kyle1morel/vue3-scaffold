@@ -8,7 +8,7 @@ import { mountComponent } from '../../../mountComponent';
 
 // Mocks
 
-// `useRoute` is a vi.fn() so individual tests can set the route meta
+// `useRoute` is a vi.fn() so individual tests can set the route meta.
 const mockUseRoute = vi.fn(() => ({ meta: {} as Record<string, unknown> }));
 
 vi.mock('vue-router', () => ({

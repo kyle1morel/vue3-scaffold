@@ -6,7 +6,7 @@ defineOptions({ inheritAttrs: false });
 // Props
 const { position = 'right', title } = defineProps<{
   position?: 'left' | 'right';
-  // Names the panel for screen readers; it isn't shown
+  // Names the panel for screen readers; it isn't shown.
   title: string;
 }>();
 
@@ -16,7 +16,7 @@ defineSlots<{ default(): unknown }>();
 </script>
 
 <template>
-  <!-- A modal panel from the side of the screen: Esc and a click outside close it -->
+  <!-- A modal panel from the side of the screen: Esc and a click outside close it. -->
   <DialogRoot v-model:open="open">
     <DialogPortal>
       <DialogOverlay class="bcds-drawer-overlay" />
@@ -33,7 +33,7 @@ defineSlots<{ default(): unknown }>();
   </DialogRoot>
 </template>
 
-<!-- Reka renders the overlay and panel itself, out of reach of a scoped style -->
+<!-- Reka renders the overlay and panel itself, out of reach of a scoped style. -->
 <style>
 @layer components {
   .bcds-drawer-overlay {

@@ -23,7 +23,7 @@ describe('DatePicker', () => {
     it('names the date segments with the label, and describes them with the format hint and description', () => {
       const { wrapper } = mountDatePicker({ label: 'Start date', description: 'Pick a day' });
 
-      // The date is typed in separate segments, so their group is named rather than one input
+      // The date is typed in separate segments, so their group is named rather than one input.
       const field = wrapper.find('[aria-labelledby]');
       const description = wrapper.find(`[id="${field.attributes('aria-describedby')}"]`).text();
       expect(wrapper.find(`[id="${field.attributes('aria-labelledby')}"]`).text()).toContain('Start date');

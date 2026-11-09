@@ -47,7 +47,7 @@ config.autoAddCss = false;
  * Initializes and mounts the Vue instance.
  */
 function initializeApp(): void {
-  // Only the icons in use are bundled, so a new icon renders nothing until it's added here
+  // Only the icons in use are bundled, so a new icon renders nothing until it's added here.
   library.add(
     faBars,
     faCalendar,
@@ -90,7 +90,7 @@ function initializeApp(): void {
         prefix: 'p',
         darkModeSelector: 'dark',
         // PrimeVue prepends this order to <head>, so it's declared before main.css; utilities sit above PrimeVue so
-        // Tailwind classes can restyle its components
+        // Tailwind classes can restyle its components.
         cssLayer: {
           name: 'primeui',
           order: 'properties, theme, base, components, primeui, utilities, keyframes'
@@ -101,7 +101,7 @@ function initializeApp(): void {
   app.component('FontAwesomeIcon', FontAwesomeIcon);
 
   // Errors nothing else handled end up as a toast: Vue sends component errors here, and the listener catches
-  // promises Vue never sees, such as library callbacks; showError logs them in place of the browser
+  // promises Vue never sees, such as library callbacks; showError logs them in place of the browser.
   app.config.errorHandler = (error) => showError(error);
   window.addEventListener('unhandledrejection', (event) => {
     event.preventDefault();
@@ -122,7 +122,7 @@ async function initializeServices(next?: () => void): Promise<void> {
   if (next) next();
 }
 
-// After a deploy, an open tab can request chunks the new build no longer has; reload once to pick up the new build
+// After a deploy, an open tab can request chunks the new build no longer has; reload once to pick up the new build.
 window.addEventListener('vite:preloadError', (event) => {
   const last = Number(sessionStorage.getItem(StorageKey.CHUNK_RELOAD));
   if (Date.now() - last < 10000) return; // Already reloaded; let the error surface rather than loop
@@ -131,7 +131,8 @@ window.addEventListener('vite:preloadError', (event) => {
   window.location.reload();
 });
 
-// The app can't mount without config, so show a plain message instead of a blank page; rethrow to keep the error logged
+// The app can't mount without config, so show a plain message instead of a blank page.
+// Rethrow to keep the error logged.
 initializeServices(initializeApp).catch((error: unknown) => {
   const root = document.getElementById('app');
   if (root) root.textContent = i18n.global.t('ui.errors.startup');

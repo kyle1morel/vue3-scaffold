@@ -201,7 +201,7 @@ describe('filterDeleted extension', () => {
         query
       });
 
-      // includeDeleted should be removed, but other args preserved
+      // includeDeleted should be removed, but other args preserved.
       expect(query).toHaveBeenCalledWith({ where: { status: 'draft' }, select: { id: true } });
     });
 
@@ -271,7 +271,7 @@ describe('filterDeleted extension', () => {
         query
       });
 
-      // For excluded operations, args pass through unchanged
+      // For excluded operations, args pass through unchanged.
       expect(query).toHaveBeenCalledWith(args);
     });
   });
@@ -290,7 +290,7 @@ describe('filterDeleted extension', () => {
       expect(query).toHaveBeenCalledWith({
         where: { deletedAt: null },
         include: {
-          // to-one relations can't take a where in Prisma
+          // to-one relations can't take a where in Prisma.
           identityProvider: {
             include: {
               user: {
@@ -371,7 +371,7 @@ describe('filterDeleted extension', () => {
 
       await ext.query.$allModels.$allOperations({ model: 'identity_provider', operation: 'findMany', args, query });
 
-      // Search repositories reuse one where object for findMany and count
+      // Search repositories reuse one where object for findMany and count.
       expect(args).toEqual(original);
     });
 
@@ -528,7 +528,7 @@ describe('filterDeleted extension', () => {
     });
 
     it('rewrites every so only live related rows must match', async () => {
-      // A nested deletedAt: null inside every would fail whenever any soft-deleted row exists
+      // A nested deletedAt: null inside every would fail whenever any soft-deleted row exists.
       const result = await run('identity_provider', { where: { user: { every: { firstName: 'John' } } } });
 
       expect(result.where).toEqual({
@@ -567,7 +567,7 @@ describe('filterDeleted extension', () => {
       { name: 'an every with an empty NOT', every: { NOT: [] } },
       { name: 'an every with an OR containing an empty branch', every: { OR: [{ firstName: 'John' }, {}] } }
     ])('leaves $name as written, since it is always true', async ({ every }) => {
-      // Rewriting to none + NOT: {} would break it, as Prisma treats NOT: {} as no condition
+      // Rewriting to none + NOT: {} would break it, as Prisma treats NOT: {} as no condition.
       const result = await run('identity_provider', { where: { user: { every } } });
 
       expect(result.where).toEqual({ user: { every }, deletedAt: null });
@@ -581,7 +581,7 @@ describe('filterDeleted extension', () => {
       },
       { name: 'an AND with a nested condition', every: { AND: [{}, { AND: [{ firstName: 'John' }] }] } }
     ])('rewrites $name, since it is not always true', async ({ every }) => {
-      // An empty OR is always false, so every live related row failing it means there are none
+      // An empty OR is always false, so every live related row failing it means there are none.
       const result = await run('identity_provider', { where: { user: { every } } });
 
       expect(result.where).toEqual({ user: { none: { deletedAt: null, NOT: every } }, deletedAt: null });

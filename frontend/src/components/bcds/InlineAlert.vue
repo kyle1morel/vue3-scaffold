@@ -18,7 +18,7 @@ const {
   isIconHidden?: boolean;
   // How screen readers treat it: note is read only when the user reaches it, status is announced when the screen
   // reader is idle, and alert is announced at once, interrupting. status and alert only announce when the alert is
-  // added or its text changes, so alert suits errors that appear after the page loads
+  // added or its text changes, so alert suits errors that appear after the page loads.
   role?: 'alert' | 'note' | 'status';
   title?: string;
   variant?: 'danger' | 'info' | 'success' | 'warning';

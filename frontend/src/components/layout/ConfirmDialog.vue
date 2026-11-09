@@ -5,7 +5,7 @@ import { AlertDialog, Button } from '@/components/bcds';
 import { confirmRequest } from '@/composables/useConfirm';
 
 // State
-// Esc and the close button answer no
+// Esc and the close button answer no.
 const open = computed({
   get: () => !!confirmRequest.value,
   set: (value) => {

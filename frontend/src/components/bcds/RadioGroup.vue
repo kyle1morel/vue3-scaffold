@@ -28,7 +28,7 @@ const {
   flexWrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
   label?: string;
   name?: string;
-  // A plain string is both the label and the value
+  // A plain string is both the label and the value.
   options: readonly ({ description?: string; label: string | number; value: string | number } | string)[];
   orientation?: 'horizontal' | 'vertical';
   readonly?: boolean;
@@ -36,7 +36,7 @@ const {
 }>();
 
 // Emits
-// Blur doesn't bubble to the group, so each radio reports its own
+// Blur doesn't bubble to the group, so each radio reports its own.
 const emit = defineEmits<{ blur: [event: Event] }>();
 
 const value = defineModel<string | number>();
@@ -49,14 +49,14 @@ const radioOptions = computed(() =>
 );
 
 // Actions
-// Reka has no read-only state, so a read-only group ignores the change
+// Reka has no read-only state, so a read-only group ignores the change.
 function update(selected: AcceptableValue) {
   if (!readonly) value.value = selected as string | number;
 }
 </script>
 
 <template>
-  <!-- The radiogroup role takes aria-required and the label names it, so the group gets the field's attributes -->
+  <!-- The radiogroup role takes aria-required and the label names it, so the group gets the field's attributes. -->
   <FieldWrapper
     v-slot="{ id, inputAttrs, invalid, labelId }"
     v-bind="$attrs"

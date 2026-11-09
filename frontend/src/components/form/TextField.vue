@@ -29,7 +29,7 @@ const {
 const { errorMessage, handleBlur, value } = useField<string | undefined>(() => name);
 
 // Actions
-// A cleared mask is no value, not an empty string
+// A cleared mask is no value, not an empty string.
 function update(val?: string) {
   value.value = mask ? val || undefined : val;
 }

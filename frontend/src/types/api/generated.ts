@@ -6,7 +6,7 @@
  * `npm run docs:types`
  */
 
-// openapi-typescript emits `{ [name: string]: unknown }` for response headers
+// openapi-typescript emits `{ [name: string]: unknown }` for response headers.
 /* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 
 export interface paths {

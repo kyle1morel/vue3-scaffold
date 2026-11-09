@@ -12,7 +12,7 @@ export const getCurrentUserController = async (
   _req: Request<never, never, never, never>,
   res: Response<User, LocalContext>
 ) => {
-  // requireSomeAuth guarantees a logged in user
+  // requireSomeAuth guarantees a logged in user.
   const response = await getUserService(res.locals.currentContext.userId!);
 
   res.status(200).json(response);

@@ -16,7 +16,7 @@ export default defineConfig([
       tseslint.configs.stylistic,
       jsdoc.configs['flat/recommended-typescript'],
       // Last, so it turns off any rule that fights Prettier, which formats on its own: npm run lint checks it, the
-      // pre-commit hook writes it
+      // pre-commit hook writes it.
       eslintConfigPrettier
     ],
     languageOptions: {
@@ -30,13 +30,13 @@ export default defineConfig([
       jsdoc: { tagNamePreference: { template: 'typeParam' } }
     },
     rules: {
-      // Node crashes on an unhandled rejection, and Express only catches the promise a handler returns
+      // Node crashes on an unhandled rejection, and Express only catches the promise a handler returns.
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/no-require-imports': 'error',
       'eol-last': ['error', 'always'],
       'jsdoc/check-param-names': ['warn', { checkDestructured: false }],
-      // The fixer inserts empty stubs, which the pre-commit `eslint --fix` would commit
+      // The fixer inserts empty stubs, which the pre-commit `eslint --fix` would commit.
       'jsdoc/require-jsdoc': [
         'error',
         {
@@ -57,7 +57,7 @@ export default defineConfig([
       semi: ['error', 'always']
     }
   },
-  // Test helpers and migration up/down don't need doc comments
+  // Test helpers and migration up/down don't need doc comments.
   {
     files: ['tests/**/*.ts', 'src/db/migrations/**/*.ts'],
     rules: {

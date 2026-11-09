@@ -25,7 +25,7 @@ const {
 } = defineProps<{
   // Milliseconds it stays after the pointer or focus leaves, React Aria's 500 by default
   closeDelay?: number;
-  // Milliseconds of hover before it opens; App.vue's provider sets the default
+  // Milliseconds of hover before it opens; App.vue's provider sets the default.
   delay?: number;
   isDisabled?: boolean;
   // Pixels between the trigger and the tooltip, arrow included
@@ -34,15 +34,15 @@ const {
   text: string;
 }>();
 
-// The slot is the element the tooltip describes, such as a Button
+// The slot is the element the tooltip describes, such as a Button.
 defineSlots<{ default(): unknown }>();
 
 // State
-// App.vue's provider lets neighbouring tooltips skip the open delay; without one, such as in a spec, it brings its own
+// App.vue's provider lets neighbouring tooltips skip the open delay; without one, such as in a spec, it brings its own.
 const Passthrough: FunctionalComponent = (_, { slots }) => slots.default?.();
 const provider = injectTooltipProviderContext(null) ? Passthrough : TooltipProvider;
 
-// Reka closes straight away, so the close is held back here
+// Reka closes straight away, so the close is held back here.
 const open = ref(false);
 let closeTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -55,7 +55,7 @@ function onOpenChange(value: boolean) {
   else closeTimer = setTimeout(() => (open.value = false), closeDelay);
 }
 
-// Esc still closes at once, so the tooltip can always be dismissed
+// Esc still closes at once, so the tooltip can always be dismissed.
 function closeNow() {
   clearTimeout(closeTimer);
   open.value = false;
@@ -93,7 +93,7 @@ function closeNow() {
   </component>
 </template>
 
-<!-- Reka renders the tooltip inside its own wrapper, which a scoped style can't reach -->
+<!-- Reka renders the tooltip inside its own wrapper, which a scoped style can't reach. -->
 <style>
 @layer components {
   .bcds-tooltip {

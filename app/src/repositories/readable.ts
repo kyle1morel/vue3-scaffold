@@ -39,7 +39,7 @@ export abstract class ReadableRepository<TDelegate> {
   //-------------------------
 
   private withNotDeleted<A>(args: A, includeDeleted: boolean): A {
-    // The filterDeleted extension filters every model with deletedAt, so it needs the flag too
+    // The filterDeleted extension filters every model with deletedAt, so it needs the flag too.
     if (includeDeleted) {
       return { ...args, includeDeleted: true } as A;
     }

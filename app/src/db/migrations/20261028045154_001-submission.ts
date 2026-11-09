@@ -34,7 +34,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .$call(withTimestamps)
     .execute();
 
-  // The submissions list pages newest first
+  // The submissions list pages newest first.
   await createIndex(db, 'app', 'submission', ['created_at']);
 
   await createUpdatedAtTrigger(db, 'app', 'submission');

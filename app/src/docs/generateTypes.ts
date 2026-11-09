@@ -17,11 +17,11 @@ const HEADER = [
   ' * `npm run docs:types`',
   ' */',
   '',
-  '// openapi-typescript emits `{ [name: string]: unknown }` for response headers',
+  '// openapi-typescript emits `{ [name: string]: unknown }` for response headers.',
   '/* eslint-disable @typescript-eslint/consistent-indexed-object-style */'
 ].join('\n');
 
-// Route files read config and create a JWKS client at import time, neither of which spec generation needs
+// Route files read config and create a JWKS client at import time, neither of which spec generation needs.
 const STUBS: Record<string, string> = {
   config: [
     'const config = { has: () => false, get: () => undefined };',

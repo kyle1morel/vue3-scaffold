@@ -1,4 +1,4 @@
-// PrimeVue used outside components/bcds; everything else goes through a bcds component
+// PrimeVue used outside components/bcds; everything else goes through a bcds component.
 
 // Deliberately unwrapped: one or two users each, and no BC Design System equivalent
 export { default as Column } from 'primevue/column';

@@ -90,14 +90,14 @@ export async function focusFirstError(errors: Record<string, string>) {
   const names = Object.keys(errors);
   if (!names.length) return;
 
-  // The error messages must render first, or they're missing from the field's description when it's focused
+  // The error messages must render first, or they're missing from the field's description when it's focused.
   await nextTick();
 
   // Document order, which is also the focus order
   const first = document.querySelector<HTMLElement>(names.map((name) => `[name="${CSS.escape(name)}"]`).join(','));
 
   first?.scrollIntoView({ behavior: 'smooth' });
-  // Without preventScroll, focusing jumps straight there and cuts the smooth scroll short
+  // Without preventScroll, focusing jumps straight there and cuts the smooth scroll short.
   first?.focus({ preventScroll: true });
 }
 

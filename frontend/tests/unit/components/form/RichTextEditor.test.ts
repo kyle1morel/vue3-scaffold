@@ -9,7 +9,7 @@ import { mountComponent } from '../../../mountComponent';
 // Mount
 
 // PrimeVue's Editor wraps Quill, which starts an async init loop that never settles under happy-dom and hangs the
-// test, so it's stubbed out
+// test, so it's stubbed out.
 const PvEditorStub = { name: 'PvEditorStub', props: ['editorStyle', 'readonly', 'pt'], template: '<div />' };
 
 function mountRichTextEditor(options: { props?: Record<string, unknown> } = {}) {

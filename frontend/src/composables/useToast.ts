@@ -5,7 +5,7 @@ import { ToastTimeout } from '@/utils/enums';
 import type { ToastSeverity } from '@/components/bcds/toastManager';
 
 export interface ToastOptions {
-  // Milliseconds before it closes; ToastTimeout.STICKY keeps it open
+  // Milliseconds before it closes; ToastTimeout.STICKY keeps it open.
   life?: number;
 }
 

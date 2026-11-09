@@ -15,7 +15,7 @@ describe('user domain', () => {
 
   describe('createUser', () => {
     it('should return the existing user when a user with the same sub already exists', async () => {
-      // createIfNotExists upserts on sub - a pre-existing row comes back as-is, no error thrown
+      // createIfNotExists upserts on sub - a pre-existing row comes back as-is, no error thrown.
       mockRepos.user.createIfNotExists.mockResolvedValue(TEST_IDIR_USER_1 as never);
 
       const jwtData: JwtUser = {

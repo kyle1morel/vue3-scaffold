@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Lives in app/, not the repo root: app/package.json makes Node run it as an ES module without a warning, and app's
-// tsc, ESLint and Prettier check it
+// tsc, ESLint and Prettier check it.
 
 import { existsSync, lstatSync, readFileSync } from 'node:fs';
 import { dirname, join, isAbsolute, parse, resolve } from 'node:path';
@@ -29,7 +29,7 @@ function getGitDir(): string {
         const match = /^gitdir:\s+(.*)$/m.exec(content);
         if (match?.[1]) {
           const gitDir = match[1].trim();
-          // If worktree path is relative, resolve it relative to the .git file location
+          // If worktree path is relative, resolve it relative to the .git file location.
           return isAbsolute(gitDir) ? gitDir : resolve(currentDir, gitDir);
         }
       }

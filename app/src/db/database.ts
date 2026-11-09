@@ -11,7 +11,7 @@ const adapter = new PrismaPg({ connectionString: getDatabaseUrl(), max: Number(p
 
 // These two types are a workaround for using Prisma's TransactionClient type while also extending the client.
 // The interface is necessary for function args to not show an expanded type
-// see - https://github.com/prisma/prisma/issues/20738
+// see - https://github.com/prisma/prisma/issues/20738.
 export type ExtendedClient = typeof prisma;
 type _PrismaTransactionClient = Parameters<Parameters<ExtendedClient['$transaction']>[0]>[0];
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -26,7 +26,7 @@ const client = new PrismaClient({
   adapter
 });
 
-// Route Prisma's own logs through pino so they are structured like everything else; must happen before $extends
+// Route Prisma's own logs through pino so they are structured like everything else; must happen before $extends.
 client.$on('error', (e) => log.error({ target: e.target }, e.message));
 client.$on('warn', (e) => log.warn({ target: e.target }, e.message));
 
