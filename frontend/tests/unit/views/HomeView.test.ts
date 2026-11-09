@@ -1,3 +1,5 @@
+import { RouterLinkStub } from '@vue/test-utils';
+
 import { RouteName } from '@/utils/enums';
 import HomeView from '@/views/HomeView.vue';
 
@@ -46,16 +48,18 @@ describe('HomeView', () => {
       expect(mockRouter.push).toHaveBeenCalledWith({ name: RouteName.OIDC_LOGIN });
     });
 
-    it('goes to the demo form when logged in', async () => {
+    it('links to each demo page when logged in', () => {
       mockAuthNStore.getIsAuthenticated.value = true;
 
       const { wrapper } = mountHomeView();
-      const button = wrapper.find('button');
 
-      expect(button.text()).toBe('Demo form');
-      await button.trigger('click');
-
-      expect(mockRouter.push).toHaveBeenCalledWith({ name: RouteName.DEMO_FORM });
+      expect(wrapper.find('button').exists()).toBe(false);
+      expect(wrapper.findAllComponents(RouterLinkStub).map((link) => link.props('to'))).toEqual([
+        { name: RouteName.DEMO_FORM },
+        { name: RouteName.SUBMISSIONS },
+        { name: RouteName.COMPONENTS },
+        { name: RouteName.DEVELOPER }
+      ]);
     });
   });
 

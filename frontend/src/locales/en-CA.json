@@ -439,6 +439,12 @@
       "message": "You don't have permission to view this page."
     },
     "home": {
+      "tour": {
+        "components": "Every BC Design System component the scaffold provides, with its variants.",
+        "demoForm": "Form components with zod validation, saved through the API.",
+        "developer": "The app version, your token and profile, and the app's config.",
+        "submissions": "A paginated table of what the demo form saved."
+      },
       "welcome": "Welcome to the"
     },
     "notFound": {

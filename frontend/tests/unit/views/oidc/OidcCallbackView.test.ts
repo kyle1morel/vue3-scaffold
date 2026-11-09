@@ -86,10 +86,10 @@ describe('OidcCallbackView', () => {
       expect(mockRouter.replace).toHaveBeenCalledWith(testEntrypoint);
     });
 
-    it('redirects to the demo form when there is no stored entrypoint', async () => {
+    it('redirects to the home page when there is no stored entrypoint', async () => {
       await mountOidcCallbackView();
 
-      expect(mockRouter.replace).toHaveBeenCalledWith({ name: RouteName.DEMO_FORM });
+      expect(mockRouter.replace).toHaveBeenCalledWith({ name: RouteName.HOME });
     });
   });
 

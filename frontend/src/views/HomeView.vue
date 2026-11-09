@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -13,6 +14,32 @@ const router = useRouter();
 
 // Store
 const { getIsAuthenticated } = storeToRefs(useAuthNStore());
+
+// State
+
+// TODO: Shares its pages with the app drawer's menu; derive both from one list if they drift.
+const tour = computed(() => [
+  {
+    description: t('views.home.tour.demoForm'),
+    label: t('views.demoForm.title'),
+    route: RouteName.DEMO_FORM
+  },
+  {
+    description: t('views.home.tour.submissions'),
+    label: t('views.submissions.title'),
+    route: RouteName.SUBMISSIONS
+  },
+  {
+    description: t('views.home.tour.components'),
+    label: t('views.components.title'),
+    route: RouteName.COMPONENTS
+  },
+  {
+    description: t('views.home.tour.developer'),
+    label: t('views.developer.title'),
+    route: RouteName.DEVELOPER
+  }
+]);
 </script>
 
 <template>
@@ -23,12 +50,18 @@ const { getIsAuthenticated } = storeToRefs(useAuthNStore());
       <div class="text-left">
         <p>{{ t('views.home.welcome') }}</p>
         <h1 class="mt-0!">{{ t('app.name') }}</h1>
-        <Button
+        <ul
           v-if="getIsAuthenticated"
-          class="home-action"
-          :label="t('views.demoForm.title')"
-          @click="router.push({ name: RouteName.DEMO_FORM })"
-        />
+          class="home-tour"
+        >
+          <li
+            v-for="page in tour"
+            :key="page.route"
+          >
+            <router-link :to="{ name: page.route }">{{ page.label }}</router-link>
+            <p>{{ page.description }}</p>
+          </li>
+        </ul>
         <Button
           v-else
           class="home-action"
@@ -70,6 +103,27 @@ p {
 
   @media (min-width: 768px) {
     clip-path: polygon(0% 0%, 55% 0%, 45% 100%, 0% 100%);
+  }
+}
+
+// White on the blue panel, like the headings.
+.home-tour {
+  max-width: 28rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li + li {
+    margin-top: var(--layout-margin-medium);
+  }
+
+  a {
+    color: var(--typography-color-primary-invert);
+    font: var(--typography-bold-large-body);
+  }
+
+  p {
+    margin: 0;
   }
 }
 
