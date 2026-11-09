@@ -1,5 +1,4 @@
 import { flushPromises } from '@vue/test-utils';
-import PrimeDataTable from 'primevue/datatable';
 
 import { confirmRequest } from '@/composables/useConfirm';
 import { deleteSubmission, listSubmissions } from '@/services/submission';
@@ -76,7 +75,10 @@ describe('SubmissionsView', () => {
       vi.mocked(listSubmissions).mockResolvedValue({ items: [testSubmission], total: 60 });
       const { wrapper } = await mountSubmissionsView();
 
-      wrapper.findComponent(PrimeDataTable).vm.$emit('page', { page: 2, rows: 25, first: 50 });
+      const table = wrapper.findComponent({ name: 'DataTable' });
+      table.vm.$emit('update:pageSize', 25);
+      table.vm.$emit('update:page', 3);
+      table.vm.$emit('page', { page: 3, pageSize: 25 });
       await flushPromises();
 
       expect(listSubmissions).toHaveBeenLastCalledWith({ page: 3, pageSize: 25 });
@@ -88,7 +90,7 @@ describe('SubmissionsView', () => {
       const { wrapper } = await mountSubmissionsView();
 
       expect(mockToast.error).toHaveBeenCalledWith('Unable to load submissions. Please try again.');
-      expect(wrapper.findComponent(PrimeDataTable).props('loading')).toBe(false);
+      expect(wrapper.findComponent({ name: 'DataTable' }).props('loading')).toBe(false);
     });
   });
 
@@ -110,7 +112,7 @@ describe('SubmissionsView', () => {
 
       const { wrapper } = await mountSubmissionsView();
 
-      expect(wrapper.findComponent(PrimeDataTable).props('totalRecords')).toBe(42);
+      expect(wrapper.findComponent({ name: 'DataTable' }).props('total')).toBe(42);
     });
 
     it('shows the empty message when there are no submissions', async () => {
@@ -163,7 +165,7 @@ describe('SubmissionsView', () => {
     it('shows the page before when the last row on a page is deleted', async () => {
       vi.mocked(listSubmissions).mockResolvedValue({ items: [testSubmission], total: 11 });
       const { wrapper } = await mountSubmissionsView();
-      wrapper.findComponent(PrimeDataTable).vm.$emit('page', { page: 1, rows: 10, first: 10 });
+      wrapper.findComponent({ name: 'DataTable' }).vm.$emit('update:page', 2);
       await flushPromises();
 
       await deleteAndAccept(wrapper);

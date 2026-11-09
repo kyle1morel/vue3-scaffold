@@ -1,62 +1,41 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { Button, Tooltip } from '@/components/bcds';
+import Column from '@/components/common/Column';
+import DataTable from '@/components/common/DataTable.vue';
 import { useConfirm } from '@/composables/useConfirm';
+import { usePagedList } from '@/composables/usePagedList';
 import { useToast } from '@/composables/useToast';
-import { Column, DataTable } from '@/lib/primevue';
 import { deleteSubmission, listSubmissions } from '@/services';
 import { RouteName } from '@/utils/enums';
 import { formatDateShort } from '@/utils/formatters';
 import { rethrowAs } from '@/utils/utils';
 
-import type { DataTablePageEvent } from '@/lib/primevue';
 import type { Submission } from '@/types';
-
-// Constants
-const PAGE_SIZE_OPTIONS = [10, 25, 50];
 
 // Composables
 const { confirm } = useConfirm();
 const { t } = useI18n();
 const toast = useToast();
-
-// State
-const first = ref(0);
-const loading = ref(false);
-const pageSize = ref(PAGE_SIZE_OPTIONS[0]);
-const submissions = ref<Submission[]>([]);
-const total = ref(0);
+const {
+  load,
+  loading,
+  page,
+  pageSize,
+  reloadAfterRemove,
+  rows: submissions,
+  total
+} = usePagedList((request) => listSubmissions(request).catch(rethrowAs(t('views.submissions.errors.load'))));
 
 // Actions
-async function loadPage() {
-  loading.value = true;
-  try {
-    // The table tracks the first row index and the API takes a 1-based page.
-    const result = await listSubmissions({ page: first.value / pageSize.value + 1, pageSize: pageSize.value }).catch(
-      rethrowAs(t('views.submissions.errors.load'))
-    );
-    submissions.value = result.items;
-    total.value = result.total;
-  } finally {
-    loading.value = false;
-  }
-}
-
-function onPage(event: DataTablePageEvent) {
-  first.value = event.first;
-  pageSize.value = event.rows;
-  return loadPage();
-}
 
 async function removeSubmission(submission: Submission) {
   await deleteSubmission(submission.id).catch(rethrowAs(t('views.submissions.errors.delete')));
 
   toast.success(t('views.submissions.deleted'));
-  // Deleting the last row on a page leaves it empty, so show the page before it.
-  if (submissions.value.length === 1 && first.value > 0) first.value -= pageSize.value;
-  await loadPage();
+  await reloadAfterRemove();
 }
 
 async function confirmDelete(submission: Submission) {
@@ -70,23 +49,21 @@ async function confirmDelete(submission: Submission) {
   if (accepted) await removeSubmission(submission);
 }
 
-onMounted(() => loadPage());
+onMounted(() => load());
 </script>
 
 <template>
   <h1>{{ t('views.submissions.title') }}</h1>
 
   <DataTable
-    v-model:first="first"
-    :value="submissions"
-    data-key="id"
-    lazy
+    v-model:page="page"
+    v-model:page-size="pageSize"
+    :loading
     paginator
-    :rows="pageSize"
-    :rows-per-page-options="PAGE_SIZE_OPTIONS"
-    :total-records="total"
-    :loading="loading"
-    @page="onPage"
+    row-key="id"
+    :rows="submissions"
+    :total
+    @page="load"
   >
     <template #empty>{{ t('views.submissions.empty') }}</template>
     <Column :header="t('views.submissions.columns.submitted')">
@@ -117,6 +94,8 @@ onMounted(() => loadPage());
         <div class="flex gap-2">
           <Tooltip
             placement="bottom"
+            :close-delay="0"
+            :delay="0"
             :text="t('ui.actions.view')"
           >
             <Button
@@ -129,6 +108,8 @@ onMounted(() => loadPage());
           </Tooltip>
           <Tooltip
             placement="bottom"
+            :close-delay="0"
+            :delay="0"
             :text="t('ui.actions.delete')"
           >
             <Button

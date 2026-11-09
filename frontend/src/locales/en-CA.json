@@ -23,6 +23,15 @@
       "copied": "Copied to clipboard",
       "failed": "Unable to copy to the clipboard"
     },
+    "dataTable": {
+      "first": "First page",
+      "last": "Last page",
+      "next": "Next page",
+      "pageLink": "Page {page}",
+      "pageSize": "Rows per page",
+      "pagination": "Pagination",
+      "previous": "Previous page"
+    },
     "datePicker": {
       "chooseMonth": "{month}, choose a month",
       "chooseYear": "{year}, choose a year",

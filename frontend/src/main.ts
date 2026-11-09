@@ -1,5 +1,7 @@
 import { config, library } from '@fortawesome/fontawesome-svg-core';
 import {
+  faAnglesLeft,
+  faAnglesRight,
   faBars,
   faCalendar,
   faCheck,
@@ -49,6 +51,8 @@ config.autoAddCss = false;
 function initializeApp(): void {
   // Only the icons in use are bundled, so a new icon renders nothing until it's added here.
   library.add(
+    faAnglesLeft,
+    faAnglesRight,
     faBars,
     faCalendar,
     faCheck,
