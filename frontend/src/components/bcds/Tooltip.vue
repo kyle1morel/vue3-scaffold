@@ -12,6 +12,8 @@ import { onBeforeUnmount, ref } from 'vue';
 
 import type { FunctionalComponent } from 'vue';
 
+defineOptions({ inheritAttrs: false });
+
 // Props
 const {
   closeDelay = 500,
@@ -73,6 +75,7 @@ function closeNow() {
       </TooltipTrigger>
       <TooltipPortal>
         <TooltipContent
+          v-bind="$attrs"
           class="bcds-tooltip"
           :side="placement"
           :side-offset="offset"
@@ -92,17 +95,19 @@ function closeNow() {
 
 <!-- Reka renders the tooltip inside its own wrapper, which a scoped style can't reach -->
 <style>
-.bcds-tooltip {
-  z-index: 1100;
-  padding: var(--layout-padding-xsmall) var(--layout-padding-small);
-  border-radius: var(--layout-border-radius-medium);
-  background: var(--theme-gray-110);
-  box-shadow: var(--surface-shadow-small);
-  color: var(--typography-color-primary-invert);
-  font: var(--typography-regular-small-body);
-}
+@layer components {
+  .bcds-tooltip {
+    z-index: 1100;
+    padding: var(--layout-padding-xsmall) var(--layout-padding-small);
+    border-radius: var(--layout-border-radius-medium);
+    background: var(--theme-gray-110);
+    box-shadow: var(--surface-shadow-small);
+    color: var(--typography-color-primary-invert);
+    font: var(--typography-regular-small-body);
+  }
 
-.bcds-tooltip-arrow {
-  fill: var(--theme-gray-110);
+  .bcds-tooltip-arrow {
+    fill: var(--theme-gray-110);
+  }
 }
 </style>

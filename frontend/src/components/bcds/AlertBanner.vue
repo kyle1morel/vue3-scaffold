@@ -43,27 +43,27 @@ const { t } = useI18n();
 
 <template>
   <div
-    class="alert-banner"
-    :class="[variant, size, `layout-${layout}`]"
+    class="bcds-alert-banner"
+    :class="[`bcds-alert-banner-${variant}`, `bcds-alert-banner-${size}`, `bcds-alert-banner-layout-${layout}`]"
   >
-    <div class="body">
+    <div class="bcds-alert-banner-body">
       <span
         v-if="!isIconHidden"
-        class="icon"
+        class="bcds-alert-banner-icon"
       >
         <slot name="icon">
           <font-awesome-icon :icon="ICONS[variant]" />
         </slot>
       </span>
       <div
-        class="content"
+        class="bcds-alert-banner-content"
         :role
       >
         <slot />
       </div>
       <Button
         v-if="isCloseable"
-        class="close"
+        class="bcds-alert-banner-close"
         icon="fa-solid fa-xmark"
         icon-only
         size="small"
@@ -76,97 +76,99 @@ const { t } = useI18n();
 </template>
 
 <style scoped>
-.alert-banner {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  width: 100%;
-  --banner-color: var(--typography-color-primary-invert);
-}
+@layer components {
+  .bcds-alert-banner {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    --banner-color: var(--typography-color-primary-invert);
+  }
 
-.body {
-  display: flex;
-  flex-grow: 1;
-  align-items: center;
-  gap: var(--layout-padding-medium);
-}
+  .bcds-alert-banner-body {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    gap: var(--layout-padding-medium);
+  }
 
-.icon {
-  place-self: first baseline flex-start;
-  padding-top: var(--layout-padding-xsmall);
-  color: var(--banner-color);
-}
+  .bcds-alert-banner-icon {
+    place-self: first baseline flex-start;
+    padding-top: var(--layout-padding-xsmall);
+    color: var(--banner-color);
+  }
 
-.icon > svg {
-  width: var(--icons-size-medium);
-  height: var(--icons-size-medium);
-}
+  .bcds-alert-banner-icon > svg {
+    width: var(--icons-size-medium);
+    height: var(--icons-size-medium);
+  }
 
-.content {
-  display: inline-flex;
-  flex-grow: 1;
-  flex-wrap: wrap;
-  align-items: first baseline;
-  gap: var(--layout-margin-medium);
-  color: var(--banner-color);
-}
+  .bcds-alert-banner-content {
+    display: inline-flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    align-items: first baseline;
+    gap: var(--layout-margin-medium);
+    color: var(--banner-color);
+  }
 
-.close {
-  align-self: first baseline;
-  color: var(--banner-color);
-}
+  .bcds-alert-banner-close {
+    align-self: first baseline;
+    color: var(--banner-color);
+  }
 
-.close:hover {
-  color: var(--icons-color-primary);
-}
+  .bcds-alert-banner-close:hover {
+    color: var(--icons-color-primary);
+  }
 
-.layout-fixed {
-  padding: var(--layout-padding-none) var(--layout-padding-medium);
-}
+  .bcds-alert-banner-layout-fixed {
+    padding: var(--layout-padding-none) var(--layout-padding-medium);
+  }
 
-.layout-fixed > .body {
-  max-width: 1100px;
-}
+  .bcds-alert-banner-layout-fixed > .bcds-alert-banner-body {
+    max-width: 1100px;
+  }
 
-.layout-fluid {
-  padding: var(--layout-padding-none) var(--layout-padding-large);
-}
+  .bcds-alert-banner-layout-fluid {
+    padding: var(--layout-padding-none) var(--layout-padding-large);
+  }
 
-.small > .body {
-  padding: var(--layout-padding-hair) var(--layout-padding-none);
-}
+  .bcds-alert-banner-small > .bcds-alert-banner-body {
+    padding: var(--layout-padding-hair) var(--layout-padding-none);
+  }
 
-.small .content {
-  font: var(--typography-regular-small-body);
-}
+  .bcds-alert-banner-small .bcds-alert-banner-content {
+    font: var(--typography-regular-small-body);
+  }
 
-.medium > .body {
-  padding: var(--layout-padding-small) var(--layout-padding-none);
-}
+  .bcds-alert-banner-medium > .bcds-alert-banner-body {
+    padding: var(--layout-padding-small) var(--layout-padding-none);
+  }
 
-.medium .content {
-  font: var(--typography-regular-body);
-}
+  .bcds-alert-banner-medium .bcds-alert-banner-content {
+    font: var(--typography-regular-body);
+  }
 
-.info {
-  background: var(--surface-color-background-dark-blue);
-}
+  .bcds-alert-banner-info {
+    background: var(--surface-color-background-dark-blue);
+  }
 
-.success {
-  background: var(--support-border-color-success);
-}
+  .bcds-alert-banner-success {
+    background: var(--support-border-color-success);
+  }
 
-.warning {
-  background: var(--support-border-color-warning);
-  --banner-color: var(--typography-color-primary);
-}
+  .bcds-alert-banner-warning {
+    background: var(--support-border-color-warning);
+    --banner-color: var(--typography-color-primary);
+  }
 
-.danger {
-  background: var(--support-border-color-danger);
-}
+  .bcds-alert-banner-danger {
+    background: var(--support-border-color-danger);
+  }
 
-.black {
-  background: var(--theme-gray-110);
+  .bcds-alert-banner-black {
+    background: var(--theme-gray-110);
+  }
 }
 </style>

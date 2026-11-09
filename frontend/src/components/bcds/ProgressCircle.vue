@@ -48,7 +48,7 @@ const getValueText = () => (isIndeterminate ? undefined : valueText.value);
 
 <template>
   <ProgressRoot
-    class="progress-circle"
+    class="bcds-progress-circle"
     :aria-labelledby="valueLabel ? labelId : undefined"
     :get-value-label="noLabel"
     :get-value-text="getValueText"
@@ -57,24 +57,24 @@ const getValueText = () => (isIndeterminate ? undefined : valueText.value);
   >
     <svg
       aria-hidden="true"
-      class="circle"
-      :class="size"
+      class="bcds-progress-circle-circle"
+      :class="`bcds-progress-circle-${size}`"
     >
-      <circle class="track" />
+      <circle class="bcds-progress-circle-track" />
       <circle
-        class="fill"
+        class="bcds-progress-circle-fill"
         pathLength="100"
         :stroke-dashoffset="dashOffset"
       />
     </svg>
     <div
       v-if="valueLabel"
-      class="label"
+      class="bcds-progress-circle-label"
     >
       <span :id="labelId">{{ valueLabel }}</span>
       <span
         v-if="!isIndeterminate"
-        class="value"
+        class="bcds-progress-circle-value"
       >
         {{ valueText }}
       </span>
@@ -83,97 +83,99 @@ const getValueText = () => (isIndeterminate ? undefined : valueText.value);
 </template>
 
 <style scoped>
-.progress-circle {
-  display: flex;
-  flex-direction: column;
-  gap: var(--layout-padding-xsmall);
-  color: var(--typography-color-primary);
-  font: var(--typography-regular-small-body);
-}
-
-.label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--layout-margin-hair);
-}
-
-.value {
-  color: var(--typography-color-secondary);
-}
-
-.circle {
-  align-self: center;
-  fill: none;
-  --stroke: var(--layout-border-width-medium);
-  stroke-width: var(--stroke);
-}
-
-.track,
-.fill {
-  cx: 50%;
-  cy: 50%;
-  r: calc(50% - var(--stroke) / 2);
-}
-
-.track {
-  stroke: var(--theme-gray-30);
-}
-
-.fill {
-  stroke: var(--theme-primary-blue);
-  stroke-dasharray: 100 200;
-  stroke-linecap: round;
-  rotate: -90deg;
-  transform-origin: center;
-  transition: 200ms linear;
-}
-
-.small {
-  width: var(--icons-size-medium);
-  height: var(--icons-size-medium);
-}
-
-.medium {
-  width: var(--icons-size-large);
-  height: var(--icons-size-large);
-}
-
-.large {
-  width: var(--icons-size-xlarge);
-  height: var(--icons-size-xlarge);
-  --stroke: var(--layout-border-width-large);
-}
-
-.progress-circle[data-state='indeterminate'] .fill {
-  animation: spin 1.5s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .progress-circle[data-state='indeterminate'] .fill {
-    animation: pulse 2s ease-in-out infinite;
-    stroke-dashoffset: 0;
+@layer components {
+  .bcds-progress-circle {
+    display: flex;
+    flex-direction: column;
+    gap: var(--layout-padding-xsmall);
+    color: var(--typography-color-primary);
+    font: var(--typography-regular-small-body);
   }
-}
 
-@keyframes spin {
-  from {
+  .bcds-progress-circle-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--layout-margin-hair);
+  }
+
+  .bcds-progress-circle-value {
+    color: var(--typography-color-secondary);
+  }
+
+  .bcds-progress-circle-circle {
+    align-self: center;
+    fill: none;
+    --stroke: var(--layout-border-width-medium);
+    stroke-width: var(--stroke);
+  }
+
+  .bcds-progress-circle-track,
+  .bcds-progress-circle-fill {
+    cx: 50%;
+    cy: 50%;
+    r: calc(50% - var(--stroke) / 2);
+  }
+
+  .bcds-progress-circle-track {
+    stroke: var(--theme-gray-30);
+  }
+
+  .bcds-progress-circle-fill {
+    stroke: var(--theme-primary-blue);
+    stroke-dasharray: 100 200;
+    stroke-linecap: round;
     rotate: -90deg;
+    transform-origin: center;
+    transition: 200ms linear;
   }
 
-  to {
-    rotate: 270deg;
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
+  .bcds-progress-circle-small {
+    width: var(--icons-size-medium);
+    height: var(--icons-size-medium);
   }
 
-  50% {
-    opacity: 0.4;
+  .bcds-progress-circle-medium {
+    width: var(--icons-size-large);
+    height: var(--icons-size-large);
+  }
+
+  .bcds-progress-circle-large {
+    width: var(--icons-size-xlarge);
+    height: var(--icons-size-xlarge);
+    --stroke: var(--layout-border-width-large);
+  }
+
+  .bcds-progress-circle[data-state='indeterminate'] .bcds-progress-circle-fill {
+    animation: spin 1.5s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bcds-progress-circle[data-state='indeterminate'] .bcds-progress-circle-fill {
+      animation: pulse 2s ease-in-out infinite;
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes spin {
+    from {
+      rotate: -90deg;
+    }
+
+    to {
+      rotate: 270deg;
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.4;
+    }
   }
 }
 </style>

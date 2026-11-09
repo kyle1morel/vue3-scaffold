@@ -56,8 +56,8 @@ function update(checked: boolean | 'indeterminate') {
         v-bind="inputAttrs"
         :aria-invalid="invalid || undefined"
         :aria-readonly="readonly || undefined"
-        class="box"
-        :class="{ invalid, readonly }"
+        class="bcds-checkbox-box"
+        :class="{ 'bcds-checkbox-invalid': invalid, 'bcds-checkbox-readonly': readonly }"
         :disabled
         :model-value="indeterminate ? 'indeterminate' : (value ?? false)"
         :name
@@ -70,7 +70,7 @@ function update(checked: boolean | 'indeterminate') {
       </CheckboxRoot>
       <label
         v-if="label"
-        class="label"
+        class="bcds-checkbox-label"
         :class="{ 'cursor-not-allowed': readonly }"
         :for="id"
       >
@@ -87,67 +87,69 @@ function update(checked: boolean | 'indeterminate') {
 </template>
 
 <style scoped>
-.label {
-  margin-bottom: 0;
-  padding-left: 10px;
-  color: var(--typography-color-secondary);
-  font: var(--typography-regular-small-body);
-}
+@layer components {
+  .bcds-checkbox-label {
+    margin-bottom: 0;
+    padding-left: 10px;
+    color: var(--typography-color-secondary);
+    font: var(--typography-regular-small-body);
+  }
 
-.box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-sizing: content-box;
-  width: var(--icons-size-small);
-  height: var(--icons-size-small);
-  padding: 0;
-  border: var(--layout-border-width-small) solid var(--surface-color-border-medium);
-  border-radius: var(--layout-border-radius-small);
-  background: var(--surface-color-secondary-default);
-  color: var(--icons-color-primary-invert);
-  font-size: 0.75rem;
-  cursor: pointer;
-}
+  .bcds-checkbox-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-sizing: content-box;
+    width: var(--icons-size-small);
+    height: var(--icons-size-small);
+    padding: 0;
+    border: var(--layout-border-width-small) solid var(--surface-color-border-medium);
+    border-radius: var(--layout-border-radius-small);
+    background: var(--surface-color-secondary-default);
+    color: var(--icons-color-primary-invert);
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
 
-.box:hover {
-  border-color: var(--surface-color-border-dark);
-}
+  .bcds-checkbox-box:hover {
+    border-color: var(--surface-color-border-dark);
+  }
 
-.box:focus-visible {
-  outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
-  outline-offset: var(--layout-margin-hair);
-}
+  .bcds-checkbox-box:focus-visible {
+    outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
+    outline-offset: var(--layout-margin-hair);
+  }
 
-.box[data-state='checked'],
-.box[data-state='indeterminate'] {
-  border-color: var(--surface-color-primary-default);
-  background: var(--surface-color-primary-default);
-}
+  .bcds-checkbox-box[data-state='checked'],
+  .bcds-checkbox-box[data-state='indeterminate'] {
+    border-color: var(--surface-color-primary-default);
+    background: var(--surface-color-primary-default);
+  }
 
-.box[data-state='checked']:hover {
-  border-color: var(--surface-color-primary-hover);
-  background: var(--surface-color-primary-hover);
-}
+  .bcds-checkbox-box[data-state='checked']:hover {
+    border-color: var(--surface-color-primary-hover);
+    background: var(--surface-color-primary-hover);
+  }
 
-.box.invalid {
-  border-color: var(--support-border-color-danger);
-}
+  .bcds-checkbox-box.bcds-checkbox-invalid {
+    border-color: var(--support-border-color-danger);
+  }
 
-.box.invalid[data-state='checked'],
-.box.invalid[data-state='indeterminate'] {
-  background: var(--surface-color-primary-danger-button-default);
-}
+  .bcds-checkbox-box.bcds-checkbox-invalid[data-state='checked'],
+  .bcds-checkbox-box.bcds-checkbox-invalid[data-state='indeterminate'] {
+    background: var(--surface-color-primary-danger-button-default);
+  }
 
-.box.readonly {
-  cursor: not-allowed;
-}
+  .bcds-checkbox-box.bcds-checkbox-readonly {
+    cursor: not-allowed;
+  }
 
-.box[data-disabled] {
-  border-color: var(--surface-color-border-medium);
-  background: var(--surface-color-primary-disabled);
-  color: var(--icons-color-disabled);
-  cursor: not-allowed;
+  .bcds-checkbox-box[data-disabled] {
+    border-color: var(--surface-color-border-medium);
+    background: var(--surface-color-primary-disabled);
+    color: var(--icons-color-disabled);
+    cursor: not-allowed;
+  }
 }
 </style>

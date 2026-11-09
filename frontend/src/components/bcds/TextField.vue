@@ -55,7 +55,7 @@ const value = defineModel<string>();
   >
     <div
       class="app-input"
-      :class="[size, { invalid, readonly }]"
+      :class="{ 'app-input-small': size === 'small', 'app-input-invalid': invalid, 'app-input-readonly': readonly }"
       :data-disabled="disabled || undefined"
     >
       <font-awesome-icon

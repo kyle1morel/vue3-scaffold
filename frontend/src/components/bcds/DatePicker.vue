@@ -238,7 +238,7 @@ function toDateValue(date: Date) {
         :aria-invalid="invalid || undefined"
         :aria-labelledby="labelId"
         class="app-input"
-        :class="[size, { invalid, readonly }]"
+        :class="{ 'app-input-small': size === 'small', 'app-input-invalid': invalid, 'app-input-readonly': readonly }"
         @focusout="onFocusOut"
       >
         <div class="flex grow items-center">
@@ -254,7 +254,7 @@ function toDateValue(date: Date) {
             </DatePickerInput>
             <DatePickerInput
               v-else
-              class="segment"
+              class="bcds-date-picker-segment"
               :part="item.part"
             >
               {{ item.value }}
@@ -289,14 +289,14 @@ function toDateValue(date: Date) {
             v-if="view === 'day'"
             v-slot="{ weekDays, grid }"
           >
-            <DatePickerHeader class="header">
-              <DatePickerPrev class="nav">
+            <DatePickerHeader class="bcds-date-picker-header">
+              <DatePickerPrev class="bcds-date-picker-nav">
                 <font-awesome-icon icon="fa-solid fa-chevron-left" />
               </DatePickerPrev>
-              <DatePickerHeading class="heading">
+              <DatePickerHeading class="bcds-date-picker-heading">
                 <button
                   :aria-label="t('components.datePicker.chooseMonth', { month: monthLabel })"
-                  class="view-button"
+                  class="bcds-date-picker-view-button"
                   type="button"
                   @click="view = 'month'"
                 >
@@ -304,28 +304,28 @@ function toDateValue(date: Date) {
                 </button>
                 <button
                   :aria-label="t('components.datePicker.chooseYear', { year: placeholder.year })"
-                  class="view-button"
+                  class="bcds-date-picker-view-button"
                   type="button"
                   @click="view = 'year'"
                 >
                   {{ placeholder.year }}
                 </button>
               </DatePickerHeading>
-              <DatePickerNext class="nav">
+              <DatePickerNext class="bcds-date-picker-nav">
                 <font-awesome-icon icon="fa-solid fa-chevron-right" />
               </DatePickerNext>
             </DatePickerHeader>
             <DatePickerGrid
               v-for="month in grid"
               :key="month.value.toString()"
-              class="grid-table"
+              class="bcds-date-picker-grid-table"
             >
               <DatePickerGridHead>
                 <DatePickerGridRow>
                   <DatePickerHeadCell
                     v-for="day in weekDays"
                     :key="day"
-                    class="head-cell"
+                    class="bcds-date-picker-head-cell"
                   >
                     {{ day }}
                   </DatePickerHeadCell>
@@ -342,7 +342,7 @@ function toDateValue(date: Date) {
                     :date="weekDate"
                   >
                     <DatePickerCellTrigger
-                      class="cell"
+                      class="bcds-date-picker-cell"
                       :day="weekDate"
                       :month="month.value"
                     />
@@ -363,25 +363,25 @@ function toDateValue(date: Date) {
             prevent-deselect
             @update:model-value="onMonthSelect"
           >
-            <MonthPickerHeader class="header">
-              <MonthPickerPrev class="nav">
+            <MonthPickerHeader class="bcds-date-picker-header">
+              <MonthPickerPrev class="bcds-date-picker-nav">
                 <font-awesome-icon icon="fa-solid fa-chevron-left" />
               </MonthPickerPrev>
-              <MonthPickerHeading class="heading">
+              <MonthPickerHeading class="bcds-date-picker-heading">
                 <button
                   :aria-label="t('components.datePicker.chooseYear', { year: placeholder.year })"
-                  class="view-button"
+                  class="bcds-date-picker-view-button"
                   type="button"
                   @click="view = 'year'"
                 >
                   {{ placeholder.year }}
                 </button>
               </MonthPickerHeading>
-              <MonthPickerNext class="nav">
+              <MonthPickerNext class="bcds-date-picker-nav">
                 <font-awesome-icon icon="fa-solid fa-chevron-right" />
               </MonthPickerNext>
             </MonthPickerHeader>
-            <MonthPickerGrid class="grid-table period-grid">
+            <MonthPickerGrid class="bcds-date-picker-grid-table bcds-date-picker-period-grid">
               <MonthPickerGridBody>
                 <MonthPickerGridRow
                   v-for="(months, index) in grid.rows"
@@ -393,7 +393,7 @@ function toDateValue(date: Date) {
                     :date="month"
                   >
                     <MonthPickerCellTrigger
-                      class="cell period"
+                      class="bcds-date-picker-cell bcds-date-picker-period"
                       :month
                     />
                   </MonthPickerCell>
@@ -412,16 +412,16 @@ function toDateValue(date: Date) {
             prevent-deselect
             @update:model-value="onYearSelect"
           >
-            <YearPickerHeader class="header">
-              <YearPickerPrev class="nav">
+            <YearPickerHeader class="bcds-date-picker-header">
+              <YearPickerPrev class="bcds-date-picker-nav">
                 <font-awesome-icon icon="fa-solid fa-chevron-left" />
               </YearPickerPrev>
-              <YearPickerHeading class="heading" />
-              <YearPickerNext class="nav">
+              <YearPickerHeading class="bcds-date-picker-heading" />
+              <YearPickerNext class="bcds-date-picker-nav">
                 <font-awesome-icon icon="fa-solid fa-chevron-right" />
               </YearPickerNext>
             </YearPickerHeader>
-            <YearPickerGrid class="grid-table period-grid">
+            <YearPickerGrid class="bcds-date-picker-grid-table bcds-date-picker-period-grid">
               <YearPickerGridBody>
                 <YearPickerGridRow
                   v-for="(years, index) in grid.rows"
@@ -433,7 +433,7 @@ function toDateValue(date: Date) {
                     :date="year"
                   >
                     <YearPickerCellTrigger
-                      class="cell period"
+                      class="bcds-date-picker-cell bcds-date-picker-period"
                       :year
                     />
                   </YearPickerCell>
@@ -449,179 +449,183 @@ function toDateValue(date: Date) {
 
 <!-- Reka renders the calendar inside its own wrapper, which a scoped style can't reach -->
 <style>
-.bcds-calendar {
-  padding: var(--layout-padding-medium);
-  font: var(--typography-regular-small-body);
+@layer components {
+  .bcds-calendar {
+    padding: var(--layout-padding-medium);
+    font: var(--typography-regular-small-body);
+  }
 }
 </style>
 
 <style scoped>
-.app-input {
-  padding: var(--layout-padding-xsmall) 0.75rem;
-}
+@layer components {
+  .app-input {
+    padding: var(--layout-padding-xsmall) 0.75rem;
+  }
 
-.app-input.small {
-  padding: var(--layout-padding-hair) var(--layout-padding-small);
-}
+  .app-input.app-input-small {
+    padding: var(--layout-padding-hair) var(--layout-padding-small);
+  }
 
-.segment {
-  outline: none;
-}
+  .bcds-date-picker-segment {
+    outline: none;
+  }
 
-.segment:focus {
-  margin: 0 var(--layout-margin-hair);
-  border-radius: var(--layout-border-radius-small);
-  padding: var(--layout-padding-hair);
-  background: var(--surface-color-primary-default);
-  color: var(--typography-color-primary-invert);
-}
+  .bcds-date-picker-segment:focus {
+    margin: 0 var(--layout-margin-hair);
+    border-radius: var(--layout-border-radius-small);
+    padding: var(--layout-padding-hair);
+    background: var(--surface-color-primary-default);
+    color: var(--typography-color-primary-invert);
+  }
 
-.readonly .segment:focus {
-  background: var(--surface-color-forms-disabled);
-  color: var(--typography-color-primary);
-}
+  .app-input-readonly .bcds-date-picker-segment:focus {
+    background: var(--surface-color-forms-disabled);
+    color: var(--typography-color-primary);
+  }
 
-.nav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--icons-size-large);
-  height: var(--icons-size-large);
-  border: none;
-  border-radius: var(--layout-border-radius-small);
-  background: transparent;
-  color: var(--icons-color-primary);
-  font-size: var(--icons-size-small);
-  cursor: pointer;
-}
+  .bcds-date-picker-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--icons-size-large);
+    height: var(--icons-size-large);
+    border: none;
+    border-radius: var(--layout-border-radius-small);
+    background: transparent;
+    color: var(--icons-color-primary);
+    font-size: var(--icons-size-small);
+    cursor: pointer;
+  }
 
-.nav:hover {
-  background: var(--surface-color-secondary-button-hover);
-}
+  .bcds-date-picker-nav:hover {
+    background: var(--surface-color-secondary-button-hover);
+  }
 
-.nav:disabled {
-  background: transparent;
-  color: var(--typography-color-disabled);
-  cursor: not-allowed;
-}
+  .bcds-date-picker-nav:disabled {
+    background: transparent;
+    color: var(--typography-color-disabled);
+    cursor: not-allowed;
+  }
 
-.nav:focus-visible {
-  outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
-  outline-offset: var(--layout-margin-hair);
-}
+  .bcds-date-picker-nav:focus-visible {
+    outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
+    outline-offset: var(--layout-margin-hair);
+  }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 var(--layout-padding-xsmall) var(--layout-padding-small);
-}
+  .bcds-date-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--layout-padding-xsmall) var(--layout-padding-small);
+  }
 
-.heading {
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  gap: var(--layout-margin-xsmall);
-  font: var(--typography-bold-small-body);
-}
+  .bcds-date-picker-heading {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    gap: var(--layout-margin-xsmall);
+    font: var(--typography-bold-small-body);
+  }
 
-.view-button {
-  height: var(--icons-size-large);
-  padding: 0 var(--layout-padding-xsmall);
-  border: none;
-  border-radius: var(--layout-border-radius-small);
-  background: transparent;
-  color: var(--typography-color-primary);
-  font: var(--typography-bold-small-body);
-  cursor: pointer;
-}
+  .bcds-date-picker-view-button {
+    height: var(--icons-size-large);
+    padding: 0 var(--layout-padding-xsmall);
+    border: none;
+    border-radius: var(--layout-border-radius-small);
+    background: transparent;
+    color: var(--typography-color-primary);
+    font: var(--typography-bold-small-body);
+    cursor: pointer;
+  }
 
-.view-button:hover {
-  background: var(--surface-color-secondary-button-hover);
-}
+  .bcds-date-picker-view-button:hover {
+    background: var(--surface-color-secondary-button-hover);
+  }
 
-.view-button:focus-visible {
-  outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
-  outline-offset: var(--layout-margin-hair);
-}
+  .bcds-date-picker-view-button:focus-visible {
+    outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
+    outline-offset: var(--layout-margin-hair);
+  }
 
-.grid-table {
-  border-collapse: separate;
-  border-spacing: var(--layout-margin-xsmall);
-  text-align: center;
-}
+  .bcds-date-picker-grid-table {
+    border-collapse: separate;
+    border-spacing: var(--layout-margin-xsmall);
+    text-align: center;
+  }
 
-/* As wide as the day grid, so switching views doesn't resize the calendar */
-.period-grid {
-  width: calc(7 * var(--icons-size-xlarge) + 8 * var(--layout-margin-xsmall));
-}
+  /* As wide as the day grid, so switching views doesn't resize the calendar */
+  .bcds-date-picker-period-grid {
+    width: calc(7 * var(--icons-size-xlarge) + 8 * var(--layout-margin-xsmall));
+  }
 
-/* Bold, as a table header is by default */
-.head-cell {
-  font: var(--typography-bold-small-body);
-}
+  /* Bold, as a table header is by default */
+  .bcds-date-picker-head-cell {
+    font: var(--typography-bold-small-body);
+  }
 
-.cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  width: var(--icons-size-xlarge);
-  height: var(--icons-size-xlarge);
-  padding: var(--layout-padding-xsmall);
-  border: var(--layout-border-width-small) solid transparent;
-  border-radius: var(--layout-border-radius-small);
-  color: var(--typography-color-primary);
-  cursor: pointer;
-  outline: none;
-}
+  .bcds-date-picker-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: var(--icons-size-xlarge);
+    height: var(--icons-size-xlarge);
+    padding: var(--layout-padding-xsmall);
+    border: var(--layout-border-width-small) solid transparent;
+    border-radius: var(--layout-border-radius-small);
+    color: var(--typography-color-primary);
+    cursor: pointer;
+    outline: none;
+  }
 
-.cell:hover {
-  background: var(--surface-color-secondary-button-hover);
-}
+  .bcds-date-picker-cell:hover {
+    background: var(--surface-color-secondary-button-hover);
+  }
 
-.cell:focus-visible {
-  border-color: var(--surface-color-border-active);
-  background: var(--surface-color-secondary-button-hover);
-}
+  .bcds-date-picker-cell:focus-visible {
+    border-color: var(--surface-color-border-active);
+    background: var(--surface-color-secondary-button-hover);
+  }
 
-.cell[data-today] {
-  font: var(--typography-bold-small-body);
-}
+  .bcds-date-picker-cell[data-today] {
+    font: var(--typography-bold-small-body);
+  }
 
-.cell[data-selected] {
-  background: var(--surface-color-primary-button-default);
-  color: var(--typography-color-primary-invert);
-}
+  .bcds-date-picker-cell[data-selected] {
+    background: var(--surface-color-primary-button-default);
+    color: var(--typography-color-primary-invert);
+  }
 
-.cell[data-selected]:hover {
-  background: var(--surface-color-primary-button-hover);
-}
+  .bcds-date-picker-cell[data-selected]:hover {
+    background: var(--surface-color-primary-button-hover);
+  }
 
-.cell[data-selected]:focus-visible {
-  outline: var(--layout-border-width-small) solid var(--surface-color-border-active);
-  outline-offset: var(--layout-margin-hair);
-}
+  .bcds-date-picker-cell[data-selected]:focus-visible {
+    outline: var(--layout-border-width-small) solid var(--surface-color-border-active);
+    outline-offset: var(--layout-margin-hair);
+  }
 
-/* A month or year fills its column */
-.cell.period {
-  width: 100%;
-  height: var(--layout-margin-xxlarge);
-}
+  /* A month or year fills its column */
+  .bcds-date-picker-cell.bcds-date-picker-period {
+    width: 100%;
+    height: var(--layout-margin-xxlarge);
+  }
 
-/* Days from the months either side are left out */
-.cell[data-outside-view] {
-  visibility: hidden;
-}
+  /* Days from the months either side are left out */
+  .bcds-date-picker-cell[data-outside-view] {
+    visibility: hidden;
+  }
 
-.cell[data-disabled] {
-  color: var(--typography-color-disabled);
-  cursor: not-allowed;
-}
+  .bcds-date-picker-cell[data-disabled] {
+    color: var(--typography-color-disabled);
+    cursor: not-allowed;
+  }
 
-.cell[data-unavailable] {
-  color: var(--typography-color-danger);
-  text-decoration: line-through;
-  cursor: not-allowed;
+  .bcds-date-picker-cell[data-unavailable] {
+    color: var(--typography-color-danger);
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
 }
 </style>

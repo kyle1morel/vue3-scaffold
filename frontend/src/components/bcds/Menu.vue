@@ -36,6 +36,8 @@ export interface MenuSectionProps {
   items: MenuItemProps[];
 }
 
+defineOptions({ inheritAttrs: false });
+
 // Props
 const {
   disabledKeys = [],
@@ -115,6 +117,7 @@ function linkOf(item: MenuItemProps) {
     </DropdownMenuTrigger>
     <DropdownMenuPortal>
       <DropdownMenuContent
+        v-bind="$attrs"
         align="start"
         class="bcds-menu"
         :side="placement"
@@ -126,17 +129,17 @@ function linkOf(item: MenuItemProps) {
         >
           <DropdownMenuSeparator
             v-if="index > 0"
-            class="separator"
+            class="bcds-menu-separator"
           />
           <!-- An empty string rather than undefined, so Reka doesn't keep its own selection -->
           <component
             :is="selectionMode === 'single' ? DropdownMenuRadioGroup : DropdownMenuGroup"
-            class="section"
+            class="bcds-menu-section"
             v-bind="selectionMode === 'single' ? { modelValue: selectedKeys[0] ?? '' } : {}"
           >
             <DropdownMenuLabel
               v-if="section.header"
-              class="header"
+              class="bcds-menu-header"
             >
               {{ section.header }}
             </DropdownMenuLabel>
@@ -145,29 +148,29 @@ function linkOf(item: MenuItemProps) {
               v-for="item in section.items"
               :key="keyOf(item)"
               v-bind="{ ...linkOf(item), ...selectionProps(item) }"
-              class="item"
-              :class="itemSize"
+              class="bcds-menu-item"
+              :class="`bcds-menu-${itemSize}`"
               :disabled="item.isDisabled || disabledKeys.includes(keyOf(item))"
               :text-value="item.label"
               @select="onSelect(item, $event)"
             >
               <font-awesome-icon
                 v-if="item.icon"
-                class="icon"
+                class="bcds-menu-icon"
                 :icon="item.icon"
               />
-              <div class="content">
-                <span class="label">{{ item.label }}</span>
+              <div class="bcds-menu-content">
+                <span class="bcds-menu-label">{{ item.label }}</span>
                 <span
                   v-if="item.description"
-                  class="description"
+                  class="bcds-menu-description"
                 >
                   {{ item.description }}
                 </span>
               </div>
               <font-awesome-icon
                 v-if="selectionMode !== 'none' && selectedKeys.includes(keyOf(item))"
-                class="icon"
+                class="bcds-menu-icon"
                 icon="fa-solid fa-check"
               />
             </component>
@@ -180,95 +183,99 @@ function linkOf(item: MenuItemProps) {
 
 <!-- Reka renders the menu inside its own wrapper, which a scoped style can't reach -->
 <style>
-.bcds-menu {
-  z-index: 1000;
-  box-sizing: border-box;
-  min-width: var(--reka-dropdown-menu-trigger-width);
-  max-height: var(--reka-dropdown-menu-content-available-height);
-  overflow-y: auto;
-  padding: var(--layout-padding-xsmall);
-  border: var(--layout-border-width-small) solid var(--surface-color-border-default);
-  border-radius: var(--layout-border-radius-medium);
-  background: var(--surface-color-forms-default);
-  box-shadow: var(--surface-shadow-medium);
+@layer components {
+  .bcds-menu {
+    z-index: 1000;
+    box-sizing: border-box;
+    min-width: var(--reka-dropdown-menu-trigger-width);
+    max-height: var(--reka-dropdown-menu-content-available-height);
+    overflow-y: auto;
+    padding: var(--layout-padding-xsmall);
+    border: var(--layout-border-width-small) solid var(--surface-color-border-default);
+    border-radius: var(--layout-border-radius-medium);
+    background: var(--surface-color-forms-default);
+    box-shadow: var(--surface-shadow-medium);
+  }
 }
 </style>
 
 <style scoped>
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--layout-margin-small);
-}
+@layer components {
+  .bcds-menu-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--layout-margin-small);
+  }
 
-.header {
-  padding: var(--layout-padding-small);
-  font: var(--typography-bold-small-body);
-}
+  .bcds-menu-header {
+    padding: var(--layout-padding-small);
+    font: var(--typography-bold-small-body);
+  }
 
-.separator {
-  height: var(--layout-border-width-small);
-  margin: var(--layout-margin-small) 0;
-  background: var(--surface-color-border-default);
-}
+  .bcds-menu-separator {
+    height: var(--layout-border-width-small);
+    margin: var(--layout-margin-small) 0;
+    background: var(--surface-color-border-default);
+  }
 
-a.item {
-  text-decoration: none;
-}
+  a.bcds-menu-item {
+    text-decoration: none;
+  }
 
-a.item .label {
-  color: var(--typography-color-link);
-  text-decoration: underline var(--typography-color-link);
-  text-underline-offset: var(--layout-margin-hair);
-}
+  a.bcds-menu-item .bcds-menu-label {
+    color: var(--typography-color-link);
+    text-decoration: underline var(--typography-color-link);
+    text-underline-offset: var(--layout-margin-hair);
+  }
 
-a.item[data-disabled] .label {
-  color: var(--typography-color-disabled);
-  text-decoration: none;
-}
+  a.bcds-menu-item[data-disabled] .bcds-menu-label {
+    color: var(--typography-color-disabled);
+    text-decoration: none;
+  }
 
-.item {
-  display: flex;
-  gap: var(--layout-margin-xsmall);
-  padding: var(--layout-padding-small);
-  border-radius: var(--layout-border-radius-small);
-  color: var(--typography-color-secondary);
-  cursor: pointer;
-  outline: none;
-}
+  .bcds-menu-item {
+    display: flex;
+    gap: var(--layout-margin-xsmall);
+    padding: var(--layout-padding-small);
+    border-radius: var(--layout-border-radius-small);
+    color: var(--typography-color-secondary);
+    cursor: pointer;
+    outline: none;
+  }
 
-.item[data-highlighted] {
-  background: var(--surface-color-menus-hover);
-}
+  .bcds-menu-item[data-highlighted] {
+    background: var(--surface-color-menus-hover);
+  }
 
-.item[data-disabled] {
-  color: var(--typography-color-disabled);
-  cursor: not-allowed;
-}
+  .bcds-menu-item[data-disabled] {
+    color: var(--typography-color-disabled);
+    cursor: not-allowed;
+  }
 
-.icon {
-  padding-top: var(--layout-padding-xsmall);
-}
+  .bcds-menu-icon {
+    padding-top: var(--layout-padding-xsmall);
+  }
 
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--layout-padding-hair);
-}
+  .bcds-menu-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--layout-padding-hair);
+  }
 
-.item.small {
-  font: var(--typography-regular-small-body);
-}
+  .bcds-menu-item.bcds-menu-small {
+    font: var(--typography-regular-small-body);
+  }
 
-.item.small .description {
-  font: var(--typography-regular-label);
-}
+  .bcds-menu-item.bcds-menu-small .bcds-menu-description {
+    font: var(--typography-regular-label);
+  }
 
-.item.medium {
-  font: var(--typography-regular-body);
-}
+  .bcds-menu-item.bcds-menu-medium {
+    font: var(--typography-regular-body);
+  }
 
-.item.medium .description {
-  font: var(--typography-regular-small-body);
+  .bcds-menu-item.bcds-menu-medium .bcds-menu-description {
+    font: var(--typography-regular-small-body);
+  }
 }
 </style>

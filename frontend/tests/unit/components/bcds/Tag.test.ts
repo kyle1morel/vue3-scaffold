@@ -20,19 +20,19 @@ describe('Tag', () => {
       const { wrapper } = mountTag({ color: 'yellow' });
 
       expect(wrapper.text()).toBe('Unsaved changes');
-      expect(wrapper.classes()).toContain('yellow');
+      expect(wrapper.classes()).toContain('bcds-tag-yellow');
     });
 
     it('defaults to blue', () => {
       const { wrapper } = mountTag();
 
-      expect(wrapper.classes()).toContain('blue');
+      expect(wrapper.classes()).toContain('bcds-tag-blue');
     });
 
     it('greys out when disabled', () => {
       const { wrapper } = mountTag({ disabled: true });
 
-      expect(wrapper.classes()).toContain('disabled');
+      expect(wrapper.classes()).toContain('bcds-tag-disabled');
     });
   });
 });

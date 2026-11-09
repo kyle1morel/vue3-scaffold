@@ -88,7 +88,7 @@ describe('Select', () => {
 
       const group = wrapper.find('[role="group"]');
       expect(group.attributes('aria-label')).toBe('Province selections');
-      expect(group.findAll('.tag-label').map((tag) => tag.text())).toEqual(['Alberta', 'British Columbia']);
+      expect(group.findAll('.bcds-select-tag-label').map((tag) => tag.text())).toEqual(['Alberta', 'British Columbia']);
       expect(wrapper.find('[role="combobox"]').text()).not.toContain('Select an item');
     });
 
@@ -103,8 +103,8 @@ describe('Select', () => {
     it('greys out the tags and hides their remove buttons when disabled', () => {
       const { wrapper } = mountMultiple({ disabled: true });
 
-      expect(wrapper.findAll('.tag').every((tag) => tag.classes('disabled'))).toBe(true);
-      expect(wrapper.find('button.remove').exists()).toBe(false);
+      expect(wrapper.findAll('.bcds-tag').every((tag) => tag.classes('bcds-tag-disabled'))).toBe(true);
+      expect(wrapper.find('button.bcds-select-remove').exists()).toBe(false);
     });
   });
 

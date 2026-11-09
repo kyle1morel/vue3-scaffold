@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
+@import '@fortawesome/fontawesome-svg-core/styles.css' layer(base);
 
 /* Must come after the tailwindcss import to beat preflight */
 @layer base {
@@ -97,8 +98,8 @@
   }
 }
 
-/* After the import, so it wins over Tailwind utilities on the same element */
-@layer utilities {
+/* Shared by the bcds components; a sublayer, so their own styles override it and Tailwind utilities beat both */
+@layer components.shared {
   /* Field text as in the BC Design System form components */
   .app-field-label,
   .app-description,
@@ -125,7 +126,7 @@
   }
 
   /* A character count turns red with the error, as BC's does */
-  .app-description.danger {
+  .app-description.app-description-danger {
     color: var(--typography-color-danger);
   }
 
@@ -135,10 +136,7 @@
     gap: var(--layout-margin-xsmall);
     color: var(--typography-color-danger);
   }
-}
 
-/* Below utilities, so a Tailwind class can still size or space a field */
-@layer components {
   /* The box around a text control the bcds fields share; the control inside fills it */
   .app-input {
     display: flex;
@@ -157,7 +155,7 @@
     text-align: left;
   }
 
-  .app-input.small {
+  .app-input.app-input-small {
     height: var(--layout-margin-xlarge);
     padding-block: var(--layout-padding-hair);
     font: var(--typography-regular-small-body);
@@ -175,11 +173,11 @@
     outline-offset: var(--layout-margin-hair);
   }
 
-  .app-input.invalid {
+  .app-input.app-input-invalid {
     border-color: var(--support-border-color-danger);
   }
 
-  .app-input.readonly {
+  .app-input.app-input-readonly {
     background: var(--surface-color-forms-disabled);
   }
 

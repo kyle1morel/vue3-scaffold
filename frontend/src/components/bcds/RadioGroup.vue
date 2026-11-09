@@ -71,8 +71,8 @@ function update(selected: AcceptableValue) {
       v-bind="inputAttrs"
       :aria-labelledby="labelId"
       :aria-readonly="readonly || undefined"
-      class="options"
-      :class="orientation"
+      class="bcds-radio-group-options"
+      :class="`bcds-radio-group-${orientation}`"
       :disabled
       :model-value="value ?? null"
       :name
@@ -90,13 +90,13 @@ function update(selected: AcceptableValue) {
           <RadioGroupItem
             :id="`${id}-${index}`"
             :aria-describedby="option.description ? `${id}-${index}-description` : undefined"
-            class="radio"
-            :class="{ invalid, readonly }"
+            class="bcds-radio-group-radio"
+            :class="{ 'bcds-radio-group-invalid': invalid, 'bcds-radio-group-readonly': readonly }"
             :value="option.value"
             @blur="(e: Event) => emit('blur', e)"
           />
           <label
-            class="label"
+            class="bcds-radio-group-label"
             :class="{ 'cursor-not-allowed': readonly }"
             :for="`${id}-${index}`"
           >
@@ -106,7 +106,7 @@ function update(selected: AcceptableValue) {
         <span
           v-if="option.description"
           :id="`${id}-${index}-description`"
-          class="description"
+          class="bcds-radio-group-description"
         >
           {{ option.description }}
         </span>
@@ -116,77 +116,79 @@ function update(selected: AcceptableValue) {
 </template>
 
 <style scoped>
-.options {
-  display: flex;
-}
-
-.vertical {
-  flex-direction: column;
-  gap: var(--layout-margin-small);
-}
-
-.horizontal {
-  flex-direction: row;
-  gap: var(--layout-margin-medium);
-}
-
-/* Lines up under the label, past the radio and its gap */
-.description {
-  margin-left: calc(var(--icons-size-xsmall) + var(--layout-margin-small));
-  color: var(--typography-color-secondary);
-  font: var(--typography-regular-label);
-}
-
-.label {
-  margin: 0 0 0 var(--layout-margin-small);
-  color: var(--typography-color-secondary);
-  font: var(--typography-regular-small-body);
-}
-
-.radio {
-  flex-shrink: 0;
-  box-sizing: border-box;
-  width: var(--icons-size-xsmall);
-  height: var(--icons-size-xsmall);
-  border: var(--layout-border-width-small) solid var(--surface-color-border-medium);
-  border-radius: var(--layout-border-radius-circular);
-  background: var(--surface-color-secondary-default);
-  cursor: pointer;
-  transition: border 200ms;
-}
-
-@media (prefers-reduced-motion) {
-  .radio {
-    transition: none;
+@layer components {
+  .bcds-radio-group-options {
+    display: flex;
   }
-}
 
-.radio:hover {
-  border-color: var(--surface-color-border-dark);
-}
+  .bcds-radio-group-vertical {
+    flex-direction: column;
+    gap: var(--layout-margin-small);
+  }
 
-.radio:focus-visible {
-  outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
-  outline-offset: var(--layout-margin-hair);
-}
+  .bcds-radio-group-horizontal {
+    flex-direction: row;
+    gap: var(--layout-margin-medium);
+  }
 
-.radio[data-state='checked'] {
-  border: 5px solid var(--surface-color-primary-default);
-}
+  /* Lines up under the label, past the radio and its gap */
+  .bcds-radio-group-description {
+    margin-left: calc(var(--icons-size-xsmall) + var(--layout-margin-small));
+    color: var(--typography-color-secondary);
+    font: var(--typography-regular-label);
+  }
 
-.radio.invalid {
-  border-color: var(--support-border-color-danger);
-}
+  .bcds-radio-group-label {
+    margin: 0 0 0 var(--layout-margin-small);
+    color: var(--typography-color-secondary);
+    font: var(--typography-regular-small-body);
+  }
 
-.radio.readonly {
-  cursor: not-allowed;
-}
+  .bcds-radio-group-radio {
+    flex-shrink: 0;
+    box-sizing: border-box;
+    width: var(--icons-size-xsmall);
+    height: var(--icons-size-xsmall);
+    border: var(--layout-border-width-small) solid var(--surface-color-border-medium);
+    border-radius: var(--layout-border-radius-circular);
+    background: var(--surface-color-secondary-default);
+    cursor: pointer;
+    transition: border 200ms;
+  }
 
-.radio[data-disabled] {
-  cursor: not-allowed;
-}
+  @media (prefers-reduced-motion) {
+    .bcds-radio-group-radio {
+      transition: none;
+    }
+  }
 
-.radio[data-disabled][data-state='checked'] {
-  border-color: var(--surface-color-border-default);
+  .bcds-radio-group-radio:hover {
+    border-color: var(--surface-color-border-dark);
+  }
+
+  .bcds-radio-group-radio:focus-visible {
+    outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
+    outline-offset: var(--layout-margin-hair);
+  }
+
+  .bcds-radio-group-radio[data-state='checked'] {
+    border: 5px solid var(--surface-color-primary-default);
+  }
+
+  .bcds-radio-group-radio.bcds-radio-group-invalid {
+    border-color: var(--support-border-color-danger);
+  }
+
+  .bcds-radio-group-radio.bcds-radio-group-readonly {
+    cursor: not-allowed;
+  }
+
+  .bcds-radio-group-radio[data-disabled] {
+    cursor: not-allowed;
+  }
+
+  .bcds-radio-group-radio[data-disabled][data-state='checked'] {
+    border-color: var(--surface-color-border-default);
+  }
 }
 </style>

@@ -60,8 +60,8 @@ const { locale } = useI18n();
     <!-- Clearing the input gives undefined, which the form treats as no value, as it does null -->
     <NumberFieldRoot
       v-model="value"
-      class="app-input number-field"
-      :class="[size, { invalid, readonly }]"
+      class="app-input bcds-number-field"
+      :class="{ 'app-input-small': size === 'small', 'app-input-invalid': invalid, 'app-input-readonly': readonly }"
       :disabled
       :disable-wheel-change="isWheelDisabled"
       :format-options
@@ -75,7 +75,7 @@ const { locale } = useI18n();
     >
       <NumberFieldDecrement
         v-if="!readonly"
-        class="step"
+        class="bcds-number-field-step"
       >
         <font-awesome-icon icon="fa-solid fa-minus" />
       </NumberFieldDecrement>
@@ -83,17 +83,17 @@ const { locale } = useI18n();
         :id
         v-bind="inputAttrs"
         :aria-invalid="invalid || undefined"
-        class="input"
+        class="bcds-number-field-input"
         :placeholder
       />
       <font-awesome-icon
         v-if="invalid"
-        class="error-icon"
+        class="bcds-number-field-error-icon"
         icon="fa-solid fa-triangle-exclamation"
       />
       <NumberFieldIncrement
         v-if="!readonly"
-        class="step"
+        class="bcds-number-field-step"
       >
         <font-awesome-icon icon="fa-solid fa-plus" />
       </NumberFieldIncrement>
@@ -102,57 +102,59 @@ const { locale } = useI18n();
 </template>
 
 <style scoped>
-.number-field {
-  gap: 0;
-  padding: 0;
-}
+@layer components {
+  .bcds-number-field {
+    gap: 0;
+    padding: 0;
+  }
 
-.input {
-  align-self: stretch;
-  padding: var(--layout-padding-small) 0.75rem;
-}
+  .bcds-number-field-input {
+    align-self: stretch;
+    padding: var(--layout-padding-small) 0.75rem;
+  }
 
-.small .input {
-  padding-block: var(--layout-padding-hair);
-}
+  .app-input-small .bcds-number-field-input {
+    padding-block: var(--layout-padding-hair);
+  }
 
-.error-icon {
-  padding-right: 0.75rem;
-  color: var(--icons-color-danger);
-}
+  .bcds-number-field-error-icon {
+    padding-right: 0.75rem;
+    color: var(--icons-color-danger);
+  }
 
-.step {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  align-self: stretch;
-  width: var(--layout-margin-xxlarge);
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--icons-color-primary);
-  cursor: pointer;
-}
+  .bcds-number-field-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    align-self: stretch;
+    width: var(--layout-margin-xxlarge);
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--icons-color-primary);
+    cursor: pointer;
+  }
 
-.small .step {
-  width: var(--layout-margin-xlarge);
-}
+  .app-input-small .bcds-number-field-step {
+    width: var(--layout-margin-xlarge);
+  }
 
-.step:first-child {
-  border-right: var(--layout-border-width-small) solid var(--surface-color-border-default);
-}
+  .bcds-number-field-step:first-child {
+    border-right: var(--layout-border-width-small) solid var(--surface-color-border-default);
+  }
 
-.step:last-child {
-  border-left: var(--layout-border-width-small) solid var(--surface-color-border-default);
-}
+  .bcds-number-field-step:last-child {
+    border-left: var(--layout-border-width-small) solid var(--surface-color-border-default);
+  }
 
-.step:hover {
-  background: var(--surface-color-secondary-button-hover);
-}
+  .bcds-number-field-step:hover {
+    background: var(--surface-color-secondary-button-hover);
+  }
 
-.step:disabled {
-  color: var(--icons-color-disabled);
-  cursor: not-allowed;
+  .bcds-number-field-step:disabled {
+    color: var(--icons-color-disabled);
+    cursor: not-allowed;
+  }
 }
 </style>

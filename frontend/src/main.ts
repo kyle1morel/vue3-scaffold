@@ -1,4 +1,4 @@
-import { library } from '@fortawesome/fontawesome-svg-core';
+import { config, library } from '@fortawesome/fontawesome-svg-core';
 import {
   faArrowLeft,
   faBars,
@@ -40,6 +40,9 @@ import { showError } from '@/utils/utils';
 import '@bcgov/bc-sans/css/BC_Sans.css';
 import '@bcgov/design-tokens/css/variables.css';
 import '@/assets/main.css';
+
+// main.css loads FontAwesome's styles in the base layer; added unlayered, they'd beat every component's icon sizes.
+config.autoAddCss = false;
 
 /**
  * Initializes and mounts the Vue instance.

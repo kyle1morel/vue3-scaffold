@@ -106,7 +106,7 @@ function inputAttrs() {
       <small
         v-if="counter"
         class="app-description ms-auto"
-        :class="{ danger: errorMessage }"
+        :class="{ 'app-description-danger': errorMessage }"
       >
         {{ counter }}
       </small>

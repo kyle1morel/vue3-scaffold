@@ -10,49 +10,51 @@ const { orientation = 'horizontal', size = 'medium' } = defineProps<{
 
 <template>
   <RekaSeparator
-    class="separator"
-    :class="[orientation, size]"
+    class="bcds-separator"
+    :class="[`bcds-separator-${orientation}`, `bcds-separator-${size}`]"
     :orientation
   />
 </template>
 
 <style scoped>
-.separator {
-  border-radius: var(--layout-border-radius-circular);
-  background-color: var(--surface-color-border-default);
-}
+@layer components {
+  .bcds-separator {
+    border-radius: var(--layout-border-radius-circular);
+    background-color: var(--surface-color-border-default);
+  }
 
-.horizontal {
-  align-self: stretch;
-  margin: var(--layout-margin-small) var(--layout-margin-none);
-}
+  .bcds-separator-horizontal {
+    align-self: stretch;
+    margin: var(--layout-margin-small) var(--layout-margin-none);
+  }
 
-.vertical {
-  align-self: stretch;
-  margin: var(--layout-margin-none) var(--layout-margin-small);
-}
+  .bcds-separator-vertical {
+    align-self: stretch;
+    margin: var(--layout-margin-none) var(--layout-margin-small);
+  }
 
-.horizontal.small {
-  height: var(--layout-border-width-small);
-}
+  .bcds-separator-horizontal.bcds-separator-small {
+    height: var(--layout-border-width-small);
+  }
 
-.horizontal.medium {
-  height: var(--layout-border-width-medium);
-}
+  .bcds-separator-horizontal.bcds-separator-medium {
+    height: var(--layout-border-width-medium);
+  }
 
-.horizontal.large {
-  height: var(--layout-border-width-large);
-}
+  .bcds-separator-horizontal.bcds-separator-large {
+    height: var(--layout-border-width-large);
+  }
 
-.vertical.small {
-  width: var(--layout-border-width-small);
-}
+  .bcds-separator-vertical.bcds-separator-small {
+    width: var(--layout-border-width-small);
+  }
 
-.vertical.medium {
-  width: var(--layout-border-width-medium);
-}
+  .bcds-separator-vertical.bcds-separator-medium {
+    width: var(--layout-border-width-medium);
+  }
 
-.vertical.large {
-  width: var(--layout-border-width-large);
+  .bcds-separator-vertical.bcds-separator-large {
+    width: var(--layout-border-width-large);
+  }
 }
 </style>

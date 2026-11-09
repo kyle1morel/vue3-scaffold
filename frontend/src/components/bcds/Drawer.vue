@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle } from 'reka-ui';
 
+defineOptions({ inheritAttrs: false });
+
 // Props
 const { position = 'right', title } = defineProps<{
   position?: 'left' | 'right';
@@ -19,9 +21,10 @@ defineSlots<{ default(): unknown }>();
     <DialogPortal>
       <DialogOverlay class="bcds-drawer-overlay" />
       <DialogContent
+        v-bind="$attrs"
         :aria-describedby="undefined"
         class="bcds-drawer"
-        :class="position"
+        :class="`bcds-drawer-${position}`"
       >
         <DialogTitle class="sr-only">{{ title }}</DialogTitle>
         <slot />
@@ -32,61 +35,63 @@ defineSlots<{ default(): unknown }>();
 
 <!-- Reka renders the overlay and panel itself, out of reach of a scoped style -->
 <style>
-.bcds-drawer-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: var(--surface-color-overlay-default);
-}
+@layer components {
+  .bcds-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--surface-color-overlay-default);
+  }
 
-.bcds-drawer {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  width: 20rem;
-  max-width: 100%;
-  overflow-y: auto;
-  background: var(--surface-color-forms-default);
-  box-shadow: var(--surface-shadow-large);
-  color: var(--typography-color-primary);
-}
+  .bcds-drawer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 20rem;
+    max-width: 100%;
+    overflow-y: auto;
+    background: var(--surface-color-forms-default);
+    box-shadow: var(--surface-shadow-large);
+    color: var(--typography-color-primary);
+  }
 
-.bcds-drawer.right {
-  right: 0;
-  --from: 100%;
-}
+  .bcds-drawer.bcds-drawer-right {
+    right: 0;
+    --from: 100%;
+  }
 
-.bcds-drawer.left {
-  left: 0;
-  --from: -100%;
-}
+  .bcds-drawer.bcds-drawer-left {
+    left: 0;
+    --from: -100%;
+  }
 
-.bcds-drawer[data-state='open'] {
-  animation: bcds-drawer-slide 200ms ease-out;
-}
+  .bcds-drawer[data-state='open'] {
+    animation: bcds-drawer-slide 200ms ease-out;
+  }
 
-.bcds-drawer[data-state='closed'] {
-  animation: bcds-drawer-slide 150ms ease-in reverse;
-}
-
-@media (prefers-reduced-motion) {
-  .bcds-drawer[data-state='open'],
   .bcds-drawer[data-state='closed'] {
-    animation: none;
-  }
-}
-
-@keyframes bcds-drawer-slide {
-  from {
-    transform: translateX(var(--from));
+    animation: bcds-drawer-slide 150ms ease-in reverse;
   }
 
-  to {
-    transform: translateX(0);
+  @media (prefers-reduced-motion) {
+    .bcds-drawer[data-state='open'],
+    .bcds-drawer[data-state='closed'] {
+      animation: none;
+    }
+  }
+
+  @keyframes bcds-drawer-slide {
+    from {
+      transform: translateX(var(--from));
+    }
+
+    to {
+      transform: translateX(0);
+    }
   }
 }
 </style>

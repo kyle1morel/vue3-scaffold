@@ -38,7 +38,11 @@ defineSlots<{ default?(): unknown }>();
     :is="to ? 'RouterLink' : 'button'"
     :aria-label="(iconOnly || $slots.default) && label ? label : undefined"
     class="bcds-button"
-    :class="[variant, `size-${size}`, { danger, 'icon-only': iconOnly }]"
+    :class="[
+      `bcds-button-${variant}`,
+      `bcds-button-${size}`,
+      { 'bcds-button-danger': danger, 'bcds-button-icon-only': iconOnly }
+    ]"
     v-bind="to ? { to } : { disabled, type }"
   >
     <slot>
@@ -51,7 +55,6 @@ defineSlots<{ default?(): unknown }>();
   </component>
 </template>
 
-<!-- In the components layer, under Tailwind utilities, so a caller's classes can still restyle it -->
 <style scoped>
 @layer components {
   .bcds-button {
@@ -78,157 +81,157 @@ defineSlots<{ default?(): unknown }>();
     outline-offset: var(--layout-margin-hair);
   }
 
-  .size-xsmall {
+  .bcds-button-xsmall {
     padding: var(--layout-padding-hair) var(--layout-padding-small);
     font: var(--typography-regular-label);
   }
 
-  .size-small {
+  .bcds-button-small {
     min-height: 32px;
     padding: var(--layout-padding-none) 0.75rem;
     font: var(--typography-regular-small-body);
   }
 
-  .size-medium {
+  .bcds-button-medium {
     min-height: 40px;
     padding: var(--layout-padding-none) var(--layout-padding-medium);
   }
 
-  .size-large {
+  .bcds-button-large {
     min-height: 48px;
     padding: var(--layout-padding-none) var(--layout-padding-large);
   }
 
-  .icon-only {
+  .bcds-button-icon-only {
     padding: 0;
   }
 
-  .icon-only.size-xsmall {
+  .bcds-button-icon-only.bcds-button-xsmall {
     width: 24px;
     height: 24px;
   }
 
-  .icon-only.size-small {
+  .bcds-button-icon-only.bcds-button-small {
     width: 32px;
     min-width: 32px;
     height: 32px;
   }
 
-  .icon-only.size-medium {
+  .bcds-button-icon-only.bcds-button-medium {
     width: 40px;
     min-width: 40px;
     height: 40px;
   }
 
-  .icon-only.size-large {
+  .bcds-button-icon-only.bcds-button-large {
     width: 48px;
     min-width: 48px;
     height: 48px;
   }
 
-  .primary {
+  .bcds-button-primary {
     background: var(--surface-color-primary-button-default);
     color: var(--typography-color-primary-invert);
   }
 
-  .primary:hover {
+  .bcds-button-primary:hover {
     background: var(--surface-color-primary-button-hover);
   }
 
-  .primary:active {
+  .bcds-button-primary:active {
     background: var(--surface-color-primary-pressed);
   }
 
-  .primary.danger {
+  .bcds-button-primary.bcds-button-danger {
     background: var(--surface-color-primary-danger-button-default);
   }
 
-  .primary.danger:hover {
+  .bcds-button-primary.bcds-button-danger:hover {
     background: var(--surface-color-primary-danger-button-hover);
   }
 
-  .primary.danger:active {
+  .bcds-button-primary.bcds-button-danger:active {
     background: var(--support-surface-color-danger);
     color: var(--surface-color-primary-danger-button-default);
   }
 
-  .primary:disabled {
+  .bcds-button-primary:disabled {
     background: var(--surface-color-primary-danger-button-disabled);
     color: var(--typography-color-disabled);
   }
 
-  .secondary {
+  .bcds-button-secondary {
     border: var(--layout-border-width-small) solid var(--surface-color-border-dark);
     background: var(--surface-color-secondary-button-default);
     color: var(--typography-color-primary);
   }
 
-  .secondary:hover {
+  .bcds-button-secondary:hover {
     background: var(--surface-color-secondary-button-hover);
   }
 
-  .secondary:active {
+  .bcds-button-secondary:active {
     background: var(--surface-color-secondary-pressed);
   }
 
-  .secondary.danger {
+  .bcds-button-secondary.bcds-button-danger {
     border-color: var(--support-border-color-danger);
     color: var(--surface-color-primary-danger-button-default);
   }
 
-  .secondary.danger:hover {
+  .bcds-button-secondary.bcds-button-danger:hover {
     background: var(--support-surface-color-danger);
   }
 
-  .secondary.danger:active {
+  .bcds-button-secondary.bcds-button-danger:active {
     background: var(--surface-color-primary-danger-button-default);
     color: var(--typography-color-primary-invert);
   }
 
-  .secondary:disabled {
+  .bcds-button-secondary:disabled {
     border-color: var(--surface-color-border-default);
     background: var(--surface-color-secondary-button-disabled);
     color: var(--typography-color-disabled);
   }
 
-  .tertiary {
+  .bcds-button-tertiary {
     background: var(--surface-color-tertiary-button-default);
     color: var(--typography-color-primary);
   }
 
-  .tertiary:hover {
+  .bcds-button-tertiary:hover {
     background: var(--surface-color-tertiary-button-hover);
   }
 
-  .tertiary:active {
+  .bcds-button-tertiary:active {
     background: var(--surface-color-tertiary-pressed);
   }
 
-  .tertiary.danger {
+  .bcds-button-tertiary.bcds-button-danger {
     color: var(--surface-color-primary-danger-button-default);
   }
 
-  .tertiary.danger:hover {
+  .bcds-button-tertiary.bcds-button-danger:hover {
     background: var(--support-surface-color-danger);
   }
 
-  .tertiary:disabled {
+  .bcds-button-tertiary:disabled {
     background: var(--surface-color-tertiary-button-default);
     color: var(--typography-color-disabled);
   }
 
-  .link {
+  .bcds-button-link {
     background: var(--surface-color-tertiary-button-default);
     color: var(--typography-color-link);
     text-decoration: underline;
     text-underline-offset: 0.3em;
   }
 
-  .link.danger {
+  .bcds-button-link.bcds-button-danger {
     color: var(--surface-color-primary-danger-button-default);
   }
 
-  .link:disabled {
+  .bcds-button-link:disabled {
     color: var(--typography-color-disabled);
   }
 }

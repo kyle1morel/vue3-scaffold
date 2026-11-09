@@ -115,7 +115,7 @@ onBeforeUnmount(() => clearTimeout(completeTimer));
     >
       <ComboboxAnchor
         class="app-input"
-        :class="{ invalid, readonly }"
+        :class="{ 'app-input-invalid': invalid, 'app-input-readonly': readonly }"
         :data-disabled="disabled || undefined"
       >
         <ComboboxInput
@@ -166,8 +166,10 @@ onBeforeUnmount(() => clearTimeout(completeTimer));
 
 <!-- Reka renders the list inside its own wrapper, which a scoped style can't reach -->
 <style>
-.bcds-combobox-options {
-  width: var(--reka-combobox-trigger-width);
-  max-height: var(--reka-combobox-content-available-height);
+@layer components {
+  .bcds-combobox-options {
+    width: var(--reka-combobox-trigger-width);
+    max-height: var(--reka-combobox-content-available-height);
+  }
 }
 </style>
