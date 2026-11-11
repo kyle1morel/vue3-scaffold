@@ -18,7 +18,7 @@ defineOptions({ inheritAttrs: false });
 const {
   closeDelay = 500,
   delay = undefined,
-  isDisabled = false,
+  disabled = false,
   offset = 10,
   placement = 'top',
   text
@@ -27,7 +27,7 @@ const {
   closeDelay?: number;
   // Milliseconds of hover before it opens; App.vue's provider sets the default.
   delay?: number;
-  isDisabled?: boolean;
+  disabled?: boolean;
   // Pixels between the trigger and the tooltip, arrow included
   offset?: number;
   placement?: 'bottom' | 'left' | 'right' | 'top';
@@ -66,7 +66,7 @@ function closeNow() {
   <component :is="provider">
     <TooltipRoot
       :delay-duration="delay"
-      :disabled="isDisabled"
+      :disabled="disabled"
       :open
       @update:open="onOpenChange"
     >

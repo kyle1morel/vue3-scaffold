@@ -25,14 +25,14 @@ describe('ProgressLoader', () => {
       const { wrapper } = mountProgressLoader({ loadingValue: 40 });
       const bar = wrapper.findComponent(ProgressBar);
 
-      expect(bar.props('isIndeterminate')).toBe(false);
+      expect(bar.props('indeterminate')).toBe(false);
       expect(bar.props('value')).toBe(40);
     });
 
     it('switches to indeterminate mode', () => {
       const { wrapper } = mountProgressLoader({ loadingMode: 'indeterminate' });
 
-      expect(wrapper.findComponent(ProgressBar).props('isIndeterminate')).toBe(true);
+      expect(wrapper.findComponent(ProgressBar).props('indeterminate')).toBe(true);
     });
   });
 });

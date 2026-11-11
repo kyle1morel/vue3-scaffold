@@ -6,16 +6,16 @@ import Button from './Button.vue';
 
 // Props
 const {
+  closeable = false,
   description = undefined,
-  isCloseable = false,
-  isIconHidden = false,
+  hideIcon = false,
   role = 'note',
   title = undefined,
   variant = 'info'
 } = defineProps<{
+  closeable?: boolean;
   description?: string;
-  isCloseable?: boolean;
-  isIconHidden?: boolean;
+  hideIcon?: boolean;
   // How screen readers treat it: note is read only when the user reaches it, status is announced when the screen
   // reader is idle, and alert is announced at once, interrupting. status and alert only announce when the alert is
   // added or its text changes, so alert suits errors that appear after the page loads.
@@ -47,10 +47,10 @@ const titleId = useId();
 <template>
   <div
     class="bcds-inline-alert"
-    :class="[`bcds-inline-alert-${variant}`, { 'bcds-inline-alert-closeable': isCloseable }]"
+    :class="[`bcds-inline-alert-${variant}`, { 'bcds-inline-alert-closeable': closeable }]"
   >
     <span
-      v-if="!isIconHidden"
+      v-if="!hideIcon"
       class="bcds-inline-alert-icon"
     >
       <slot name="icon">
@@ -80,7 +80,7 @@ const titleId = useId();
       </slot>
     </div>
     <Button
-      v-if="isCloseable"
+      v-if="closeable"
       class="bcds-inline-alert-close"
       icon="fa-solid fa-xmark"
       icon-only

@@ -12,7 +12,6 @@ const {
   disabled = false,
   errorMessage = undefined,
   formatOptions = undefined,
-  isWheelDisabled = false,
   label = undefined,
   maxValue = undefined,
   minValue = undefined,
@@ -21,15 +20,14 @@ const {
   readonly = false,
   required = false,
   size = 'medium',
-  step = 1
+  step = 1,
+  wheelDisabled = false
 } = defineProps<{
   description?: string;
   disabled?: boolean;
   errorMessage?: string;
   // How the number is shown, such as { style: 'currency', currency: 'CAD' }
   formatOptions?: Intl.NumberFormatOptions;
-  // Stops the mouse wheel changing the value while the field has focus
-  isWheelDisabled?: boolean;
   label?: string;
   maxValue?: number;
   minValue?: number;
@@ -40,6 +38,8 @@ const {
   size?: 'medium' | 'small';
   // How much the minus and plus buttons change the value
   step?: number;
+  // Stops the mouse wheel changing the value while the field has focus
+  wheelDisabled?: boolean;
 }>();
 
 const value = defineModel<number | null>();
@@ -63,7 +63,7 @@ const { locale } = useI18n();
       class="app-input bcds-number-field"
       :class="{ 'app-input-small': size === 'small', 'app-input-invalid': invalid, 'app-input-readonly': readonly }"
       :disabled
-      :disable-wheel-change="isWheelDisabled"
+      :disable-wheel-change="wheelDisabled"
       :format-options
       :locale
       :max="maxValue"

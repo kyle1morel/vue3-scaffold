@@ -5,15 +5,15 @@ import Button from './Button.vue';
 
 // Props
 const {
-  isCloseable = true,
-  isIconHidden = false,
+  closeable = true,
+  hideIcon = false,
   layout = 'fixed',
   role = 'status',
   size = 'medium',
   variant = 'info'
 } = defineProps<{
-  isCloseable?: boolean;
-  isIconHidden?: boolean;
+  closeable?: boolean;
+  hideIcon?: boolean;
   layout?: 'fixed' | 'fluid';
   // How screen readers treat it: note is read only when the user reaches it, status is announced when the screen
   // reader is idle, and alert is announced at once, interrupting. status and alert only announce when the banner is
@@ -48,7 +48,7 @@ const { t } = useI18n();
   >
     <div class="bcds-alert-banner-body">
       <span
-        v-if="!isIconHidden"
+        v-if="!hideIcon"
         class="bcds-alert-banner-icon"
       >
         <slot name="icon">
@@ -62,7 +62,7 @@ const { t } = useI18n();
         <slot />
       </div>
       <Button
-        v-if="isCloseable"
+        v-if="closeable"
         class="bcds-alert-banner-close"
         icon="fa-solid fa-xmark"
         icon-only

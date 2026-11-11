@@ -23,7 +23,7 @@ const { getConfig } = storeToRefs(useConfigStore());
       <template #main>
         <AlertBanner
           v-if="getConfig?.notificationBanner"
-          :is-closeable="false"
+          :closeable="false"
           variant="warning"
         >
           {{ getConfig?.notificationBanner }}

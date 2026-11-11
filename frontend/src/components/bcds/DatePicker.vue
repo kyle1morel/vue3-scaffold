@@ -51,15 +51,14 @@ defineOptions({ inheritAttrs: false });
 
 // Props
 const {
+  browserLocale = false,
+  calendarDisabled = false,
   description = undefined,
   disabled = false,
   errorMessage = undefined,
   firstDayOfWeek = undefined,
   granularity = 'day',
   hourCycle = undefined,
-  isBrowserLocaleUsed = false,
-  isCalendarDisabled = false,
-  isDateUnavailable = undefined,
   label = undefined,
   maxValue = undefined,
   minValue = undefined,
@@ -67,8 +66,13 @@ const {
   readonly = false,
   required = false,
   showFormatHelpText = true,
-  size = 'medium'
+  size = 'medium',
+  unavailableDate = undefined
 } = defineProps<{
+  // Orders the date segments as the browser's language does, instead of the app's
+  browserLocale?: boolean;
+  // Leaves out the calendar button, so the date can only be typed.
+  calendarDisabled?: boolean;
   description?: string;
   disabled?: boolean;
   errorMessage?: string;
@@ -78,12 +82,6 @@ const {
   granularity?: 'day' | 'hour' | 'minute' | 'second';
   // 12 or 24 hour time; without it, the locale decides.
   hourCycle?: 12 | 24;
-  // Orders the date segments as the browser's language does, instead of the app's
-  isBrowserLocaleUsed?: boolean;
-  // Leaves out the calendar button, so the date can only be typed.
-  isCalendarDisabled?: boolean;
-  // Dates that can't be chosen, such as weekends; the calendar strikes them through.
-  isDateUnavailable?: (date: Date) => boolean;
   label?: string;
   maxValue?: Date;
   minValue?: Date;
@@ -93,6 +91,8 @@ const {
   // Spells out the segment order under the field, such as year - month - day
   showFormatHelpText?: boolean;
   size?: 'medium' | 'small';
+  // Dates that can't be chosen, such as weekends; the calendar strikes them through.
+  unavailableDate?: (date: Date) => boolean;
 }>();
 
 // Emits
@@ -115,11 +115,11 @@ const dateValue = computed<DateValue | null>({
   set: (date) => (value.value = date ? date.toDate(getLocalTimeZone()) : null)
 });
 
-const dateLocale = computed(() => (isBrowserLocaleUsed ? navigator.language : locale.value));
+const dateLocale = computed(() => (browserLocale ? navigator.language : locale.value));
 const maxDateValue = computed(() => (maxValue ? toDateValue(maxValue) : undefined));
 const minDateValue = computed(() => (minValue ? toDateValue(minValue) : undefined));
 const unavailable = computed(() =>
-  isDateUnavailable ? (date: DateValue) => isDateUnavailable(date.toDate(getLocalTimeZone())) : undefined
+  unavailableDate ? (date: DateValue) => unavailableDate(date.toDate(getLocalTimeZone())) : undefined
 );
 const weekStartsOn = computed(() => (firstDayOfWeek ? WEEKDAYS[firstDayOfWeek] : undefined));
 
@@ -267,7 +267,7 @@ function toDateValue(date: Date) {
           icon="fa-solid fa-triangle-exclamation"
         />
         <DatePickerTrigger
-          v-if="!readonly && !isCalendarDisabled"
+          v-if="!readonly && !calendarDisabled"
           as-child
         >
           <Button
@@ -280,7 +280,7 @@ function toDateValue(date: Date) {
         </DatePickerTrigger>
       </DatePickerField>
       <DatePickerContent
-        v-if="!isCalendarDisabled"
+        v-if="!calendarDisabled"
         class="app-popover bcds-calendar"
         :side-offset="4"
       >

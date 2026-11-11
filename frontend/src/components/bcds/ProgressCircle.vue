@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n';
 // Props
 const {
   formatOptions = { style: 'percent' },
-  isIndeterminate = false,
+  indeterminate = false,
   maxValue = 100,
   minValue = 0,
   size = 'medium',
@@ -15,7 +15,7 @@ const {
 } = defineProps<{
   // How the value is shown; a percent style shows the share done, and any other shows the value itself.
   formatOptions?: Intl.NumberFormatOptions;
-  isIndeterminate?: boolean;
+  indeterminate?: boolean;
   maxValue?: number;
   minValue?: number;
   size?: 'large' | 'medium' | 'small';
@@ -38,12 +38,12 @@ const valueText = computed(() =>
   )
 );
 // The fill's path is 100 long, so an indeterminate circle shows a quarter of it spinning.
-const dashOffset = computed(() => 100 - (isIndeterminate ? 25 : (progress.value / range.value) * 100));
+const dashOffset = computed(() => 100 - (indeterminate ? 25 : (progress.value / range.value) * 100));
 
 // Actions
 // The label or the caller's aria-label names the circle, not Reka's default of the percentage.
 const noLabel = () => undefined;
-const getValueText = () => (isIndeterminate ? undefined : valueText.value);
+const getValueText = () => (indeterminate ? undefined : valueText.value);
 </script>
 
 <template>
@@ -53,7 +53,7 @@ const getValueText = () => (isIndeterminate ? undefined : valueText.value);
     :get-value-label="noLabel"
     :get-value-text="getValueText"
     :max="range"
-    :model-value="isIndeterminate ? null : progress"
+    :model-value="indeterminate ? null : progress"
   >
     <svg
       aria-hidden="true"
@@ -73,7 +73,7 @@ const getValueText = () => (isIndeterminate ? undefined : valueText.value);
     >
       <span :id="labelId">{{ valueLabel }}</span>
       <span
-        v-if="!isIndeterminate"
+        v-if="!indeterminate"
         class="bcds-progress-circle-value"
       >
         {{ valueText }}

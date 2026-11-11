@@ -140,7 +140,7 @@ function setPageSize(size: unknown) {
         v-if="loading"
         :aria-label="t('ui.loading')"
         class="absolute inset-0 m-auto"
-        is-indeterminate
+        indeterminate
       />
     </div>
 

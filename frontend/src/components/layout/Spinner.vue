@@ -11,7 +11,7 @@ const { t } = useI18n();
   <div class="flex justify-center">
     <ProgressCircle
       :aria-label="t('ui.loading')"
-      is-indeterminate
+      indeterminate
       size="large"
     />
   </div>

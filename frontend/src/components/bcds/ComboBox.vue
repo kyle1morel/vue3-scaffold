@@ -131,7 +131,7 @@ onBeforeUnmount(() => clearTimeout(completeTimer));
         />
         <ProgressCircle
           v-if="loading"
-          is-indeterminate
+          indeterminate
           size="small"
         />
         <font-awesome-icon

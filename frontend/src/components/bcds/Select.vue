@@ -28,15 +28,15 @@ export interface SelectItemProps {
   // The item's tag color when several can be chosen
   color?: TagProps['color'];
   description?: string;
+  // Red text, for an option that deletes or can't be undone
+  destructive?: boolean;
+  disabled?: boolean;
   // A FontAwesome icon, such as fa-solid fa-eye
   iconLeft?: string;
   // Hidden while the option is selected, when the check takes its place
   iconRight?: string;
   // The value the field takes; without it the label is used, so give one when labels repeat.
   id?: Key;
-  // Red text, for an option that deletes or can't be undone
-  isDestructive?: boolean;
-  isDisabled?: boolean;
   label: string;
   // The item's tag shape when several can be chosen
   tagStyle?: TagProps['tagStyle'];
@@ -187,7 +187,7 @@ function deselect(item: SelectItemProps) {
           </SelectValue>
           <ProgressCircle
             v-if="loading"
-            is-indeterminate
+            indeterminate
             size="small"
           />
           <font-awesome-icon
@@ -255,8 +255,8 @@ function deselect(item: SelectItemProps) {
                 v-for="item in section.items"
                 :key="keyOf(item)"
                 class="app-option"
-                :class="{ 'bcds-select-destructive': item.isDestructive }"
-                :disabled="item.isDisabled || disabledKeys.includes(keyOf(item))"
+                :class="{ 'bcds-select-destructive': item.destructive }"
+                :disabled="item.disabled || disabledKeys.includes(keyOf(item))"
                 :value="keyOf(item)"
               >
                 <span

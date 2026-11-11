@@ -97,7 +97,7 @@ const contactOptions = CONTACT_METHODS.map((method) => ({
 const menuItems: MenuItemProps[] = (['view', 'copy', 'delete'] as const).map((item) => ({
   description: t(`views.components.menu.items.${item}.description`),
   icon: { copy: 'fa-solid fa-clipboard', delete: 'fa-solid fa-trash', view: 'fa-solid fa-eye' }[item],
-  isDisabled: item === 'delete',
+  disabled: item === 'delete',
   label: t(`views.components.menu.items.${item}.label`),
   onAction: () =>
     toast.info(t('views.components.menu.selected', { item: t(`views.components.menu.items.${item}.label`) }))
@@ -116,7 +116,7 @@ const selectSectionList: SelectSectionProps[] = [
       description,
       iconLeft: icon,
       id: index,
-      isDestructive: icon === 'fa-solid fa-trash',
+      destructive: icon === 'fa-solid fa-trash',
       label
     }))
   },
@@ -286,7 +286,7 @@ function showToast(severity: (typeof TOASTS)[number]) {
       <InlineAlert
         v-if="!alertClosed"
         :description="t('views.components.alerts.closeable.description')"
-        is-closeable
+        closeable
         :title="t('views.components.alerts.closeable.title')"
         @close="alertClosed = true"
       />
@@ -306,13 +306,13 @@ function showToast(severity: (typeof TOASTS)[number]) {
       <AlertBanner
         v-for="variant in BANNER_VARIANTS"
         :key="variant"
-        :is-closeable="false"
+        :closeable="false"
         :variant
       >
         {{ t(`views.components.banners.variants.${variant}`) }}
       </AlertBanner>
       <AlertBanner
-        :is-closeable="false"
+        :closeable="false"
         size="small"
       >
         {{ t('views.components.banners.small') }}
@@ -397,7 +397,7 @@ function showToast(severity: (typeof TOASTS)[number]) {
       </div>
       <ProgressBar
         :aria-label="t('ui.loading')"
-        is-indeterminate
+        indeterminate
       />
       <div class="flex flex-wrap items-end gap-8">
         <ProgressCircle
@@ -409,7 +409,7 @@ function showToast(severity: (typeof TOASTS)[number]) {
         />
         <ProgressCircle
           :aria-label="t('ui.loading')"
-          is-indeterminate
+          indeterminate
           size="large"
         />
       </div>
@@ -523,7 +523,7 @@ function showToast(severity: (typeof TOASTS)[number]) {
       <DatePicker
         v-model="dateTypedOnly"
         class="col-span-12 md:col-span-4"
-        is-calendar-disabled
+        calendar-disabled
         :label="t('views.components.fields.dateTypedOnly')"
       />
       <Select

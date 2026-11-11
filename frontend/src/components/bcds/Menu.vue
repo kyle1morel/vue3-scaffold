@@ -19,12 +19,12 @@ import type { RouteLocationRaw } from 'vue-router';
 
 export interface MenuItemProps {
   description?: string;
+  disabled?: boolean;
   // Makes the item a link to another site; use to for a page in the app.
   href?: string;
   // A FontAwesome icon, such as fa-solid fa-check
   icon?: string;
   id?: string;
-  isDisabled?: boolean;
   label: string;
   onAction?: () => void;
   to?: RouteLocationRaw;
@@ -150,7 +150,7 @@ function linkOf(item: MenuItemProps) {
               v-bind="{ ...linkOf(item), ...selectionProps(item) }"
               class="bcds-menu-item"
               :class="`bcds-menu-${itemSize}`"
-              :disabled="item.isDisabled || disabledKeys.includes(keyOf(item))"
+              :disabled="item.disabled || disabledKeys.includes(keyOf(item))"
               :text-value="item.label"
               @select="onSelect(item, $event)"
             >

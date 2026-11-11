@@ -8,20 +8,20 @@ defineOptions({ inheritAttrs: false });
 
 // Props
 const {
-  isCloseable = true,
-  isDismissable = false,
-  isIconHidden = false,
-  isKeyboardDismissDisabled = false,
+  closeable = true,
+  closeOnEscape = true,
+  dismissable = false,
+  hideIcon = false,
   role = 'dialog',
   title = undefined,
   variant = 'info'
 } = defineProps<{
-  isCloseable?: boolean;
+  closeable?: boolean;
+  // Off leaves only the buttons to close it
+  closeOnEscape?: boolean;
   // Lets a click outside close it; off by default, as one could dismiss it by accident
-  isDismissable?: boolean;
-  isIconHidden?: boolean;
-  // Stops Esc closing it, leaving only the buttons
-  isKeyboardDismissDisabled?: boolean;
+  dismissable?: boolean;
+  hideIcon?: boolean;
   // alertdialog tells screen readers the dialog interrupts to ask for a response, such as a confirmation.
   role?: 'alertdialog' | 'dialog';
   title?: string;
@@ -54,12 +54,12 @@ const { t } = useI18n();
         class="bcds-alert-dialog"
         :class="`bcds-alert-dialog-${variant}`"
         :role
-        @escape-key-down="(event) => isKeyboardDismissDisabled && event.preventDefault()"
-        @interact-outside="(event) => !isDismissable && event.preventDefault()"
+        @escape-key-down="(event) => !closeOnEscape && event.preventDefault()"
+        @interact-outside="(event) => !dismissable && event.preventDefault()"
       >
         <div class="bcds-alert-dialog-header">
           <font-awesome-icon
-            v-if="!isIconHidden"
+            v-if="!hideIcon"
             class="bcds-alert-dialog-icon"
             :icon="ICONS[variant]"
           />
@@ -71,7 +71,7 @@ const { t } = useI18n();
             {{ title }}
           </DialogTitle>
           <Button
-            v-if="isCloseable"
+            v-if="closeable"
             class="bcds-alert-dialog-close"
             icon="fa-solid fa-xmark"
             icon-only

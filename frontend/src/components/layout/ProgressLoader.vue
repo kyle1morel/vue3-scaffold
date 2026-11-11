@@ -17,7 +17,7 @@ const { getLoadingMode, getLoadingValue } = storeToRefs(appStore);
   <div class="fixed top-0 w-full z-999 pointer-events-none">
     <ProgressBar
       :aria-label="t('ui.loading')"
-      :is-indeterminate="getLoadingMode === 'indeterminate'"
+      :indeterminate="getLoadingMode === 'indeterminate'"
       size="small"
       :value="getLoadingValue"
     />

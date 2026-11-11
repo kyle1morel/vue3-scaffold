@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n';
 // Props
 const {
   formatOptions = { style: 'percent' },
-  isIndeterminate = false,
+  indeterminate = false,
   maxValue = 100,
   minValue = 0,
   size = 'medium',
@@ -15,7 +15,7 @@ const {
 } = defineProps<{
   // How the value is shown; a percent style shows the share done, and any other shows the value itself.
   formatOptions?: Intl.NumberFormatOptions;
-  isIndeterminate?: boolean;
+  indeterminate?: boolean;
   maxValue?: number;
   minValue?: number;
   size?: 'large' | 'medium' | 'small';
@@ -41,7 +41,7 @@ const valueText = computed(() =>
 // Actions
 // The label or the caller's aria-label names the bar, not Reka's default of the percentage.
 const noLabel = () => undefined;
-const getValueText = () => (isIndeterminate ? undefined : valueText.value);
+const getValueText = () => (indeterminate ? undefined : valueText.value);
 </script>
 
 <template>
@@ -51,7 +51,7 @@ const getValueText = () => (isIndeterminate ? undefined : valueText.value);
     :get-value-label="noLabel"
     :get-value-text="getValueText"
     :max="range"
-    :model-value="isIndeterminate ? null : progress"
+    :model-value="indeterminate ? null : progress"
   >
     <div
       v-if="valueLabel"
@@ -59,7 +59,7 @@ const getValueText = () => (isIndeterminate ? undefined : valueText.value);
     >
       <span :id="labelId">{{ valueLabel }}</span>
       <span
-        v-if="!isIndeterminate"
+        v-if="!indeterminate"
         class="bcds-progress-bar-value"
       >
         {{ valueText }}
