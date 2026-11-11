@@ -4,6 +4,7 @@ export { default as AlertBanner } from './AlertBanner.vue';
 export { default as AlertDialog } from './AlertDialog.vue';
 export { default as Button } from './Button.vue';
 export { default as ButtonGroup } from './ButtonGroup.vue';
+export { default as Calendar } from './Calendar.vue';
 export { default as Callout } from './Callout.vue';
 export { default as Checkbox } from './Checkbox.vue';
 export { default as CheckboxGroup } from './CheckboxGroup.vue';

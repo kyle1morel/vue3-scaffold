@@ -1,48 +1,11 @@
 <script setup lang="ts">
 import { CalendarDate, CalendarDateTime, getLocalTimeZone } from '@internationalized/date';
-import {
-  DatePickerCalendar,
-  DatePickerCell,
-  DatePickerCellTrigger,
-  DatePickerContent,
-  DatePickerField,
-  DatePickerGrid,
-  DatePickerGridBody,
-  DatePickerGridHead,
-  DatePickerGridRow,
-  DatePickerHeadCell,
-  DatePickerHeader,
-  DatePickerHeading,
-  DatePickerInput,
-  DatePickerNext,
-  DatePickerPrev,
-  DatePickerRoot,
-  DatePickerTrigger,
-  MonthPickerCell,
-  MonthPickerCellTrigger,
-  MonthPickerGrid,
-  MonthPickerGridBody,
-  MonthPickerGridRow,
-  MonthPickerHeader,
-  MonthPickerHeading,
-  MonthPickerNext,
-  MonthPickerPrev,
-  MonthPickerRoot,
-  YearPickerCell,
-  YearPickerCellTrigger,
-  YearPickerGrid,
-  YearPickerGridBody,
-  YearPickerGridRow,
-  YearPickerHeader,
-  YearPickerHeading,
-  YearPickerNext,
-  YearPickerPrev,
-  YearPickerRoot
-} from 'reka-ui';
-import { computed, nextTick, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { DatePickerContent, DatePickerField, DatePickerInput, DatePickerRoot, DatePickerTrigger } from 'reka-ui';
+import { computed, provide, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import Button from './Button.vue';
+import Calendar, { CALENDAR_LOCALE } from './Calendar.vue';
 import FieldWrapper from './FieldWrapper.vue';
 
 import type { DateValue } from '@internationalized/date';
@@ -101,10 +64,6 @@ const emit = defineEmits<{ blur: [event: FocusEvent] }>();
 
 const value = defineModel<Date | null>();
 
-// Constants
-// Reka numbers the days of the week from Sunday.
-const WEEKDAYS = { fri: 5, mon: 1, sat: 6, sun: 0, thu: 4, tue: 2, wed: 3 } as const;
-
 // Composables
 const { locale, t } = useI18n();
 
@@ -116,22 +75,15 @@ const dateValue = computed<DateValue | null>({
 });
 
 const dateLocale = computed(() => (browserLocale ? navigator.language : locale.value));
+provide(CALENDAR_LOCALE, dateLocale);
 const maxDateValue = computed(() => (maxValue ? toDateValue(maxValue) : undefined));
 const minDateValue = computed(() => (minValue ? toDateValue(minValue) : undefined));
 const unavailable = computed(() =>
   unavailableDate ? (date: DateValue) => unavailableDate(date.toDate(getLocalTimeZone())) : undefined
 );
-const weekStartsOn = computed(() => (firstDayOfWeek ? WEEKDAYS[firstDayOfWeek] : undefined));
 
-// The calendar shows days; its month and year open grids to jump to another month or year.
-const view = ref<'day' | 'month' | 'year'>('day');
-const calendar = useTemplateRef<HTMLElement>('calendar');
-
-// The month the calendar is showing, which the day, month and year views share
-const placeholder = shallowRef<DateValue>(dateValue.value ?? toDateValue(new Date()));
-const monthLabel = computed(() =>
-  new Intl.DateTimeFormat(dateLocale.value, { month: 'long' }).format(placeholder.value.toDate(getLocalTimeZone()))
-);
+// The calendar popup, closed once a day is picked
+const open = ref(false);
 
 // Built from the locale's own order and separators, such as year - month - day, hour : minute AM/PM
 const formatHelpText = computed(() => {
@@ -169,30 +121,20 @@ const descriptionLines = computed(() =>
   [showFormatHelpText ? formatHelpText.value : '', description ?? ''].filter(Boolean)
 );
 
-// Each view starts with focus on its current cell, so the keyboard can carry on from there.
-watch(view, async () => {
-  await nextTick();
-  const cells = calendar.value?.querySelectorAll<HTMLElement>('.cell:not([data-disabled]):not([data-unavailable])');
-  const current = [...(cells ?? [])].find((cell) => cell.hasAttribute('data-focused'));
-  (current ?? cells?.[0])?.focus();
-});
-
 // Actions
+// Picking a day keeps the time already typed, when the field has one.
+function onCalendarSelect(date: Date | null | undefined) {
+  if (!date) return;
+  if (granularity !== 'day' && value.value) {
+    date.setHours(value.value.getHours(), value.value.getMinutes(), value.value.getSeconds());
+  }
+  value.value = date;
+  open.value = false;
+}
+
 function onFocusOut(event: FocusEvent) {
   const field = event.currentTarget as HTMLElement;
   if (!field.contains(event.relatedTarget as Node | null)) emit('blur', event);
-}
-
-function onMonthSelect(month: DateValue | DateValue[] | undefined) {
-  if (!month || Array.isArray(month)) return;
-  placeholder.value = placeholder.value.set({ month: month.month, year: month.year });
-  view.value = 'day';
-}
-
-function onYearSelect(year: DateValue | DateValue[] | undefined) {
-  if (!year || Array.isArray(year)) return;
-  placeholder.value = placeholder.value.set({ year: year.year });
-  view.value = 'month';
 }
 
 function toDateValue(date: Date) {
@@ -216,8 +158,7 @@ function toDateValue(date: Date) {
   >
     <DatePickerRoot
       v-model="dateValue"
-      v-model:placeholder="placeholder"
-      close-on-select
+      v-model:open="open"
       :disabled
       :granularity
       :hour-cycle
@@ -228,9 +169,6 @@ function toDateValue(date: Date) {
       :name
       :readonly
       :required
-      :week-starts-on
-      weekday-format="short"
-      @update:open="view = 'day'"
     >
       <DatePickerField
         v-slot="{ segments }"
@@ -281,181 +219,25 @@ function toDateValue(date: Date) {
       </DatePickerField>
       <DatePickerContent
         v-if="!calendarDisabled"
-        class="app-popover bcds-calendar"
+        class="app-popover"
         :side-offset="4"
       >
-        <div ref="calendar">
-          <DatePickerCalendar
-            v-if="view === 'day'"
-            v-slot="{ weekDays, grid }"
-          >
-            <DatePickerHeader class="bcds-date-picker-header">
-              <DatePickerPrev class="bcds-date-picker-nav">
-                <font-awesome-icon icon="fa-solid fa-chevron-left" />
-              </DatePickerPrev>
-              <DatePickerHeading class="bcds-date-picker-heading">
-                <button
-                  :aria-label="t('components.datePicker.chooseMonth', { month: monthLabel })"
-                  class="bcds-date-picker-view-button"
-                  type="button"
-                  @click="view = 'month'"
-                >
-                  {{ monthLabel }}
-                </button>
-                <button
-                  :aria-label="t('components.datePicker.chooseYear', { year: placeholder.year })"
-                  class="bcds-date-picker-view-button"
-                  type="button"
-                  @click="view = 'year'"
-                >
-                  {{ placeholder.year }}
-                </button>
-              </DatePickerHeading>
-              <DatePickerNext class="bcds-date-picker-nav">
-                <font-awesome-icon icon="fa-solid fa-chevron-right" />
-              </DatePickerNext>
-            </DatePickerHeader>
-            <DatePickerGrid
-              v-for="month in grid"
-              :key="month.value.toString()"
-              class="bcds-date-picker-grid-table"
-            >
-              <DatePickerGridHead>
-                <DatePickerGridRow>
-                  <DatePickerHeadCell
-                    v-for="day in weekDays"
-                    :key="day"
-                    class="bcds-date-picker-head-cell"
-                  >
-                    {{ day }}
-                  </DatePickerHeadCell>
-                </DatePickerGridRow>
-              </DatePickerGridHead>
-              <DatePickerGridBody>
-                <DatePickerGridRow
-                  v-for="(weekDates, index) in month.rows"
-                  :key="index"
-                >
-                  <DatePickerCell
-                    v-for="weekDate in weekDates"
-                    :key="weekDate.toString()"
-                    :date="weekDate"
-                  >
-                    <DatePickerCellTrigger
-                      class="bcds-date-picker-cell"
-                      :day="weekDate"
-                      :month="month.value"
-                    />
-                  </DatePickerCell>
-                </DatePickerGridRow>
-              </DatePickerGridBody>
-            </DatePickerGrid>
-          </DatePickerCalendar>
-          <!-- Picking a month or year only moves the calendar to it; the date is still chosen from the days. -->
-          <MonthPickerRoot
-            v-else-if="view === 'month'"
-            v-slot="{ grid }"
-            v-model:placeholder="placeholder"
-            :locale="dateLocale"
-            :max-value="maxDateValue"
-            :min-value="minDateValue"
-            :model-value="dateValue"
-            prevent-deselect
-            @update:model-value="onMonthSelect"
-          >
-            <MonthPickerHeader class="bcds-date-picker-header">
-              <MonthPickerPrev class="bcds-date-picker-nav">
-                <font-awesome-icon icon="fa-solid fa-chevron-left" />
-              </MonthPickerPrev>
-              <MonthPickerHeading class="bcds-date-picker-heading">
-                <button
-                  :aria-label="t('components.datePicker.chooseYear', { year: placeholder.year })"
-                  class="bcds-date-picker-view-button"
-                  type="button"
-                  @click="view = 'year'"
-                >
-                  {{ placeholder.year }}
-                </button>
-              </MonthPickerHeading>
-              <MonthPickerNext class="bcds-date-picker-nav">
-                <font-awesome-icon icon="fa-solid fa-chevron-right" />
-              </MonthPickerNext>
-            </MonthPickerHeader>
-            <MonthPickerGrid class="bcds-date-picker-grid-table bcds-date-picker-period-grid">
-              <MonthPickerGridBody>
-                <MonthPickerGridRow
-                  v-for="(months, index) in grid.rows"
-                  :key="index"
-                >
-                  <MonthPickerCell
-                    v-for="month in months"
-                    :key="month.toString()"
-                    :date="month"
-                  >
-                    <MonthPickerCellTrigger
-                      class="bcds-date-picker-cell bcds-date-picker-period"
-                      :month
-                    />
-                  </MonthPickerCell>
-                </MonthPickerGridRow>
-              </MonthPickerGridBody>
-            </MonthPickerGrid>
-          </MonthPickerRoot>
-          <YearPickerRoot
-            v-else
-            v-slot="{ grid }"
-            v-model:placeholder="placeholder"
-            :locale="dateLocale"
-            :max-value="maxDateValue"
-            :min-value="minDateValue"
-            :model-value="dateValue"
-            prevent-deselect
-            @update:model-value="onYearSelect"
-          >
-            <YearPickerHeader class="bcds-date-picker-header">
-              <YearPickerPrev class="bcds-date-picker-nav">
-                <font-awesome-icon icon="fa-solid fa-chevron-left" />
-              </YearPickerPrev>
-              <YearPickerHeading class="bcds-date-picker-heading" />
-              <YearPickerNext class="bcds-date-picker-nav">
-                <font-awesome-icon icon="fa-solid fa-chevron-right" />
-              </YearPickerNext>
-            </YearPickerHeader>
-            <YearPickerGrid class="bcds-date-picker-grid-table bcds-date-picker-period-grid">
-              <YearPickerGridBody>
-                <YearPickerGridRow
-                  v-for="(years, index) in grid.rows"
-                  :key="index"
-                >
-                  <YearPickerCell
-                    v-for="year in years"
-                    :key="year.toString()"
-                    :date="year"
-                  >
-                    <YearPickerCellTrigger
-                      class="bcds-date-picker-cell bcds-date-picker-period"
-                      :year
-                    />
-                  </YearPickerCell>
-                </YearPickerGridRow>
-              </YearPickerGridBody>
-            </YearPickerGrid>
-          </YearPickerRoot>
-        </div>
+        <Calendar
+          autofocus
+          class="border-0"
+          :disabled
+          :first-day-of-week
+          :max-value
+          :min-value
+          :model-value="value"
+          :readonly
+          :unavailable-date
+          @update:model-value="onCalendarSelect"
+        />
       </DatePickerContent>
     </DatePickerRoot>
   </FieldWrapper>
 </template>
-
-<!-- Reka renders the calendar inside its own wrapper, which a scoped style can't reach. -->
-<style>
-@layer components {
-  .bcds-calendar {
-    padding: var(--layout-padding-medium);
-    font: var(--typography-regular-small-body);
-  }
-}
-</style>
 
 <style scoped>
 @layer components {
@@ -482,150 +264,6 @@ function toDateValue(date: Date) {
   .app-input-readonly .bcds-date-picker-segment:focus {
     background: var(--surface-color-forms-disabled);
     color: var(--typography-color-primary);
-  }
-
-  .bcds-date-picker-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--icons-size-large);
-    height: var(--icons-size-large);
-    border: none;
-    border-radius: var(--layout-border-radius-small);
-    background: transparent;
-    color: var(--icons-color-primary);
-    font-size: var(--icons-size-small);
-    cursor: pointer;
-  }
-
-  .bcds-date-picker-nav:hover {
-    background: var(--surface-color-secondary-button-hover);
-  }
-
-  .bcds-date-picker-nav:disabled {
-    background: transparent;
-    color: var(--typography-color-disabled);
-    cursor: not-allowed;
-  }
-
-  .bcds-date-picker-nav:focus-visible {
-    outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
-    outline-offset: var(--layout-margin-hair);
-  }
-
-  .bcds-date-picker-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 var(--layout-padding-xsmall) var(--layout-padding-small);
-  }
-
-  .bcds-date-picker-heading {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    gap: var(--layout-margin-xsmall);
-    font: var(--typography-bold-small-body);
-  }
-
-  .bcds-date-picker-view-button {
-    height: var(--icons-size-large);
-    padding: 0 var(--layout-padding-xsmall);
-    border: none;
-    border-radius: var(--layout-border-radius-small);
-    background: transparent;
-    color: var(--typography-color-primary);
-    font: var(--typography-bold-small-body);
-    cursor: pointer;
-  }
-
-  .bcds-date-picker-view-button:hover {
-    background: var(--surface-color-secondary-button-hover);
-  }
-
-  .bcds-date-picker-view-button:focus-visible {
-    outline: var(--layout-border-width-medium) solid var(--surface-color-border-active);
-    outline-offset: var(--layout-margin-hair);
-  }
-
-  .bcds-date-picker-grid-table {
-    border-collapse: separate;
-    border-spacing: var(--layout-margin-xsmall);
-    text-align: center;
-  }
-
-  /* As wide as the day grid, so switching views doesn't resize the calendar */
-  .bcds-date-picker-period-grid {
-    width: calc(7 * var(--icons-size-xlarge) + 8 * var(--layout-margin-xsmall));
-  }
-
-  /* Bold, as a table header is by default */
-  .bcds-date-picker-head-cell {
-    font: var(--typography-bold-small-body);
-  }
-
-  .bcds-date-picker-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    width: var(--icons-size-xlarge);
-    height: var(--icons-size-xlarge);
-    padding: var(--layout-padding-xsmall);
-    border: var(--layout-border-width-small) solid transparent;
-    border-radius: var(--layout-border-radius-small);
-    color: var(--typography-color-primary);
-    cursor: pointer;
-    outline: none;
-  }
-
-  .bcds-date-picker-cell:hover {
-    background: var(--surface-color-secondary-button-hover);
-  }
-
-  .bcds-date-picker-cell:focus-visible {
-    border-color: var(--surface-color-border-active);
-    background: var(--surface-color-secondary-button-hover);
-  }
-
-  .bcds-date-picker-cell[data-today] {
-    font: var(--typography-bold-small-body);
-  }
-
-  .bcds-date-picker-cell[data-selected] {
-    background: var(--surface-color-primary-button-default);
-    color: var(--typography-color-primary-invert);
-  }
-
-  .bcds-date-picker-cell[data-selected]:hover {
-    background: var(--surface-color-primary-button-hover);
-  }
-
-  .bcds-date-picker-cell[data-selected]:focus-visible {
-    outline: var(--layout-border-width-small) solid var(--surface-color-border-active);
-    outline-offset: var(--layout-margin-hair);
-  }
-
-  /* A month or year fills its column */
-  .bcds-date-picker-cell.bcds-date-picker-period {
-    width: 100%;
-    height: var(--layout-margin-xxlarge);
-  }
-
-  /* Days from the months either side are left out */
-  .bcds-date-picker-cell[data-outside-view] {
-    visibility: hidden;
-  }
-
-  .bcds-date-picker-cell[data-disabled] {
-    color: var(--typography-color-disabled);
-    cursor: not-allowed;
-  }
-
-  .bcds-date-picker-cell[data-unavailable] {
-    color: var(--typography-color-danger);
-    text-decoration: line-through;
-    cursor: not-allowed;
   }
 }
 </style>

@@ -8,6 +8,7 @@ import {
   AlertBanner,
   AlertDialog,
   Button,
+  Calendar,
   Callout,
   Checkbox,
   CheckboxGroup,
@@ -89,6 +90,7 @@ const modalOpen = ref(false);
 const progress = ref(40);
 
 const accordionOpen = ref(false);
+const calendarDate = ref<Date | null>(null);
 const calendarView = ref<string | string[] | undefined>('week');
 const choices = ref({ first: true, second: false });
 const contactMethod = ref<string | number>();
@@ -721,6 +723,11 @@ function showToast(severity: (typeof TOASTS)[number]) {
         selection-mode="multiple"
       />
     </div>
+  </section>
+
+  <section>
+    <SectionHeader :title="t('views.components.sections.calendar')" />
+    <Calendar v-model="calendarDate" />
   </section>
 
   <section>
