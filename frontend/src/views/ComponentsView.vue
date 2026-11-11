@@ -3,15 +3,19 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import {
+  Accordion,
+  AccordionGroup,
   AlertBanner,
   AlertDialog,
   Button,
+  Callout,
   Checkbox,
   CheckboxGroup,
   DatePicker,
   Dialog,
   Drawer,
   InlineAlert,
+  Link,
   Menu,
   Modal,
   NumberField,
@@ -20,8 +24,11 @@ import {
   RadioGroup,
   Select,
   Separator,
+  Subheader,
   Switch,
   Tag,
+  TagGroup,
+  TagList,
   TextField,
   TimeField,
   ToggleButton,
@@ -50,6 +57,7 @@ const BANNER_VARIANTS = [
 ] as const satisfies (keyof Text['banners']['variants'])[];
 const PLACEMENTS = ['top', 'right', 'bottom', 'left'] as const satisfies (keyof Text['tooltips'])[];
 const BUTTON_SIZES = ['xsmall', 'small', 'medium', 'large'] as const satisfies (keyof Text['sizes'])[];
+const FAQS = ['apply', 'cost', 'time'] as const satisfies (keyof Text['accordions']['faqs'])[];
 const CALENDAR_VIEWS = ['day', 'week', 'month'] as const satisfies (keyof Text['buttons']['calendarView']['options'])[];
 const CONTACT_METHODS = ['email', 'phone', 'mail'] as const satisfies (keyof Text['fields']['contact']['options'])[];
 const SIZES = ['small', 'medium', 'large'] as const satisfies (keyof Text['sizes'])[];
@@ -80,9 +88,11 @@ const drawerOpen = ref(false);
 const modalOpen = ref(false);
 const progress = ref(40);
 
+const accordionOpen = ref(false);
 const calendarView = ref<string | string[] | undefined>('week');
 const choices = ref({ first: true, second: false });
 const contactMethod = ref<string | number>();
+const expandedFaqs = ref<string[]>(['apply']);
 const dateSmall = ref<Date | null>(null);
 const dateTypedOnly = ref<Date | null>(null);
 const meetingTime = ref<string | null>(null);
@@ -126,6 +136,7 @@ const menuItems: MenuItemProps[] = (['view', 'copy', 'delete'] as const).map((it
 const selectItems = contactOptions.map(({ label, value }) => ({ id: value, label }));
 
 const tagItems = TAGS.map(({ color, key }) => ({ color, id: key, label: t(`views.components.tags.${key}`) }));
+const removableTags = ref(tagItems.slice(0, 4));
 const circularTagItems = tagItems.map((item) => ({ ...item, tagStyle: 'circular' as const }));
 
 const selectSectionList: SelectSectionProps[] = [
@@ -269,6 +280,31 @@ function showToast(severity: (typeof TOASTS)[number]) {
   </section>
 
   <section>
+    <SectionHeader :title="t('views.components.sections.accordions')" />
+    <div class="flex max-w-2xl flex-col gap-4">
+      <Accordion
+        v-model:open="accordionOpen"
+        :label="t('views.components.accordions.single.label')"
+      >
+        {{ t('views.components.accordions.single.content') }}
+      </Accordion>
+      <AccordionGroup
+        v-model="expandedFaqs"
+        :title="t('views.components.accordions.faqsTitle')"
+      >
+        <Accordion
+          v-for="faq in FAQS"
+          :key="faq"
+          :label="t(`views.components.accordions.faqs.${faq}.label`)"
+          :value="faq"
+        >
+          {{ t(`views.components.accordions.faqs.${faq}.content`) }}
+        </Accordion>
+      </AccordionGroup>
+    </div>
+  </section>
+
+  <section>
     <SectionHeader :title="t('views.components.sections.tags')" />
     <div class="flex flex-wrap gap-2">
       <Tag
@@ -300,6 +336,69 @@ function showToast(severity: (typeof TOASTS)[number]) {
         {{ t('views.components.tags.withIcon') }}
       </Tag>
     </div>
+    <TagGroup
+      class="mt-4"
+      :label="t('views.components.tagGroup.label')"
+      removable
+      @remove="(id) => (removableTags = removableTags.filter((tag) => tag.id !== id))"
+    >
+      <TagList :items="removableTags">
+        <template #empty>{{ t('views.components.tagGroup.empty') }}</template>
+      </TagList>
+    </TagGroup>
+  </section>
+
+  <section>
+    <SectionHeader :title="t('views.components.sections.callouts')" />
+    <div class="flex max-w-2xl flex-col gap-4">
+      <Callout
+        :description="t('views.components.callouts.beforeYouStart.description')"
+        :title="t('views.components.callouts.beforeYouStart.title')"
+      >
+        <template #buttons>
+          <Button
+            :label="t('views.components.callouts.beforeYouStart.start')"
+            size="small"
+            :to="{ name: RouteName.DEMO_FORM }"
+          />
+        </template>
+      </Callout>
+      <Callout
+        :description="t('views.components.callouts.tip.description')"
+        :title="t('views.components.callouts.tip.title')"
+        variant="blue"
+      />
+    </div>
+  </section>
+
+  <section>
+    <SectionHeader :title="t('views.components.sections.links')" />
+    <div class="flex flex-wrap items-center gap-6">
+      <Link :to="{ name: RouteName.HOME }">{{ t('views.components.links.home') }}</Link>
+      <Link
+        href="https://www2.gov.bc.ca"
+        icon-right="fa-solid fa-chevron-right"
+        size="large"
+      >
+        {{ t('views.components.links.external') }}
+      </Link>
+      <Link
+        danger
+        href="#"
+        size="small"
+      >
+        {{ t('views.components.links.danger') }}
+      </Link>
+      <Link disabled>{{ t('views.components.links.disabled') }}</Link>
+    </div>
+    <Subheader
+      :aria-label="t('views.components.links.subheader')"
+      class="mt-4"
+    >
+      <Link :to="{ name: RouteName.DEMO_FORM }">{{ t('views.demoForm.title') }}</Link>
+      <Link :to="{ name: RouteName.SUBMISSIONS }">{{ t('views.submissions.title') }}</Link>
+      <Link :to="{ name: RouteName.COMPONENTS }">{{ t('views.components.title') }}</Link>
+    </Subheader>
   </section>
 
   <section>

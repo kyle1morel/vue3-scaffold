@@ -80,6 +80,9 @@
       "remove": "Remove {item}",
       "selected": "Selected options",
       "selections": "{label} selections"
+    },
+    "tagList": {
+      "remove": "Remove {item}"
     }
   },
   "ui": {
@@ -123,6 +126,27 @@
   },
   "views": {
     "components": {
+      "accordions": {
+        "faqs": {
+          "apply": {
+            "content": "Fill in the demo form and submit it.",
+            "label": "How do I apply?"
+          },
+          "cost": {
+            "content": "Nothing. The demo is free to use.",
+            "label": "What does it cost?"
+          },
+          "time": {
+            "content": "Submissions show up in the table right away.",
+            "label": "How long does it take?"
+          }
+        },
+        "faqsTitle": "Frequently asked questions",
+        "single": {
+          "content": "An accordion hides content until it is expanded, keeping long pages short.",
+          "label": "What is an accordion?"
+        }
+      },
       "alerts": {
         "actions": {
           "later": "Later",
@@ -187,6 +211,17 @@
         "secondaryDanger": "Secondary danger",
         "tertiary": "Tertiary",
         "withIcon": "With an icon"
+      },
+      "callouts": {
+        "beforeYouStart": {
+          "description": "Have your contact details ready. The form takes about five minutes.",
+          "start": "Start the form",
+          "title": "Before you start"
+        },
+        "tip": {
+          "description": "Nothing is saved until you submit, so you can leave the form and start again.",
+          "title": "Good to know"
+        }
       },
       "card": {
         "action": "Action",
@@ -263,6 +298,13 @@
         "updates": "Email me updates"
       },
       "intro": "The shared components and the variants each one offers. The demo form shows the form fields in use.",
+      "links": {
+        "danger": "Delete this draft",
+        "disabled": "Not available yet",
+        "external": "Government of B.C.",
+        "home": "Back to the home page",
+        "subheader": "Demo pages"
+      },
       "menu": {
         "items": {
           "copy": {
@@ -300,13 +342,16 @@
         "label": "Upload progress"
       },
       "sections": {
+        "accordions": "Accordions",
         "alerts": "Inline alerts",
         "banners": "Alert banners",
         "buttons": "Buttons",
+        "callouts": "Callouts",
         "card": "Card",
         "dialogs": "Dialogs",
         "drawer": "Drawer",
         "fields": "Field options",
+        "links": "Links",
         "menu": "Menu",
         "progress": "Progress",
         "separators": "Separators",
@@ -325,6 +370,10 @@
         "medium": "Medium",
         "small": "Small",
         "xsmall": "Extra small"
+      },
+      "tagGroup": {
+        "empty": "No tags left",
+        "label": "Removable tags"
       },
       "tags": {
         "bcBlue": "BC blue",
