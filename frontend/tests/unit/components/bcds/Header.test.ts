@@ -64,6 +64,12 @@ describe('Header', () => {
       expect(wrapper.findAll('.bcds-header-skiplinks > li > a').map((link) => link.text())).toEqual(['Main', 'Nav']);
     });
 
+    it('puts the skip links before the logo, so they are the first tab stops', () => {
+      const { wrapper } = mountHeader({}, { skipLinks: () => [h('a', { href: '#main' }, 'Main')] });
+
+      expect(wrapper.findAll('a').map((link) => link.text())).toEqual(['Main', '']);
+    });
+
     it('renders its content after the title', () => {
       const { wrapper } = mountHeader({ title: 'Title' }, { default: () => h('button', 'Menu') });
 

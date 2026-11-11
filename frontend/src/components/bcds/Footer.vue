@@ -129,7 +129,7 @@ const links = computed(() => [
           v-if="!hideCopyright"
           class="bcds-footer-copyright"
         >
-          {{ copyright || `© ${new Date().getUTCFullYear()} ${t('components.footer.government')}.` }}
+          {{ copyright || t('components.footer.copyrightNotice', { year: new Date().getUTCFullYear() }) }}
         </p>
       </div>
     </div>

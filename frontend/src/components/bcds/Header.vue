@@ -33,20 +33,7 @@ const { t } = useI18n();
 <template>
   <header :class="['bcds-header', { 'bcds-header-full-width': fullWidth }]">
     <div class="bcds-header-container">
-      <slot name="logo">
-        <a
-          href="/"
-          :title="t('components.header.government')"
-        >
-          <slot name="logoImage">
-            <img
-              src="@/assets/images/BCID_H_rgb_pos.svg"
-              class="bcds-header-logo"
-              :alt="t('components.header.government')"
-            />
-          </slot>
-        </a>
-      </slot>
+      <!-- First, so keyboard users reach the skip links before anything else -->
       <ul
         v-if="slots.skipLinks"
         class="bcds-header-skiplinks"
@@ -58,6 +45,17 @@ const { t } = useI18n();
           <component :is="link" />
         </li>
       </ul>
+      <slot name="logo">
+        <a href="/">
+          <slot name="logoImage">
+            <img
+              src="@/assets/images/BCID_H_rgb_pos.svg"
+              class="bcds-header-logo"
+              :alt="t('components.header.government')"
+            />
+          </slot>
+        </a>
+      </slot>
       <template v-if="title">
         <div class="bcds-header-line" />
         <component
@@ -121,24 +119,34 @@ const { t } = useI18n();
     position: absolute;
   }
 
+  /* Hidden but still read and focusable, until focus shows it over the logo */
   .bcds-header-skiplinks :deep(li a),
   .bcds-header-skiplinks :deep(li button) {
-    background-color: var(--surface-color-forms-default);
+    position: absolute;
+    overflow: hidden;
     box-sizing: border-box;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    background-color: var(--surface-color-forms-default);
     color: var(--typography-color-link);
     font: var(--typography-regular-body);
-    /* Centres the link in a single line-height header */
-    margin-top: -17.5px;
-    padding: var(--layout-padding-xsmall) var(--layout-padding-medium);
-    position: absolute;
-    margin-left: -100000px;
+    white-space: nowrap;
+    clip-path: inset(50%);
   }
 
   .bcds-header-skiplinks :deep(li a:focus),
   .bcds-header-skiplinks :deep(li button:focus) {
-    /* Lines up with the logo's left edge */
-    margin-left: 0;
-    text-wrap: nowrap;
+    overflow: visible;
+    width: auto;
+    height: auto;
+    margin: 0;
+    /* Centres the link in a single line-height header */
+    margin-top: -17.5px;
+    padding: var(--layout-padding-xsmall) var(--layout-padding-medium);
+    clip-path: none;
   }
 
   .bcds-header-line {
