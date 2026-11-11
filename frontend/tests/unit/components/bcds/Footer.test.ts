@@ -37,18 +37,4 @@ describe('Footer', () => {
       expect(contact?.findAll('a').map((link) => link.attributes('href'))).toEqual(testContactLinks);
     });
   });
-
-  describe('full width', () => {
-    it('keeps the cap by default', () => {
-      const { wrapper } = mountFooter();
-
-      expect(wrapper.classes()).not.toContain('bcds-footer-full-width');
-    });
-
-    it('drops the cap when full width', () => {
-      const { wrapper } = mountFooter({ fullWidth: true });
-
-      expect(wrapper.classes()).toContain('bcds-footer-full-width');
-    });
-  });
 });

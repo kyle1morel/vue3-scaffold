@@ -6,13 +6,7 @@ import { slotItems } from './slotItems';
 import type { VNode } from 'vue';
 
 // Props
-const {
-  fullWidth = false,
-  title = '',
-  titleElement = 'span'
-} = defineProps<{
-  // Drops the 1100px cap and lets the title shrink, so the header lines up with full-width content
-  fullWidth?: boolean;
+const { title = '', titleElement = 'span' } = defineProps<{
   title?: string;
   titleElement?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span' | 'p';
 }>();
@@ -31,7 +25,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <header :class="['bcds-header', { 'bcds-header-full-width': fullWidth }]">
+  <header class="bcds-header">
     <div class="bcds-header-container">
       <!-- First, so keyboard users reach the skip links before anything else -->
       <ul
@@ -91,21 +85,14 @@ const { t } = useI18n();
     flex-direction: row;
     align-items: center;
     gap: var(--layout-padding-medium);
-    max-width: 1100px;
+    min-width: 0;
   }
 
+  /* Gives way to whatever sits beside it on narrow screens */
   .bcds-header-title {
     flex-grow: 1;
     font: var(--typography-bold-h4);
     color: var(--typography-color-primary);
-  }
-
-  .bcds-header-full-width .bcds-header-container {
-    max-width: none;
-    min-width: 0;
-  }
-
-  .bcds-header-full-width .bcds-header-title {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;

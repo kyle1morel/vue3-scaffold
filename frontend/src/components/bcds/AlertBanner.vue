@@ -7,7 +7,7 @@ import Button from './Button.vue';
 const {
   closeable = true,
   hideIcon = false,
-  layout = 'fixed',
+  layout = 'fluid',
   role = 'status',
   size = 'medium',
   variant = 'info'

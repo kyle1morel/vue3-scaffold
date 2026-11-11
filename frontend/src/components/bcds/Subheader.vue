@@ -68,7 +68,6 @@ const slots = defineSlots<{
     display: flex;
     flex-grow: 1;
     box-sizing: border-box;
-    max-width: 1100px;
   }
 
   .bcds-subheader-list {

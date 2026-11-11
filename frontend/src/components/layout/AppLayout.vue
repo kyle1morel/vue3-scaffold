@@ -23,7 +23,6 @@ function skipToMain() {
   <div class="flex flex-col h-screen">
     <Header
       class="px-4 min-[576px]:px-8"
-      full-width
       :title="t('app.name')"
     >
       <template #logo>
@@ -56,9 +55,6 @@ function skipToMain() {
       <slot name="main" />
     </main>
 
-    <Footer
-      class="mt-8 shrink-0"
-      full-width
-    />
+    <Footer class="mt-8 shrink-0" />
   </div>
 </template>

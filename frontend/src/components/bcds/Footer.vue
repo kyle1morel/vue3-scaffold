@@ -7,14 +7,11 @@ import FooterLinks from './FooterLinks.vue';
 // Props
 const {
   copyright = '',
-  fullWidth = false,
   hideAcknowledgement = false,
   hideCopyright = false,
   hideLogoAndLinks = false
 } = defineProps<{
   copyright?: string;
-  // Drops the 1100px cap, so the footer lines up with full-width content
-  fullWidth?: boolean;
   hideAcknowledgement?: boolean;
   hideCopyright?: boolean;
   hideLogoAndLinks?: boolean;
@@ -63,7 +60,7 @@ const links = computed(() => [
 </script>
 
 <template>
-  <footer :class="['bcds-footer', { 'bcds-footer-full-width': fullWidth }]">
+  <footer class="bcds-footer">
     <div
       v-if="!hideAcknowledgement"
       class="bcds-footer-acknowledgement"
@@ -163,7 +160,6 @@ const links = computed(() => [
     justify-content: stretch;
     color: var(--typography-color-primary-invert);
     font: var(--typography-regular-small-body);
-    max-width: 1100px;
     width: 100%;
   }
 
@@ -185,13 +181,7 @@ const links = computed(() => [
     flex-direction: column;
     align-items: stretch;
     gap: var(--layout-padding-xlarge);
-    max-width: 1100px;
     width: 100%;
-  }
-
-  .bcds-footer-full-width .bcds-footer-acknowledgement-text,
-  .bcds-footer-full-width .bcds-footer-container-content {
-    max-width: none;
   }
 
   .bcds-footer-logo-links {

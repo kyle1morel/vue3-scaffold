@@ -33,20 +33,6 @@ describe('Header', () => {
     });
   });
 
-  describe('full width', () => {
-    it('keeps the cap by default', () => {
-      const { wrapper } = mountHeader();
-
-      expect(wrapper.classes()).not.toContain('bcds-header-full-width');
-    });
-
-    it('drops the cap when full width', () => {
-      const { wrapper } = mountHeader({ fullWidth: true });
-
-      expect(wrapper.classes()).toContain('bcds-header-full-width');
-    });
-  });
-
   describe('slots', () => {
     it('replaces the logo and its link', () => {
       const { wrapper } = mountHeader({}, { logo: () => h('a', { href: '/home' }, 'Home') });
