@@ -24,7 +24,7 @@ function answer(accepted: boolean) {
   <AlertDialog
     v-model:open="open"
     role="alertdialog"
-    :title="confirmRequest?.title"
+    :title="confirmRequest?.title ?? ''"
     :variant="confirmRequest?.danger ? 'destructive' : 'info'"
   >
     {{ confirmRequest?.message }}
