@@ -7,18 +7,25 @@ import {
   AlertDialog,
   Button,
   Checkbox,
+  CheckboxGroup,
   DatePicker,
+  Dialog,
   Drawer,
   InlineAlert,
   Menu,
+  Modal,
   NumberField,
   ProgressBar,
   ProgressCircle,
   RadioGroup,
   Select,
   Separator,
+  Switch,
   Tag,
   TextField,
+  TimeField,
+  ToggleButton,
+  ToggleButtonGroup,
   Tooltip
 } from '@/components/bcds';
 import Card from '@/components/common/Card.vue';
@@ -43,6 +50,7 @@ const BANNER_VARIANTS = [
 ] as const satisfies (keyof Text['banners']['variants'])[];
 const PLACEMENTS = ['top', 'right', 'bottom', 'left'] as const satisfies (keyof Text['tooltips'])[];
 const BUTTON_SIZES = ['xsmall', 'small', 'medium', 'large'] as const satisfies (keyof Text['sizes'])[];
+const CALENDAR_VIEWS = ['day', 'week', 'month'] as const satisfies (keyof Text['buttons']['calendarView']['options'])[];
 const CONTACT_METHODS = ['email', 'phone', 'mail'] as const satisfies (keyof Text['fields']['contact']['options'])[];
 const SIZES = ['small', 'medium', 'large'] as const satisfies (keyof Text['sizes'])[];
 const TAG_SIZES = ['xsmall', 'small', 'medium'] as const satisfies (keyof Text['sizes'])[];
@@ -57,6 +65,7 @@ const TAGS = [
   { color: 'yellow', key: 'yellow' }
 ] as const satisfies { color: string; key: keyof Text['tags'] }[];
 const TOASTS = ['info', 'success', 'warn', 'error'] as const satisfies (keyof Text['toasts'])[];
+const TOPICS = ['news', 'events', 'jobs'] as const satisfies (keyof Text['fields']['topics']['options'])[];
 
 // Composables
 const { confirm } = useConfirm();
@@ -68,14 +77,20 @@ const alertClosed = ref(false);
 const bannerClosed = ref(false);
 const dialogOpen = ref(false);
 const drawerOpen = ref(false);
+const modalOpen = ref(false);
 const progress = ref(40);
 
+const calendarView = ref<string | string[] | undefined>('week');
 const choices = ref({ first: true, second: false });
 const contactMethod = ref<string | number>();
 const dateSmall = ref<Date | null>(null);
 const dateTypedOnly = ref<Date | null>(null);
+const meetingTime = ref<string | null>(null);
 const number = ref<number | null>(4);
+const preview = ref(false);
 const search = ref('');
+const topics = ref<(string | number)[]>(['news']);
+const updates = ref(true);
 const selectScroll = ref<(string | number)[]>(TAGS.map((tag) => tag.key));
 const selectSections = ref<string | number | null>(null);
 const selectSmall = ref<string | number | null>(null);
@@ -92,6 +107,11 @@ const contactOptions = CONTACT_METHODS.map((method) => ({
   description: t(`views.components.fields.contact.options.${method}.description`),
   label: t(`views.components.fields.contact.options.${method}.label`),
   value: method
+}));
+
+const topicOptions = TOPICS.map((topic) => ({
+  label: t(`views.components.fields.topics.options.${topic}`),
+  value: topic
 }));
 
 const menuItems: MenuItemProps[] = (['view', 'copy', 'delete'] as const).map((item) => ({
@@ -225,6 +245,27 @@ function showToast(severity: (typeof TOASTS)[number]) {
         variant="secondary"
       />
     </div>
+    <div class="mt-4 flex flex-wrap items-end gap-4">
+      <ToggleButton
+        v-model="preview"
+        icon="fa-solid fa-eye"
+        :label="t('views.components.buttons.preview')"
+      />
+      <div>
+        <ToggleButtonGroup
+          v-model="calendarView"
+          disallow-empty-selection
+          :label="t('views.components.buttons.calendarView.label')"
+        >
+          <ToggleButton
+            v-for="view in CALENDAR_VIEWS"
+            :key="view"
+            :label="t(`views.components.buttons.calendarView.options.${view}`)"
+            :value="view"
+          />
+        </ToggleButtonGroup>
+      </div>
+    </div>
   </section>
 
   <section>
@@ -346,6 +387,11 @@ function showToast(severity: (typeof TOASTS)[number]) {
         variant="secondary"
         @click="askToConfirm"
       />
+      <Button
+        :label="t('views.components.dialogs.modal.open')"
+        variant="secondary"
+        @click="modalOpen = true"
+      />
     </div>
     <AlertDialog
       v-model:open="dialogOpen"
@@ -359,6 +405,17 @@ function showToast(severity: (typeof TOASTS)[number]) {
         />
       </template>
     </AlertDialog>
+    <Modal v-model:open="modalOpen">
+      <Dialog :title="t('views.components.dialogs.modal.title')">
+        <p class="mt-0">{{ t('views.components.dialogs.modal.message') }}</p>
+        <div class="flex justify-end">
+          <Button
+            :label="t('ui.actions.close')"
+            @click="modalOpen = false"
+          />
+        </div>
+      </Dialog>
+    </Modal>
   </section>
 
   <section>
@@ -482,6 +539,18 @@ function showToast(severity: (typeof TOASTS)[number]) {
           />
         </div>
       </div>
+      <Switch
+        v-model="updates"
+        class="col-span-12"
+        :label="t('views.components.fields.updates')"
+      />
+      <CheckboxGroup
+        v-model="topics"
+        class="col-span-12"
+        :label="t('views.components.fields.topics.label')"
+        :options="topicOptions"
+        orientation="horizontal"
+      />
       <RadioGroup
         v-model="contactMethod"
         class="col-span-12"
@@ -519,6 +588,11 @@ function showToast(severity: (typeof TOASTS)[number]) {
         :max-value="10"
         :min-value="0"
         :step="2"
+      />
+      <TimeField
+        v-model="meetingTime"
+        class="col-span-12 md:col-span-4"
+        :label="t('views.components.fields.meetingTime')"
       />
       <DatePicker
         v-model="dateTypedOnly"

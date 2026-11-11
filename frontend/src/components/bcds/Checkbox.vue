@@ -12,6 +12,7 @@ const {
   disabled = false,
   errorMessage = undefined,
   indeterminate = false,
+  invalid = false,
   label = undefined,
   name = undefined,
   readonly = false,
@@ -22,6 +23,8 @@ const {
   errorMessage?: string;
   // Neither checked nor unchecked, such as a select-all box when only some are selected
   indeterminate?: boolean;
+  // Shows the error state without a message, such as in a group that shows one message for all its boxes
+  invalid?: boolean;
   label?: string;
   name?: string;
   readonly?: boolean;
@@ -43,7 +46,7 @@ function update(checked: boolean | 'indeterminate') {
 <template>
   <!-- The label sits beside the box, so the wrapper only adds the description and error. -->
   <FieldWrapper
-    v-slot="{ id, inputAttrs, invalid }"
+    v-slot="{ id, inputAttrs, invalid: hasError }"
     v-bind="$attrs"
     :description
     error-icon
@@ -54,10 +57,10 @@ function update(checked: boolean | 'indeterminate') {
       <CheckboxRoot
         :id
         v-bind="inputAttrs"
-        :aria-invalid="invalid || undefined"
+        :aria-invalid="hasError || invalid || undefined"
         :aria-readonly="readonly || undefined"
         class="bcds-checkbox-box"
-        :class="{ 'bcds-checkbox-invalid': invalid, 'bcds-checkbox-readonly': readonly }"
+        :class="{ 'bcds-checkbox-invalid': hasError || invalid, 'bcds-checkbox-readonly': readonly }"
         :disabled
         :model-value="indeterminate ? 'indeterminate' : (value ?? false)"
         :name

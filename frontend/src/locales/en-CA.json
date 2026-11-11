@@ -169,10 +169,19 @@
         }
       },
       "buttons": {
+        "calendarView": {
+          "label": "Calendar view",
+          "options": {
+            "day": "Day",
+            "month": "Month",
+            "week": "Week"
+          }
+        },
         "danger": "Danger",
         "disabled": "Disabled",
         "iconOnly": "Confirm",
         "link": "Link",
+        "preview": "Preview",
         "primary": "Primary",
         "secondary": "Secondary",
         "secondaryDanger": "Secondary danger",
@@ -198,6 +207,11 @@
           "open": "Ask to confirm",
           "rejected": "You cancelled.",
           "title": "Confirm this?"
+        },
+        "modal": {
+          "message": "Modal and Dialog hold any content and buttons, under a title.",
+          "open": "Open a modal",
+          "title": "A modal dialog"
         }
       },
       "drawer": {
@@ -227,6 +241,7 @@
         "dateSmall": "A small date",
         "dateTypedOnly": "A date typed only, with no calendar",
         "firstChoice": "First choice",
+        "meetingTime": "A meeting time",
         "number": "A number from 0 to 10, in steps of 2",
         "search": {
           "label": "A small text field with icons",
@@ -236,7 +251,16 @@
         "selectScroll": "Several choices, with tags that scroll",
         "selectSections": "A select with sections, icons and descriptions",
         "selectSmall": "A small select",
-        "selectWrap": "Several choices, with tags that wrap"
+        "selectWrap": "Several choices, with tags that wrap",
+        "topics": {
+          "label": "Topics, side by side",
+          "options": {
+            "events": "Events",
+            "jobs": "Jobs",
+            "news": "News"
+          }
+        },
+        "updates": "Email me updates"
       },
       "intro": "The shared components and the variants each one offers. The demo form shows the form fields in use.",
       "menu": {
